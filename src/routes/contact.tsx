@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Phone, Mail, Clock, Facebook, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Facebook, Send, Navigation } from "lucide-react";
 import { useState } from "react";
-import { academy } from "@/data/faculty";
+import { academy, branches } from "@/data/faculty";
 import heroBg from "@/assets/hero-bg.jpg";
 
 export const Route = createFileRoute("/contact")({
@@ -135,24 +135,56 @@ function ContactPage() {
         </div>
       </section>
 
-      <section className="bg-navy py-2">
-        <div className="mx-auto max-w-7xl">
-          <div className="aspect-[16/8] md:aspect-[21/8] w-full overflow-hidden border-y-2 border-gold/30">
-            <iframe
-              src={academy.mapsEmbed}
-              className="w-full h-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Al-Mustafa Academy location"
-            />
+      {/* BRANCHES */}
+      <section className="bg-navy-deep text-primary-foreground py-20 md:py-28 border-t border-gold/15">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="ornament text-xs uppercase tracking-[0.3em] text-gold font-semibold">Our Branches</p>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold">
+              Two campuses, <em className="font-serif-elegant text-gold">one neighbourhood.</em>
+            </h2>
+            <p className="mt-4 text-primary-foreground/70 max-w-xl mx-auto">
+              Both branches sit just minutes apart in G-11/2 — choose whichever is closer to home.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {branches.map((b, i) => (
+              <article key={b.id} className="group relative bg-navy rounded-3xl border border-gold/20 overflow-hidden shadow-elegant hover:border-gold/60 transition-colors">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <iframe
+                    src={b.mapsEmbed}
+                    className="w-full h-full border-0 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title={`${b.name} location map`}
+                  />
+                  <div className="pointer-events-none absolute top-4 left-4 inline-flex items-center gap-2 bg-navy-deep/90 backdrop-blur border border-gold/40 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.25em] text-gold">
+                    Branch 0{i+1}
+                  </div>
+                </div>
+
+                <div className="p-6 md:p-8">
+                  <h3 className="font-display text-2xl text-gold font-bold">{b.label}</h3>
+                  <div className="gold-divider my-4 w-16" />
+                  <ul className="space-y-3 text-sm text-primary-foreground/80">
+                    <li className="flex gap-3"><MapPin className="h-4 w-4 text-gold shrink-0 mt-0.5" /><span>{b.address}</span></li>
+                    <li className="flex gap-3"><Phone className="h-4 w-4 text-gold shrink-0 mt-0.5" /><a href={`tel:${b.phoneIntl}`} className="hover:text-gold">{b.phone}</a></li>
+                    <li className="flex gap-3"><Clock className="h-4 w-4 text-gold shrink-0 mt-0.5" /><span>{b.hours}</span></li>
+                  </ul>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <a href={b.mapsLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-5 py-2.5 rounded-full text-sm shadow-gold hover:scale-105 transition-transform">
+                      <Navigation className="h-4 w-4" /> Get Directions
+                    </a>
+                    <a href={`tel:${b.phoneIntl}`} className="inline-flex items-center gap-2 border border-gold/40 text-gold-soft px-5 py-2.5 rounded-full text-sm hover:bg-gold/10 transition-colors">
+                      <Phone className="h-4 w-4" /> Call Branch
+                    </a>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
-      </section>
-
-      <section className="bg-background py-12 text-center">
-        <a href={academy.mapsLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-navy font-semibold hover:text-gold transition-colors">
-          <MapPin className="h-4 w-4" /> Open in Google Maps
-        </a>
       </section>
     </>
   );
