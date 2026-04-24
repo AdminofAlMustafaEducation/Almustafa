@@ -34,6 +34,35 @@ export const academy = {
   mapsLink: "https://www.google.com/maps/search/?api=1&query=Al-Mustafa+Academy+G-11%2F2+Islamabad",
 };
 
+export const branches = [
+  {
+    id: "main",
+    label: "Main Campus",
+    name: "Al-Mustafa Academy — Main",
+    address: "House# 1461, Sachal Sarmast Road, G-11/2, Islamabad",
+    phone: "0335 0555696",
+    phoneIntl: "+923350555696",
+    hours: "Mon – Sat · 3:00 PM – 9:00 PM",
+    mapsEmbed:
+      "https://maps.google.com/maps?q=House%201461%20Sachal%20Sarmast%20Road%20G-11%2F2%20Islamabad&t=&z=16&ie=UTF8&iwloc=&output=embed",
+    mapsLink:
+      "https://www.google.com/maps/search/?api=1&query=House+1461+Sachal+Sarmast+Road+G-11%2F2+Islamabad",
+  },
+  {
+    id: "second",
+    label: "Second Campus",
+    name: "Al-Mustafa Academy — Branch II",
+    address: "House# 1300, Street 58, G-11/2, Islamabad",
+    phone: "0335 0555696",
+    phoneIntl: "+923350555696",
+    hours: "Mon – Sat · 3:00 PM – 9:00 PM",
+    mapsEmbed:
+      "https://maps.google.com/maps?q=House%201300%20Street%2058%20G-11%2F2%20Islamabad&t=&z=16&ie=UTF8&iwloc=&output=embed",
+    mapsLink:
+      "https://www.google.com/maps/search/?api=1&query=House+1300+Street+58+G-11%2F2+Islamabad",
+  },
+] as const;
+
 export const programs = [
   {
     title: "Juniors (Class 1 – 8)",
