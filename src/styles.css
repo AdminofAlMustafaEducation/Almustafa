@@ -74,30 +74,32 @@
   --radius: 0.5rem;
 
   /* Brand */
-  --navy-deep: oklch(0.18 0.06 265);
-  --navy: oklch(0.24 0.08 265);
-  --gold: oklch(0.78 0.14 80);
-  --gold-soft: oklch(0.88 0.09 85);
+  --navy-deep: oklch(0.18 0.07 265);
+  --navy: oklch(0.26 0.08 265);
+  /* "gold" tokens now carry the warm orange accent (kept names so existing
+     utilities like bg-gold / text-gold keep working). */
+  --gold: oklch(0.72 0.18 45);
+  --gold-soft: oklch(0.82 0.13 55);
 
-  --background: oklch(0.985 0.005 80);
-  --foreground: oklch(0.18 0.06 265);
+  --background: oklch(0.985 0.008 80);
+  --foreground: oklch(0.18 0.07 265);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.06 265);
+  --card-foreground: oklch(0.18 0.07 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.06 265);
-  --primary: oklch(0.24 0.08 265);
+  --popover-foreground: oklch(0.18 0.07 265);
+  --primary: oklch(0.26 0.08 265);
   --primary-foreground: oklch(0.98 0.01 80);
-  --secondary: oklch(0.78 0.14 80);
-  --secondary-foreground: oklch(0.18 0.06 265);
-  --muted: oklch(0.95 0.01 80);
-  --muted-foreground: oklch(0.45 0.03 265);
-  --accent: oklch(0.78 0.14 80);
-  --accent-foreground: oklch(0.18 0.06 265);
+  --secondary: oklch(0.72 0.18 45);
+  --secondary-foreground: oklch(0.99 0.01 80);
+  --muted: oklch(0.96 0.012 80);
+  --muted-foreground: oklch(0.48 0.03 265);
+  --accent: oklch(0.72 0.18 45);
+  --accent-foreground: oklch(0.99 0.01 80);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.9 0.02 80);
-  --input: oklch(0.92 0.02 80);
-  --ring: oklch(0.78 0.14 80);
+  --border: oklch(0.92 0.012 80);
+  --input: oklch(0.93 0.012 80);
+  --ring: oklch(0.72 0.18 45);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -112,13 +114,19 @@
   --sidebar-border: oklch(0.3 0.05 265);
   --sidebar-ring: oklch(0.78 0.14 80);
 
+  /* Pastel "Eduor"-style hero wash (mint → cream → lavender) */
+  --gradient-pastel: linear-gradient(135deg,
+    oklch(0.96 0.04 165) 0%,
+    oklch(0.985 0.012 90) 50%,
+    oklch(0.95 0.045 305) 100%);
+
   /* Gradients & shadows */
-  --gradient-hero: linear-gradient(135deg, oklch(0.18 0.06 265) 0%, oklch(0.24 0.08 265) 60%, oklch(0.3 0.09 270) 100%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.85 0.13 85) 0%, oklch(0.72 0.15 75) 100%);
-  --gradient-overlay: linear-gradient(180deg, oklch(0.18 0.06 265 / 0.85) 0%, oklch(0.18 0.06 265 / 0.95) 100%);
-  --shadow-gold: 0 10px 40px -10px oklch(0.78 0.14 80 / 0.45);
-  --shadow-elegant: 0 20px 60px -20px oklch(0.18 0.06 265 / 0.4);
-  --shadow-card: 0 8px 30px -8px oklch(0.18 0.06 265 / 0.15);
+  --gradient-hero: linear-gradient(135deg, oklch(0.18 0.07 265) 0%, oklch(0.24 0.08 265) 60%, oklch(0.3 0.09 270) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.16 55) 0%, oklch(0.66 0.20 38) 100%);
+  --gradient-overlay: linear-gradient(180deg, oklch(0.18 0.07 265 / 0.85) 0%, oklch(0.18 0.07 265 / 0.95) 100%);
+  --shadow-gold: 0 10px 40px -10px oklch(0.72 0.18 45 / 0.5);
+  --shadow-elegant: 0 20px 60px -20px oklch(0.18 0.07 265 / 0.4);
+  --shadow-card: 0 8px 30px -8px oklch(0.18 0.07 265 / 0.15);
 }
 
 .dark {
@@ -179,6 +187,7 @@
   .font-serif-elegant { font-family: var(--font-serif); }
   .bg-hero { background: var(--gradient-hero); }
   .bg-gold-gradient { background: var(--gradient-gold); }
+  .bg-pastel { background: var(--gradient-pastel); }
   .text-gold { color: var(--gold); }
   .bg-gold { background-color: var(--gold); }
   .bg-navy { background-color: var(--navy); }
