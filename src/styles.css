@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=Caveat:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /*
  * Design system definition.
@@ -61,13 +61,17 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-display: 'Playfair Display', serif;
-  --font-serif: 'Cormorant Garamond', serif;
+  --font-display: 'DM Sans', system-ui, sans-serif;
+  --font-script: 'Caveat', cursive;
   --font-sans: 'Inter', system-ui, sans-serif;
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-navy: var(--navy);
   --color-navy-deep: var(--navy-deep);
+  --color-mint: var(--mint);
+  --color-lavender: var(--lavender);
+  --color-cream: var(--cream);
+  --color-sky: var(--sky);
 }
 
 :root {
@@ -76,12 +80,16 @@
   /* Brand */
   --navy-deep: oklch(0.18 0.07 265);
   --navy: oklch(0.26 0.08 265);
-  /* "gold" tokens now carry the warm orange accent (kept names so existing
-     utilities like bg-gold / text-gold keep working). */
-  --gold: oklch(0.72 0.18 45);
-  --gold-soft: oklch(0.82 0.13 55);
+  /* Eduor-inspired warm orange accent. "gold" token names retained so
+     existing utilities (bg-gold, text-gold) keep cascading. */
+  --gold: oklch(0.71 0.20 42);          /* primary orange */
+  --gold-soft: oklch(0.82 0.14 55);     /* lighter peach */
+  --sky: oklch(0.62 0.18 255);          /* eyebrow blue */
+  --mint: oklch(0.94 0.05 165);         /* hero wash left */
+  --lavender: oklch(0.93 0.05 305);     /* hero wash right */
+  --cream: oklch(0.985 0.012 90);       /* hero wash center */
 
-  --background: oklch(0.985 0.008 80);
+  --background: oklch(0.99 0.005 80);
   --foreground: oklch(0.18 0.07 265);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.07 265);
@@ -114,11 +122,12 @@
   --sidebar-border: oklch(0.3 0.05 265);
   --sidebar-ring: oklch(0.78 0.14 80);
 
-  /* Pastel "Eduor"-style hero wash (mint → cream → lavender) */
-  --gradient-pastel: linear-gradient(135deg,
-    oklch(0.96 0.04 165) 0%,
-    oklch(0.985 0.012 90) 50%,
-    oklch(0.95 0.045 305) 100%);
+  /* Pastel Eduor-style hero wash (mint → cream → lavender) */
+  --gradient-pastel: linear-gradient(115deg,
+    var(--mint) 0%,
+    var(--cream) 50%,
+    var(--lavender) 100%);
+  --gradient-pill: linear-gradient(135deg, oklch(0.78 0.18 50) 0%, oklch(0.66 0.22 38) 100%);
 
   /* Gradients & shadows */
   --gradient-hero: linear-gradient(135deg, oklch(0.18 0.07 265) 0%, oklch(0.24 0.08 265) 60%, oklch(0.3 0.09 270) 100%);
@@ -184,10 +193,17 @@
 
 @layer utilities {
   .font-display { font-family: var(--font-display); }
-  .font-serif-elegant { font-family: var(--font-serif); }
+  .font-script { font-family: var(--font-script); }
+  /* Back-compat alias — old "serif elegant" usages now render as script accent */
+  .font-serif-elegant { font-family: var(--font-script); font-weight: 600; }
   .bg-hero { background: var(--gradient-hero); }
-  .bg-gold-gradient { background: var(--gradient-gold); }
+  .bg-gold-gradient { background: var(--gradient-pill); }
   .bg-pastel { background: var(--gradient-pastel); }
+  .bg-mint { background-color: var(--mint); }
+  .bg-lavender { background-color: var(--lavender); }
+  .bg-cream { background-color: var(--cream); }
+  .bg-sky { background-color: var(--sky); }
+  .text-sky { color: var(--sky); }
   .text-gold { color: var(--gold); }
   .bg-gold { background-color: var(--gold); }
   .bg-navy { background-color: var(--navy); }
@@ -210,6 +226,39 @@
     font-size: 0.7em;
     opacity: 0.8;
   }
+
+  /* Eduor-style underline scribble for emphasized words */
+  .scribble-underline {
+    position: relative;
+    display: inline-block;
+    color: var(--gold);
+  }
+  .scribble-underline::after {
+    content: "";
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: -0.05em;
+    height: 0.35em;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'><path d='M2 9 Q 50 1 100 7 T 198 6' stroke='%23E97316' stroke-width='3.5' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  .dashed-ring {
+    border: 2px dashed var(--gold);
+    border-radius: 9999px;
+  }
+
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
+  .animate-spin-slow { animation: spin-slow 24s linear infinite; }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  .animate-wiggle { animation: wiggle 4s ease-in-out infinite; }
 
   @keyframes float-slow {
     0%, 100% { transform: translateY(0); }
