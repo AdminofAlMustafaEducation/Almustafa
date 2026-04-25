@@ -1,12 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Phone, Star, MapPin, Quote, Navigation, Mail, Play, GraduationCap, BookOpen, FlaskConical, Users, Award, CalendarCheck } from "lucide-react";
-import logo from "@/assets/logo.png";
 import campusExterior from "@/assets/gallery/campus-exterior.jpg";
 import teacherBoard from "@/assets/gallery/teacher-board.jpg";
 import studentsGroup from "@/assets/gallery/students-group.jpg";
 import library from "@/assets/gallery/library.jpg";
 import studentPortrait from "@/assets/gallery/student-portrait.jpg";
-import notebook from "@/assets/gallery/notebook.jpg";
 import heroStudent from "@/assets/eduor/hero-student.png";
 import doodlePen from "@/assets/eduor/doodle-pen.png";
 import { academy, branches, faculty, programs } from "@/data/faculty";
