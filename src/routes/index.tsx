@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Phone, Sparkles, Star, MapPin, Quote, Navigation, Mail } from "lucide-react";
+import { ArrowRight, Phone, Star, MapPin, Quote, Navigation, Mail, Play, GraduationCap, BookOpen, FlaskConical, Users, Award, CalendarCheck } from "lucide-react";
 import logo from "@/assets/logo.png";
 import campusExterior from "@/assets/gallery/campus-exterior.jpg";
 import teacherBoard from "@/assets/gallery/teacher-board.jpg";
@@ -7,6 +7,8 @@ import studentsGroup from "@/assets/gallery/students-group.jpg";
 import library from "@/assets/gallery/library.jpg";
 import studentPortrait from "@/assets/gallery/student-portrait.jpg";
 import notebook from "@/assets/gallery/notebook.jpg";
+import heroStudent from "@/assets/eduor/hero-student.png";
+import doodlePen from "@/assets/eduor/doodle-pen.png";
 import { academy, branches, faculty, programs } from "@/data/faculty";
 import { FacultyCard } from "@/components/faculty-card";
 
@@ -24,101 +26,229 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const featured = faculty.slice(0, 3);
+  const programIcons = [BookOpen, FlaskConical, GraduationCap];
 
   return (
     <>
-      {/* HERO — editorial split */}
-      <section className="relative bg-navy-deep text-primary-foreground overflow-hidden">
-        {/* faint geometric backdrop */}
-        <div className="pointer-events-none absolute inset-0 opacity-[0.07]" style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, oklch(0.78 0.14 80) 1px, transparent 0)",
-          backgroundSize: "32px 32px",
-        }} />
+      {/* HERO — Eduor-style pastel wash with cheerful student */}
+      <section className="relative bg-pastel overflow-hidden">
+        {/* decorative pen doodle, top-left */}
+        <img
+          src={doodlePen}
+          alt=""
+          aria-hidden
+          className="hidden md:block absolute -left-8 top-24 w-72 opacity-70 pointer-events-none select-none"
+        />
+        {/* dashed orbit rings around photo area */}
+        <div aria-hidden className="hidden lg:block pointer-events-none absolute right-[6%] top-[18%] w-[34rem] h-[34rem] rounded-full border-2 border-dashed border-gold/40 animate-spin-slow" />
+        <div aria-hidden className="hidden lg:block pointer-events-none absolute right-[12%] top-[28%] w-[24rem] h-[24rem] rounded-full border-2 border-dashed border-sky/40" />
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-20 md:pt-20 md:pb-28">
-          {/* Top meta row */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-10 border-b border-gold/20">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-gold-soft/80">
-              <span className="h-px w-8 bg-gold" />
-              <span>Vol. XXVII · Session 2026</span>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-20 md:pt-16 md:pb-24 grid lg:grid-cols-12 gap-10 items-center">
+          {/* LEFT — headline */}
+          <div className="lg:col-span-7 animate-fade-up">
+            <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+              <span className="inline-block w-2 h-2 bg-sky" />
+              Welcome to Al-Mustafa
+              <span className="inline-block w-2 h-2 bg-sky" />
+            </p>
+
+            <h1 className="mt-6 font-display font-black text-navy-deep leading-[0.95] tracking-tight text-[3rem] sm:text-6xl lg:text-[5.75rem]">
+              Bright minds <br className="hidden sm:block"/> deserve a{" "}
+              <span className="scribble-underline">brighter</span> <br className="hidden sm:block"/> evening academy.
+            </h1>
+
+            <p className="mt-7 max-w-xl text-base md:text-lg text-navy-deep/70 leading-relaxed">
+              Trusted in G-11/2 Islamabad since 1998. Senior college lecturers teaching Juniors, Matric and F.Sc — with the discipline, care and proven results parents talk about.
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 bg-gold-gradient text-white font-bold px-8 py-4 rounded-full shadow-gold hover:scale-[1.04] transition-transform uppercase tracking-wider text-sm"
+              >
+                Read More <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a
+                href={academy.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 text-navy-deep font-semibold"
+              >
+                <span className="grid place-items-center h-12 w-12 rounded-full bg-navy-deep text-white shadow-elegant transition-transform group-hover:scale-110">
+                  <Play className="h-4 w-4 fill-white" />
+                </span>
+                <span className="text-sm">Watch our story</span>
+              </a>
             </div>
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-gold">
-              <Sparkles className="h-3 w-3" /> Registration Open
-            </div>
-          </div>
 
-          <div className="grid lg:grid-cols-12 gap-x-10 gap-y-14 pt-14">
-            {/* LEFT — Headline */}
-            <div className="lg:col-span-7 animate-fade-up">
-              <p className="font-serif-elegant italic text-xl text-gold-soft/70">An evening academy in G-11/2, Islamabad —</p>
-              <h1 className="mt-3 font-display font-bold leading-[0.95] tracking-tight text-[3.4rem] sm:text-7xl lg:text-[6.5rem]">
-                Where bright<br/>
-                minds find<br/>
-                <em className="font-serif-elegant text-shimmer not-italic"><span className="italic">their</span> light.</em>
-              </h1>
-
-              <div className="mt-10 flex flex-wrap gap-4">
-                <Link to="/contact" className="inline-flex items-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-7 py-3.5 rounded-full shadow-gold hover:scale-[1.03] transition-transform">
-                  Enroll Today <ArrowRight className="h-4 w-4" />
-                </Link>
-                <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 border border-gold/50 text-gold-soft px-7 py-3.5 rounded-full hover:bg-gold/10 transition-colors">
-                  <Phone className="h-4 w-4" /> {academy.phone}
-                </a>
-              </div>
-            </div>
-
-            {/* RIGHT — Photo collage */}
-            <div className="lg:col-span-5 relative animate-fade-up min-h-[420px]" style={{ animationDelay: "0.15s" }}>
-              <div className="relative h-full">
-                {/* main photo */}
-                <div className="absolute top-0 right-0 w-[78%] aspect-[4/5] rounded-2xl overflow-hidden shadow-elegant border border-gold/20">
-                  <img src={teacherBoard} alt="Teacher writing on chalkboard" className="h-full w-full object-cover" loading="eager" />
-                </div>
-                {/* secondary photo */}
-                <div className="absolute bottom-0 left-0 w-[55%] aspect-square rounded-2xl overflow-hidden shadow-elegant border-2 border-gold/40">
-                  <img src={studentsGroup} alt="Students in discussion" className="h-full w-full object-cover" loading="eager" />
-                </div>
-                {/* floating logo badge */}
-                <div className="absolute -top-2 -left-2 lg:top-6 lg:-left-6 bg-navy-deep border border-gold/40 rounded-2xl p-3 shadow-gold backdrop-blur z-10">
-                  <img src={logo} alt="Logo" className="h-14 w-14" width={56} height={56} />
-                </div>
-                {/* est badge */}
-                <div className="absolute bottom-6 right-2 bg-gold text-navy-deep px-4 py-2 rounded-full font-display font-bold text-sm shadow-gold rotate-[6deg] z-10">
-                  Since 1998
-                </div>
-              </div>
+            {/* mini trust strip */}
+            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-navy-deep/70">
+              <div className="flex items-center gap-2"><Award className="h-4 w-4 text-gold" /> 27 years trusted</div>
+              <div className="flex items-center gap-2"><Users className="h-4 w-4 text-gold" /> 11 senior lecturers</div>
+              <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gold" /> 2 G-11/2 campuses</div>
             </div>
           </div>
 
-          {/* Hero footer — rich data row */}
-          <div className="mt-20 pt-8 border-t border-gold/20 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { k: "27", s: "yrs", l: "Of trusted teaching" },
-              { k: "11", s: "+", l: "Senior faculty members" },
-              { k: "2", s: "", l: "Branches in G-11/2" },
-              { k: "1000s", s: "", l: "Alumni across Pakistan" },
-            ].map((s) => (
-              <div key={s.l} className="flex flex-col">
-                <div className="font-display text-4xl md:text-5xl text-gold font-bold leading-none">
-                  {s.k}<span className="text-2xl text-gold-soft/70 font-serif-elegant italic ml-1">{s.s}</span>
+          {/* RIGHT — cheerful student cutout */}
+          <div className="lg:col-span-5 relative animate-fade-up" style={{ animationDelay: "0.15s" }}>
+            <div className="relative aspect-square max-w-md mx-auto">
+              {/* soft blob behind */}
+              <div aria-hidden className="absolute inset-6 rounded-full bg-white/50 blur-2xl" />
+              <img
+                src={heroStudent}
+                alt="A bright student ready for evening coaching at Al-Mustafa Academy"
+                className="relative h-full w-full object-contain drop-shadow-2xl"
+                loading="eager"
+                width={1024}
+                height={1024}
+              />
+
+              {/* Floating since-1998 pill */}
+              <div className="absolute -top-2 -left-2 md:top-4 md:-left-4 bg-white rounded-2xl px-4 py-3 shadow-elegant border border-border flex items-center gap-3 animate-wiggle">
+                <span className="grid place-items-center h-10 w-10 rounded-xl bg-gold-gradient">
+                  <CalendarCheck className="h-5 w-5 text-white" />
+                </span>
+                <div className="leading-tight">
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Since</div>
+                  <div className="font-display font-bold text-navy-deep">1998</div>
                 </div>
-                <div className="mt-2 text-xs text-primary-foreground/60 uppercase tracking-[0.18em]">{s.l}</div>
               </div>
-            ))}
+
+              {/* Floating rating pill */}
+              <div className="absolute bottom-6 -right-2 md:-right-6 bg-white rounded-2xl px-4 py-3 shadow-elegant border border-border flex items-center gap-3">
+                <div className="flex gap-0.5">
+                  {[0,1,2,3,4].map(i => <Star key={i} className="h-3.5 w-3.5 fill-gold text-gold" />)}
+                </div>
+                <div className="leading-tight">
+                  <div className="font-display font-bold text-navy-deep text-sm">Loved by parents</div>
+                  <div className="text-[10px] text-muted-foreground">G-11/2 community</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* gold underline */}
-        <div className="h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+      {/* CATEGORY CARDS — Eduor "We Success For Categories" pattern */}
+      <section className="bg-background py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+              <span className="inline-block w-2 h-2 bg-sky" />
+              Our Programs
+              <span className="inline-block w-2 h-2 bg-sky" />
+            </p>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl lg:text-6xl text-navy-deep font-black leading-[1.05]">
+              Programs built for <br className="hidden md:block"/>
+              <span className="scribble-underline">every</span> stage.
+            </h2>
+          </div>
+
+          <div className="mt-14 grid md:grid-cols-3 gap-6">
+            {programs.map((p, i) => {
+              const Icon = programIcons[i] ?? BookOpen;
+              const tones = [
+                { ring: "bg-mint", chip: "bg-sky text-white" },
+                { ring: "bg-cream", chip: "bg-gold text-white" },
+                { ring: "bg-lavender", chip: "bg-navy-deep text-white" },
+              ];
+              const tone = tones[i] ?? tones[0];
+              return (
+                <Link
+                  key={p.title}
+                  to="/programs"
+                  className="group relative bg-card rounded-3xl p-8 shadow-card border border-border hover:-translate-y-1 hover:shadow-elegant transition-all overflow-hidden"
+                >
+                  {/* decorative tab */}
+                  <div className={`absolute -top-6 left-8 w-16 h-12 rounded-b-2xl ${tone.ring}`} />
+                  <div className="relative">
+                    <div className={`grid place-items-center h-16 w-16 rounded-full ${tone.chip} shadow-md`}>
+                      <Icon className="h-7 w-7" />
+                    </div>
+                    <h3 className="mt-6 font-display text-2xl text-navy-deep font-bold leading-tight">{p.title}</h3>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{p.description.split(".")[0]}.</p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {p.subjects.slice(0, 4).map((s) => (
+                        <span key={s} className="text-[11px] uppercase tracking-wider px-3 py-1 rounded-full bg-muted text-navy-deep/70">{s}</span>
+                      ))}
+                    </div>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-gold group-hover:gap-3 transition-all">
+                      Read more <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT — split with photo */}
+      <section className="bg-mint/40 py-20 md:py-28 relative overflow-hidden">
+        <div aria-hidden className="absolute right-0 top-10 w-64 h-64 rounded-full bg-lavender/60 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-6 relative">
+            <div className="relative rounded-[2rem] overflow-hidden shadow-elegant aspect-[4/5]">
+              <img src={teacherBoard} alt="Teacher writing on the chalkboard" className="h-full w-full object-cover" loading="lazy" />
+            </div>
+            {/* badge overlay */}
+            <div className="absolute -bottom-6 -right-2 md:right-12 bg-white rounded-2xl px-5 py-4 shadow-elegant border border-border flex items-center gap-3">
+              <div className="grid place-items-center h-12 w-12 rounded-xl bg-gold-gradient">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <div className="font-display font-black text-2xl text-navy-deep leading-none">27+</div>
+                <div className="text-xs text-muted-foreground">Years teaching</div>
+              </div>
+            </div>
+            {/* second photo */}
+            <div className="hidden md:block absolute -bottom-10 -left-10 w-48 aspect-square rounded-3xl overflow-hidden border-4 border-white shadow-elegant">
+              <img src={studentPortrait} alt="A focused student" className="h-full w-full object-cover" loading="lazy" />
+            </div>
+          </div>
+
+          <div className="lg:col-span-6">
+            <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+              <span className="inline-block w-2 h-2 bg-sky" />
+              About the Academy
+            </p>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl text-navy-deep font-black leading-[1.05]">
+              Where good teachers <br/>raise <span className="scribble-underline">great</span> students.
+            </h2>
+            <p className="mt-6 text-navy-deep/70 leading-relaxed">
+              Al-Mustafa Academy began in 1998 with a single room and a clear idea — that excellence is a quiet, daily practice. Today, eleven senior lecturers from IMCB, ICB, Bahria College, APS Rawalpindi and Al-Kausar share that same conviction across two G-11/2 campuses.
+            </p>
+
+            <ul className="mt-8 space-y-4">
+              {[
+                { t: "Senior College Lecturers", d: "Taught by the people who set and mark your child's papers." },
+                { t: "Small, Focused Batches", d: "Personal attention so no student is ever invisible." },
+                { t: "Weekly Tests & Feedback", d: "Real progress measured every week, never guessed." },
+              ].map((f) => (
+                <li key={t_safe(f.t)} className="flex items-start gap-4">
+                  <span className="mt-0.5 grid place-items-center h-7 w-7 rounded-full bg-gold-gradient text-white text-xs font-black shrink-0">✓</span>
+                  <div>
+                    <div className="font-display font-bold text-navy-deep">{f.t}</div>
+                    <div className="text-sm text-muted-foreground">{f.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <Link to="/about" className="mt-10 inline-flex items-center gap-2 bg-navy-deep text-white font-bold px-7 py-3.5 rounded-full hover:bg-navy transition-colors uppercase tracking-wider text-sm">
+              About us <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* MARQUEE OF VALUES */}
-      <section className="bg-gold text-navy-deep py-5 overflow-hidden border-b-2 border-navy-deep/20">
-        <div className="flex gap-12 whitespace-nowrap animate-marquee font-display text-2xl md:text-3xl">
+      <section className="bg-gold-gradient text-white py-5 overflow-hidden">
+        <div className="flex gap-12 whitespace-nowrap animate-marquee font-display font-black uppercase text-xl md:text-2xl tracking-wide">
           {Array.from({ length: 2 }).map((_, k) => (
             <div key={k} className="flex gap-12 items-center shrink-0">
               {["Discipline", "✦", "Sincerity", "✦", "Excellence", "✦", "Care", "✦", "Mastery", "✦", "Tradition", "✦"].map((w, i) => (
-                <span key={`${k}-${i}`} className={i % 2 ? "text-base" : "italic font-serif-elegant"}>{w}</span>
+                <span key={`${k}-${i}`} className={i % 2 ? "text-base opacity-80" : ""}>{w}</span>
               ))}
             </div>
           ))}
