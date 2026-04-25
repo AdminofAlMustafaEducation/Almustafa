@@ -259,7 +259,6 @@
     50% { transform: rotate(3deg); }
   }
   .animate-wiggle { animation: wiggle 4s ease-in-out infinite; }
-}
 
   @keyframes float-slow {
     0%, 100% { transform: translateY(0); }
