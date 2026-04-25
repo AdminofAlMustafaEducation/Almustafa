@@ -350,15 +350,19 @@ function HomePage() {
 
       {/* CTA */}
       <section className="relative bg-gold-gradient py-16 overflow-hidden">
+        <div aria-hidden className="absolute -top-10 -right-10 w-72 h-72 rounded-full border-2 border-dashed border-white/30" />
+        <div aria-hidden className="absolute -bottom-16 -left-10 w-72 h-72 rounded-full border-2 border-dashed border-white/20" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8 items-center">
           <div className="md:col-span-2">
-            <p className="text-xs uppercase tracking-[0.3em] text-navy-deep/80 font-bold">Admissions Open · 2026</p>
-            <h3 className="mt-2 font-display text-3xl md:text-5xl text-navy-deep font-bold leading-tight">
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/90 font-bold">
+              <span className="inline-block w-2 h-2 bg-white" /> Admissions Open · 2026
+            </p>
+            <h3 className="mt-3 font-display text-3xl md:text-5xl text-white font-black leading-tight">
               Secure your child's seat<br className="hidden md:block"/> for the new session.
             </h3>
           </div>
           <div className="flex md:justify-end">
-            <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 bg-navy-deep text-gold font-semibold px-7 py-4 rounded-full hover:bg-navy transition-colors shadow-elegant">
+            <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 bg-white text-navy-deep font-bold px-7 py-4 rounded-full hover:bg-navy-deep hover:text-white transition-colors shadow-elegant uppercase tracking-wider text-sm">
               <Phone className="h-5 w-5" /> Call {academy.phone}
             </a>
           </div>
@@ -366,24 +370,26 @@ function HomePage() {
       </section>
 
       {/* LOCATION & MAP */}
-      <section className="bg-background py-20 md:py-28 border-t border-border">
+      <section className="bg-mint/30 py-20 md:py-28 border-t border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 items-end mb-10">
             <div className="lg:col-span-8">
-              <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 06 · Find Us</p>
-              <h2 className="mt-3 font-display text-4xl md:text-6xl text-navy font-bold leading-[1.05]">
-                Right here in <em className="font-serif-elegant text-gold">G-11/2.</em>
+              <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+                <span className="inline-block w-2 h-2 bg-sky" /> Find Us
+              </p>
+              <h2 className="mt-4 font-display text-4xl md:text-6xl text-navy-deep font-black leading-[1.05]">
+                Right here in <span className="scribble-underline">G-11/2.</span>
               </h2>
-              <p className="mt-4 text-muted-foreground max-w-xl leading-relaxed">
+              <p className="mt-5 text-navy-deep/70 max-w-xl leading-relaxed">
                 Two campuses, a five-minute walk apart, on Sachal Sarmast Road and Street 58. Easy parking, well-lit evenings, and right next to your neighbourhood.
               </p>
             </div>
             <div className="lg:col-span-4 lg:text-right space-y-2">
-              <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 text-navy font-semibold border-b border-gold pb-1 hover:text-gold transition-colors">
+              <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 text-navy-deep font-bold border-b-2 border-gold pb-1 hover:text-gold transition-colors">
                 <Phone className="h-4 w-4" /> {academy.phone}
               </a>
               <div>
-                <a href={`mailto:${academy.email}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-navy transition-colors">
+                <a href={`mailto:${academy.email}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-navy-deep transition-colors">
                   <Mail className="h-4 w-4" /> {academy.email}
                 </a>
               </div>
@@ -408,13 +414,13 @@ function HomePage() {
             {/* Address cards */}
             <div className="lg:col-span-4 space-y-4">
               {branches.map((b, i) => (
-                <div key={b.id} className="bg-card rounded-2xl border border-border p-6 shadow-card">
+                <div key={b.id} className="bg-card rounded-3xl border border-border p-6 shadow-card hover:shadow-elegant transition-shadow">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">Branch 0{i + 1}</p>
-                      <h3 className="mt-1 font-display text-xl text-navy font-bold">{b.label}</h3>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-sky font-bold">Branch 0{i + 1}</p>
+                      <h3 className="mt-1 font-display text-xl text-navy-deep font-black">{b.label}</h3>
                     </div>
-                    <span className="bg-muted text-navy rounded-full p-2">
+                    <span className="bg-gold-gradient text-white rounded-xl p-2.5 shadow-md">
                       <MapPin className="h-4 w-4" />
                     </span>
                   </div>
@@ -424,7 +430,7 @@ function HomePage() {
                     href={b.mapsLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-navy-deep border-b-2 border-gold pb-0.5 hover:text-gold transition-colors"
                   >
                     <Navigation className="h-3.5 w-3.5" /> Get directions
                   </a>
