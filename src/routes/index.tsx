@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Phone, Sparkles, Star, MapPin, Quote } from "lucide-react";
+import { ArrowRight, Phone, Sparkles, Star, MapPin, Quote, Navigation, Mail } from "lucide-react";
 import logo from "@/assets/logo.png";
 import campusExterior from "@/assets/gallery/campus-exterior.jpg";
 import teacherBoard from "@/assets/gallery/teacher-board.jpg";
@@ -346,6 +346,76 @@ function HomePage() {
             <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 bg-navy-deep text-gold font-semibold px-7 py-4 rounded-full hover:bg-navy transition-colors shadow-elegant">
               <Phone className="h-5 w-5" /> Call {academy.phone}
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* LOCATION & MAP */}
+      <section className="bg-background py-20 md:py-28 border-t border-border">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 items-end mb-10">
+            <div className="lg:col-span-8">
+              <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 06 · Find Us</p>
+              <h2 className="mt-3 font-display text-4xl md:text-6xl text-navy font-bold leading-[1.05]">
+                Right here in <em className="font-serif-elegant text-gold">G-11/2.</em>
+              </h2>
+              <p className="mt-4 text-muted-foreground max-w-xl leading-relaxed">
+                Two campuses, a five-minute walk apart, on Sachal Sarmast Road and Street 58. Easy parking, well-lit evenings, and right next to your neighbourhood.
+              </p>
+            </div>
+            <div className="lg:col-span-4 lg:text-right space-y-2">
+              <a href={`tel:${academy.phoneIntl}`} className="inline-flex items-center gap-2 text-navy font-semibold border-b border-gold pb-1 hover:text-gold transition-colors">
+                <Phone className="h-4 w-4" /> {academy.phone}
+              </a>
+              <div>
+                <a href={`mailto:${academy.email}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-navy transition-colors">
+                  <Mail className="h-4 w-4" /> {academy.email}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-6">
+            {/* Map */}
+            <div className="lg:col-span-8 rounded-3xl overflow-hidden shadow-elegant border border-border bg-card">
+              <iframe
+                title="Al-Mustafa Academy on Google Maps"
+                src={academy.mapsEmbed}
+                width="100%"
+                height="480"
+                style={{ border: 0, display: "block" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+
+            {/* Address cards */}
+            <div className="lg:col-span-4 space-y-4">
+              {branches.map((b, i) => (
+                <div key={b.id} className="bg-card rounded-2xl border border-border p-6 shadow-card">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-gold font-bold">Branch 0{i + 1}</p>
+                      <h3 className="mt-1 font-display text-xl text-navy font-bold">{b.label}</h3>
+                    </div>
+                    <span className="bg-muted text-navy rounded-full p-2">
+                      <MapPin className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{b.address}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{b.hours}</p>
+                  <a
+                    href={b.mapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-navy border-b border-gold pb-0.5 hover:text-gold transition-colors"
+                  >
+                    <Navigation className="h-3.5 w-3.5" /> Get directions
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
