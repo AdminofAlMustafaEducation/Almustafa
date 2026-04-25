@@ -255,98 +255,15 @@ function HomePage() {
         </div>
       </section>
 
-      {/* WELCOME — magazine spread */}
-      <section className="bg-background py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-12">
-            {/* sidebar label */}
-            <aside className="lg:col-span-3">
-              <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 01</p>
-              <p className="mt-2 font-serif-elegant italic text-2xl text-navy">A welcome —</p>
-              <div className="mt-4 h-px w-12 bg-navy" />
-              <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-                Three short paragraphs on who we are, why we teach, and what we believe.
-              </p>
-            </aside>
-
-            <div className="lg:col-span-9">
-              <p className="font-display text-3xl md:text-5xl text-navy leading-[1.15] font-medium">
-                For twenty-seven years, families in <em className="font-serif-elegant text-gold">G-11/2</em> have walked through the same gate every evening — and walked out a little wiser, a little surer, a little better.
-              </p>
-
-              <div className="mt-12 grid md:grid-cols-2 gap-10 items-start">
-                <div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Al-Mustafa Academy began in 1998 with a single room and a clear idea: that good teaching is patient, that students learn best when they are seen, and that excellence is a quiet, daily practice.
-                  </p>
-                  <p className="mt-4 text-muted-foreground leading-relaxed">
-                    Today, eleven senior lecturers — drawn from <em>IMCB</em>, <em>ICB</em>, <em>Bahria College</em>, <em>APS Rawalpindi</em> and <em>Al-Kausar</em> — share that same conviction across two campuses, three programs and hundreds of students each year.
-                  </p>
-                  <Link to="/about" className="mt-8 inline-flex items-center gap-2 text-navy font-semibold border-b border-gold pb-1 hover:text-gold transition-colors">
-                    Read our full story <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-
-                <div className="relative">
-                  <img src={notebook} alt="Hands writing in notebook" loading="lazy" className="rounded-2xl shadow-card aspect-[4/5] object-cover w-full" />
-                  <p className="mt-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">Quiet hours · Evening study</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PROGRAMS — editorial list */}
-      <section className="bg-navy-deep text-primary-foreground py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 mb-12 items-end">
-            <div className="lg:col-span-8">
-              <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 02 · Programs</p>
-              <h2 className="mt-3 font-display text-5xl md:text-6xl font-bold leading-[1.05]">
-                From <em className="font-serif-elegant text-gold">first letters</em><br/>to <em className="font-serif-elegant text-shimmer">final exams.</em>
-              </h2>
-            </div>
-            <div className="lg:col-span-4">
-              <p className="text-primary-foreground/70 leading-relaxed">
-                Three carefully-built programs, each taught by lecturers who set and mark the very papers your child will sit.
-              </p>
-            </div>
-          </div>
-
-          {/* Numbered list with hover image */}
-          <div className="border-t border-gold/20">
-            {programs.map((p, i) => (
-              <Link
-                key={p.title}
-                to="/programs"
-                className="group grid grid-cols-12 gap-4 items-center py-8 border-b border-gold/20 hover:bg-navy/40 transition-colors px-2 md:px-4"
-              >
-                <div className="col-span-2 md:col-span-1">
-                  <span className="font-serif-elegant italic text-2xl text-gold-soft/60">0{i+1}</span>
-                </div>
-                <div className="col-span-10 md:col-span-5">
-                  <h3 className="font-display text-2xl md:text-4xl text-primary-foreground group-hover:text-gold transition-colors">{p.title}</h3>
-                </div>
-                <div className="hidden md:block md:col-span-5 text-sm text-primary-foreground/70 leading-relaxed">
-                  {p.subjects.slice(0, 5).join(" · ")}
-                </div>
-                <div className="col-span-12 md:col-span-1 flex md:justify-end">
-                  <ArrowRight className="h-5 w-5 text-gold group-hover:translate-x-2 transition-transform" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* PHOTO COLLAGE — life inside */}
       <section className="bg-background py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 03 · Life Inside</p>
-            <h2 className="mt-3 font-display text-4xl md:text-6xl text-navy font-bold leading-tight">
-              Glimpses from our <em className="font-serif-elegant text-gold">classrooms.</em>
+            <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+              <span className="inline-block w-2 h-2 bg-sky" /> Life Inside <span className="inline-block w-2 h-2 bg-sky" />
+            </p>
+            <h2 className="mt-4 font-display text-4xl md:text-6xl text-navy-deep font-black leading-[1.05]">
+              Glimpses from our <span className="scribble-underline">classrooms.</span>
             </h2>
           </div>
 
@@ -365,16 +282,16 @@ function HomePage() {
             </div>
             <div className="col-span-12 md:col-span-4 aspect-square rounded-2xl overflow-hidden shadow-card group relative">
               <img src={teacherBoard} alt="Teacher at chalkboard" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-              <Link to="/gallery" className="absolute inset-0 bg-navy-deep/70 flex flex-col items-center justify-center text-center text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                <p className="font-serif-elegant italic text-2xl text-gold">View full</p>
-                <p className="font-display text-3xl">Gallery</p>
+              <Link to="/gallery" className="absolute inset-0 bg-navy-deep/80 flex flex-col items-center justify-center text-center text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                <p className="text-xs uppercase tracking-widest text-gold font-bold">View full</p>
+                <p className="font-display text-3xl font-black">Gallery</p>
                 <ArrowRight className="h-5 w-5 mt-2 text-gold" />
               </Link>
             </div>
           </div>
 
           <div className="mt-10 text-center">
-            <Link to="/gallery" className="inline-flex items-center gap-2 text-navy font-semibold border-b border-gold pb-1 hover:text-gold transition-colors">
+            <Link to="/gallery" className="inline-flex items-center gap-2 bg-navy-deep text-white font-bold px-7 py-3.5 rounded-full hover:bg-navy transition-colors uppercase tracking-wider text-sm">
               Open the photo gallery <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -382,17 +299,19 @@ function HomePage() {
       </section>
 
       {/* FACULTY — featured */}
-      <section className="bg-navy-deep text-primary-foreground py-20 md:py-28">
+      <section className="bg-lavender/40 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 mb-14 items-end">
             <div className="lg:col-span-7">
-              <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 04 · Faculty</p>
-              <h2 className="mt-3 font-display text-5xl md:text-6xl font-bold leading-[1.05]">
-                The teachers who<br/><em className="font-serif-elegant text-shimmer">make the difference.</em>
+              <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+                <span className="inline-block w-2 h-2 bg-sky" /> Our Faculty
+              </p>
+              <h2 className="mt-4 font-display text-4xl md:text-6xl text-navy-deep font-black leading-[1.05]">
+                The teachers who <span className="scribble-underline">make</span> the difference.
               </h2>
             </div>
             <div className="lg:col-span-5 lg:text-right">
-              <Link to="/faculty" className="inline-flex items-center gap-2 border border-gold/40 text-gold-soft px-6 py-3 rounded-full hover:bg-gold hover:text-navy-deep transition-colors text-sm">
+              <Link to="/faculty" className="inline-flex items-center gap-2 bg-gold-gradient text-white px-7 py-3.5 rounded-full hover:scale-105 transition-transform uppercase tracking-wider font-bold text-sm shadow-gold">
                 Meet all 11 faculty <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -405,60 +324,26 @@ function HomePage() {
       </section>
 
       {/* TESTIMONIAL — editorial pull quote */}
-      <section className="bg-background py-24 md:py-32">
+      <section className="bg-background py-24 md:py-28">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 grid md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-2">
-            <Quote className="h-16 w-16 text-gold/40 -scale-x-100" />
+            <span className="grid place-items-center h-20 w-20 rounded-full bg-gold-gradient shadow-gold">
+              <Quote className="h-9 w-9 text-white -scale-x-100" />
+            </span>
           </div>
           <div className="md:col-span-10">
-            <blockquote className="font-serif-elegant text-3xl md:text-5xl italic leading-[1.15] text-navy">
-              "They didn't just teach my son Physics and Maths — they taught him how to <span className="text-gold">think</span>. The teachers genuinely care, and the results speak for themselves."
+            <blockquote className="font-display text-2xl md:text-4xl leading-[1.25] text-navy-deep font-medium">
+              "They didn't just teach my son Physics and Maths — they taught him how to <span className="scribble-underline">think</span>. The teachers genuinely care, and the results speak for themselves."
             </blockquote>
             <div className="mt-8 flex items-center gap-4">
               <div className="flex gap-0.5 text-gold">
                 {[0,1,2,3,4].map(i => <Star key={i} className="h-4 w-4 fill-gold" />)}
               </div>
               <div className="text-sm">
-                <div className="font-semibold text-navy">A parent of an F.Sc graduate</div>
+                <div className="font-bold text-navy-deep">A parent of an F.Sc graduate</div>
                 <div className="text-muted-foreground">G-11, Islamabad</div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* BRANCHES STRIP */}
-      <section className="bg-navy text-primary-foreground py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
-            <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-gold font-bold">No. 05 · Visit</p>
-              <h2 className="mt-3 font-display text-4xl md:text-5xl font-bold leading-tight">
-                Two branches in <em className="font-serif-elegant text-gold">G-11/2.</em>
-              </h2>
-            </div>
-            <Link to="/contact" className="text-sm text-gold-soft border-b border-gold pb-1 hover:text-gold">
-              See both on map →
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {branches.map((b, i) => (
-              <a key={b.id} href={b.mapsLink} target="_blank" rel="noopener noreferrer" className="group relative bg-navy-deep rounded-2xl border border-gold/20 hover:border-gold/60 transition-colors p-7 overflow-hidden">
-                <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-gold/5 group-hover:bg-gold/15 transition-colors" />
-                <div className="relative flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-gold-soft/70">Branch 0{i+1}</div>
-                    <h3 className="mt-2 font-display text-2xl text-gold font-bold">{b.label}</h3>
-                    <p className="mt-3 text-primary-foreground/75 text-sm leading-relaxed flex items-start gap-2">
-                      <MapPin className="h-4 w-4 text-gold shrink-0 mt-0.5" /> {b.address}
-                    </p>
-                    <p className="mt-2 text-xs text-primary-foreground/55">{b.hours}</p>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-gold group-hover:translate-x-1 transition-transform shrink-0 mt-2" />
-                </div>
-              </a>
-            ))}
           </div>
         </div>
       </section>
