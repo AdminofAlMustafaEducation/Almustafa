@@ -225,7 +225,7 @@ function HomePage() {
                 { t: "Small, Focused Batches", d: "Personal attention so no student is ever invisible." },
                 { t: "Weekly Tests & Feedback", d: "Real progress measured every week, never guessed." },
               ].map((f) => (
-                <li key={t_safe(f.t)} className="flex items-start gap-4">
+                <li key={f.t} className="flex items-start gap-4">
                   <span className="mt-0.5 grid place-items-center h-7 w-7 rounded-full bg-gold-gradient text-white text-xs font-black shrink-0">✓</span>
                   <div>
                     <div className="font-display font-bold text-navy-deep">{f.t}</div>
