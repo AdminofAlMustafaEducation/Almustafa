@@ -18,15 +18,15 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
-            <span className="grid place-items-center h-12 w-12 rounded-2xl bg-gold-gradient shadow-gold transition-transform group-hover:scale-105">
-              <img src={logo} alt="Al-Mustafa Academy logo" className="h-9 w-9" width={36} height={36} />
+      <div className="container-fluid">
+        <div className="flex h-16 sm:h-20 items-center justify-between gap-3">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+            <span className="grid place-items-center h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-gold-gradient shadow-gold transition-transform group-hover:scale-105 shrink-0">
+              <img src={logo} alt="Al-Mustafa Academy logo" className="h-7 w-7 sm:h-9 sm:w-9" width={36} height={36} />
             </span>
-            <div className="flex flex-col leading-tight">
-              <span className="font-display text-xl sm:text-2xl text-navy-deep font-bold tracking-tight">Al-Mustafa</span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Academy · Since 1998</span>
+            <div className="flex flex-col leading-tight min-w-0">
+              <span className="font-display text-lg sm:text-2xl text-navy-deep font-bold tracking-tight truncate">Al-Mustafa</span>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-muted-foreground truncate">Academy · Since 1998</span>
             </div>
           </Link>
 
