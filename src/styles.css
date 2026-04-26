@@ -238,6 +238,39 @@
     padding-inline: clamp(1rem, 0.5rem + 2vw, 2rem);
   }
 
+  /* === Device-tier helpers ===
+   * Use these when a generic breakpoint isn't precise enough. They map to the
+   * exact tiers defined in @theme above so designs stay consistent. */
+
+  /* Show / hide per tier */
+  .only-xs { display: none; }
+  @media (max-width: 374.98px)  { .only-xs  { display: initial; } .hide-xs  { display: none; } }
+  @media (min-width: 375px) and (max-width: 639.98px)  { .only-sm  { display: initial; } .hide-sm  { display: none; } }
+  @media (min-width: 640px) and (max-width: 767.98px)  { .only-md  { display: initial; } .hide-md  { display: none; } }
+  @media (min-width: 768px) and (max-width: 1023.98px) { .only-lg  { display: initial; } .hide-lg  { display: none; } }
+  @media (min-width: 1024px) { .only-xl  { display: initial; } .hide-xl  { display: none; } }
+  .only-sm, .only-md, .only-lg, .only-xl { display: none; }
+
+  /* Tier-aware heading scale (sharper than pure clamp on tiny phones) */
+  @media (max-width: 374.98px) {
+    .text-fluid-hero { font-size: 2.1rem; line-height: 1.05; }
+    .text-fluid-h1   { font-size: 1.95rem; }
+    .text-fluid-h2   { font-size: 1.6rem; }
+    .container-fluid { padding-inline: 0.875rem; }
+  }
+  @media (min-width: 375px) and (max-width: 639.98px) {
+    .container-fluid { padding-inline: 1rem; }
+  }
+  @media (min-width: 640px) and (max-width: 767.98px) {
+    .container-fluid { padding-inline: 1.25rem; }
+  }
+  @media (min-width: 768px) and (max-width: 1023.98px) {
+    .container-fluid { padding-inline: 1.5rem; max-width: 46rem; }
+  }
+  @media (min-width: 1024px) {
+    .container-fluid { padding-inline: 2rem; }
+  }
+
   .bg-hero { background: var(--gradient-hero); }
   .bg-gold-gradient { background: var(--gradient-pill); }
   .bg-pastel { background: var(--gradient-pastel); }
