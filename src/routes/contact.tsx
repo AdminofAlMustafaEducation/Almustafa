@@ -3,6 +3,7 @@ import { Clock, Facebook, Mail, MapPin, Navigation, Phone, Send } from "lucide-r
 import { useState } from "react";
 import { academy, branches } from "@/data/faculty";
 import heroBg from "@/assets/hero-bg.jpg";
+import { PageHero } from "@/components/page-hero";
 import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
@@ -33,29 +34,85 @@ function ContactPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-navy-deep py-fluid-hero text-primary-foreground">
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 to-navy-deep" />
-        <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <p className="ornament text-[10px] uppercase tracking-[0.3em] text-gold sm:text-xs">Get in Touch</p>
-          <h1 className="mt-5 font-display text-fluid-h1 font-bold sm:mt-6">
-            We&apos;d love to <em className="font-serif-elegant text-shimmer">hear from you.</em>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-fluid-base text-primary-foreground/80 sm:mt-6">
-            Visit one of our two campuses in G-11/2 Islamabad, or send a quick message and we&apos;ll respond within one working day.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Get in Touch"
+        title={
+          <>
+            We&apos;d love to
+            <br />
+            <em className="font-serif-elegant text-shimmer">hear from you.</em>
+          </>
+        }
+        description="Visit one of our two campuses in G-11/2 Islamabad, call the academy directly, or send a quick admission inquiry so the team can guide you toward the right program."
+        backgroundImage={heroBg}
+        stats={[
+          { value: "2", label: "academy campuses" },
+          { value: "1 day", label: "response rhythm" },
+          { value: "Mon-Sat", label: "admissions support" },
+          { value: "G-11/2", label: "Islamabad location" },
+        ]}
+        aside={
+          <div className="paper-panel overflow-hidden p-5 sm:p-6">
+            <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+              Quick Contact
+            </div>
+            <div className="mt-3 headline-balance font-display text-2xl font-black text-navy-deep sm:text-3xl">
+              Fast ways for families to reach the academy without friction.
+            </div>
+
+            <div className="mt-5 grid gap-3">
+              {[
+                {
+                  icon: Phone,
+                  title: academy.phone,
+                  detail: "Call for admissions, timings or campus guidance.",
+                  href: `tel:${academy.phoneIntl}`,
+                },
+                {
+                  icon: Mail,
+                  title: academy.email,
+                  detail: "Use email when you want to share a longer inquiry.",
+                  href: `mailto:${academy.email}`,
+                },
+                {
+                  icon: MapPin,
+                  title: "Visit G-11/2 campuses",
+                  detail: "Both branches are close by and easy for parents to compare.",
+                  href: academy.mapsLink,
+                },
+              ].map(({ icon: Icon, title, detail, href }) => (
+                <a
+                  key={title}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 rounded-[1.35rem] bg-white/75 p-4 shadow-soft transition-colors hover:bg-white"
+                >
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-navy-deep text-white">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <div className="font-display text-lg font-black text-navy-deep">{title}</div>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        }
+      />
 
       <section className="bg-background py-fluid-section">
         <div className="container-fluid grid gap-10 lg:grid-cols-5 lg:gap-12">
           <div className="space-y-5 sm:space-y-6 lg:col-span-2">
             <div>
-              <p className="ornament inline-block text-[10px] font-semibold uppercase tracking-[0.3em] text-gold sm:text-xs">
+              <p className="section-kicker text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+                <span className="inline-block h-2 w-2 rounded-full bg-sky" />
                 Reach Us
               </p>
-              <h2 className="mt-3 font-display text-fluid-h2 font-bold text-navy">Contact Information</h2>
-              <div className="gold-divider my-4 w-20 sm:my-5" />
+              <h2 className="headline-balance mt-3 font-display text-fluid-h2 font-black text-navy-deep">
+                Contact Information
+              </h2>
             </div>
 
             {[
@@ -111,8 +168,11 @@ function ContactPage() {
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label className="text-xs uppercase tracking-wider text-gold-soft/80">Full Name</label>
+                      <label htmlFor="contact-name" className="text-xs uppercase tracking-wider text-gold-soft/80">
+                        Full Name
+                      </label>
                       <input
+                        id="contact-name"
                         required
                         name="name"
                         autoComplete="name"
@@ -121,8 +181,11 @@ function ContactPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs uppercase tracking-wider text-gold-soft/80">Phone</label>
+                      <label htmlFor="contact-phone" className="text-xs uppercase tracking-wider text-gold-soft/80">
+                        Phone
+                      </label>
                       <input
+                        id="contact-phone"
                         required
                         name="phone"
                         type="tel"
@@ -135,8 +198,11 @@ function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs uppercase tracking-wider text-gold-soft/80">Class / Program</label>
+                    <label htmlFor="contact-program" className="text-xs uppercase tracking-wider text-gold-soft/80">
+                      Class / Program
+                    </label>
                     <select
+                      id="contact-program"
                       required
                       name="program"
                       className="mt-2 w-full rounded-lg border border-gold/20 bg-navy px-4 py-3 text-primary-foreground focus:border-gold focus:outline-none"
@@ -156,8 +222,11 @@ function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs uppercase tracking-wider text-gold-soft/80">Message</label>
+                    <label htmlFor="contact-message" className="text-xs uppercase tracking-wider text-gold-soft/80">
+                      Message
+                    </label>
                     <textarea
+                      id="contact-message"
                       name="message"
                       rows={4}
                       className="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-navy px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none"
@@ -181,10 +250,11 @@ function ContactPage() {
       <section className="border-t border-gold/15 bg-navy-deep py-fluid-section text-primary-foreground">
         <div className="container-fluid">
           <div className="mb-10 text-center sm:mb-14">
-            <p className="ornament text-[10px] font-semibold uppercase tracking-[0.3em] text-gold sm:text-xs">
+            <p className="section-kicker text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+              <span className="inline-block h-2 w-2 rounded-full bg-sky" />
               Our Branches
             </p>
-            <h2 className="mt-4 font-display text-fluid-h2 font-bold">
+            <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black">
               Two campuses, <em className="font-serif-elegant text-gold">one neighbourhood.</em>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-fluid-base text-primary-foreground/70">
@@ -212,7 +282,7 @@ function ContactPage() {
                 </div>
 
                 <div className="p-5 sm:p-6 md:p-8">
-                  <h3 className="font-display text-xl font-bold text-gold sm:text-2xl">{branch.label}</h3>
+                  <h3 className="font-display text-xl font-black text-gold sm:text-2xl">{branch.label}</h3>
                   <div className="gold-divider my-4 w-16" />
                   <ul className="space-y-3 text-xs text-primary-foreground/80 sm:text-sm">
                     <li className="flex gap-3">

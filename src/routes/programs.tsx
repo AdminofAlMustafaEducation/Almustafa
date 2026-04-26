@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Check, Clock, Users } from "lucide-react";
+import { PageHero } from "@/components/page-hero";
 import { academy, programs } from "@/data/faculty";
 import heroBg from "@/assets/hero-bg.jpg";
 import { buildPageHead } from "@/lib/seo";
@@ -18,19 +19,73 @@ export const Route = createFileRoute("/programs")({
 function ProgramsPage() {
   return (
     <>
-      <section className="relative overflow-hidden bg-navy-deep py-fluid-hero text-primary-foreground">
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 to-navy-deep" />
-        <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-gold sm:text-xs">Academic Programs</p>
-          <h1 className="mt-5 font-display text-fluid-h1 font-bold sm:mt-6">
+      <PageHero
+        eyebrow="Academic Programs"
+        title={
+          <>
             Three programs.
             <br />
             <em className="font-serif-elegant text-shimmer">One standard of excellence.</em>
-          </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-fluid-base text-primary-foreground/80 sm:mt-8">
-            Whether your child is just starting school or preparing for medical and engineering universities, our programs are crafted to deliver clarity, confidence and results.
-          </p>
+          </>
+        }
+        description="Whether a student is building early foundations or preparing for board and entry-test pressure, each program is shaped to feel structured, focused and practical."
+        backgroundImage={heroBg}
+        stats={[
+          { value: "1-8", label: "junior classes" },
+          { value: "9-10", label: "matric support" },
+          { value: "F.Sc", label: "college preparation" },
+          { value: "Mon-Sat", label: "evening routine" },
+        ]}
+        aside={
+          <div className="paper-panel overflow-hidden p-5 sm:p-6">
+            <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+              Program Snapshot
+            </div>
+            <div className="mt-3 headline-balance font-display text-2xl font-black text-navy-deep sm:text-3xl">
+              Clear pathways for younger students, board classes and senior science batches.
+            </div>
+
+            <div className="mt-5 grid gap-3">
+              {[
+                "Small batches that are easier to manage on a daily basis",
+                "FBISE-aware preparation with weekly testing and revision rhythm",
+                "Experienced faculty guidance for concept clarity and exam confidence",
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-3 rounded-[1.35rem] bg-white/75 p-4 shadow-soft">
+                  <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-gold text-[11px] font-black text-navy-deep">
+                    <Check className="h-4 w-4" />
+                  </span>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        }
+      />
+
+      <section className="section-shell-alt bg-cream py-12 sm:py-14">
+        <div className="container-fluid">
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                title: "For Juniors",
+                detail: "Foundation-building with study habits, confidence and subject clarity from the start.",
+              },
+              {
+                title: "For Matric",
+                detail: "Board-focused structure with regular testing, past-paper work and disciplined follow-up.",
+              },
+              {
+                title: "For F.Sc",
+                detail: "Senior science coaching with college-level guidance for marks, pacing and exam control.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="paper-panel card-lift rounded-[1.7rem] p-5 sm:p-6">
+                <div className="font-display text-xl font-black text-navy-deep">{item.title}</div>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -39,7 +94,7 @@ function ProgramsPage() {
           {programs.map((program, i) => (
             <div
               key={program.title}
-              className={`grid items-center gap-8 lg:grid-cols-12 lg:gap-10 ${i % 2 ? "lg:[&>:first-child]:order-2" : ""}`}
+              className={`paper-panel grid items-center gap-8 rounded-[2rem] p-5 sm:p-6 lg:grid-cols-12 lg:gap-10 lg:p-8 ${i % 2 ? "lg:[&>:first-child]:order-2" : ""}`}
             >
               <div className="lg:col-span-5">
                 <div className="relative mx-auto aspect-[4/5] max-w-md overflow-hidden rounded-2xl bg-navy-deep shadow-elegant sm:aspect-[3/2] sm:rounded-3xl lg:max-w-none lg:aspect-[4/5]">
@@ -55,11 +110,13 @@ function ProgramsPage() {
               </div>
 
               <div className="lg:col-span-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold sm:text-xs">
+                <p className="section-kicker text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+                  <span className="inline-block h-2 w-2 rounded-full bg-sky" />
                   Program 0{i + 1}
                 </p>
-                <h2 className="mt-3 font-display text-fluid-h2 font-bold text-navy">{program.title}</h2>
-                <div className="gold-divider my-5 w-20 sm:my-6" />
+                <h2 className="headline-balance mt-3 font-display text-fluid-h2 font-black text-navy-deep">
+                  {program.title}
+                </h2>
                 <p className="text-fluid-base text-muted-foreground">{program.description}</p>
 
                 <div className="mt-6 sm:mt-8">
@@ -111,18 +168,30 @@ function ProgramsPage() {
         </div>
       </section>
 
-      <section className="bg-navy py-12 text-primary-foreground sm:py-16">
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <h2 className="font-display text-2xl font-bold sm:text-3xl md:text-4xl">Ready to enroll?</h2>
-          <p className="mt-3 text-sm text-primary-foreground/75 sm:text-base">
-            Call {academy.phone} or visit our campus in G-11/2 Islamabad.
-          </p>
-          <Link
-            to="/contact"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold text-navy-deep shadow-gold transition-transform hover:scale-105 sm:mt-8 sm:px-7 sm:py-3.5"
-          >
-            Start Registration <ArrowRight className="h-4 w-4" />
-          </Link>
+      <section className="bg-mint/30 py-12 text-primary-foreground sm:py-16">
+        <div className="container-fluid">
+          <div className="paper-panel mx-auto max-w-5xl px-6 py-8 text-center sm:px-8 sm:py-10">
+            <h2 className="font-display text-2xl font-black text-navy-deep sm:text-3xl md:text-4xl">
+              Ready to enroll?
+            </h2>
+            <p className="mt-3 text-sm text-navy-deep/75 sm:text-base">
+              Call {academy.phone} or visit our campus in G-11/2 Islamabad.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-8">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold text-navy-deep shadow-gold transition-transform hover:scale-105 sm:px-7 sm:py-3.5"
+              >
+                Start Registration <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a
+                href={`tel:${academy.phoneIntl}`}
+                className="inline-flex items-center gap-2 rounded-full border border-navy-deep/15 px-6 py-3 text-sm font-semibold text-navy-deep transition-colors hover:bg-white sm:px-7 sm:py-3.5"
+              >
+                Call the Academy
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </>

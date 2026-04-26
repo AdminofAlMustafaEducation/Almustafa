@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { Camera, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, Images, LayoutGrid, X } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import { PageHero } from "@/components/page-hero";
 import { galleryCategories, galleryImages, type GalleryImage } from "@/data/gallery";
 import { buildPageHead } from "@/lib/seo";
 
@@ -54,21 +55,64 @@ function GalleryPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-navy-deep py-fluid-hero text-primary-foreground">
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 to-navy-deep" />
-        <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <p className="ornament text-[10px] uppercase tracking-[0.3em] text-gold sm:text-xs">Gallery</p>
-          <h1 className="mt-5 font-display text-fluid-h1 font-bold sm:mt-6">
+      <PageHero
+        eyebrow="Gallery"
+        title={
+          <>
             A look inside our
             <br />
             <em className="font-serif-elegant text-shimmer">academy.</em>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-fluid-base text-primary-foreground/80 sm:mt-8">
-            Twenty-seven years of teaching, learning and quiet milestones, captured in light.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        description="Explore moments from classrooms, faculty, campus routines and academy life through a gallery that keeps the experience visual without becoming cluttered."
+        backgroundImage={heroBg}
+        stats={[
+          { value: `${galleryImages.length}`, label: "photo moments" },
+          { value: `${galleryCategories.length - 1}`, label: "view categories" },
+          { value: "2", label: "campus locations" },
+          { value: "27+", label: "years of memories" },
+        ]}
+        aside={
+          <div className="paper-panel overflow-hidden p-5 sm:p-6">
+            <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+              Explore the Gallery
+            </div>
+            <div className="mt-3 headline-balance font-display text-2xl font-black text-navy-deep sm:text-3xl">
+              Browse by category, tap any image, and move through the collection without leaving the page.
+            </div>
+
+            <div className="mt-5 grid gap-3">
+              {[
+                {
+                  icon: Camera,
+                  title: "Touch-friendly browsing",
+                  detail: "Category filters stay accessible on smaller screens with simple horizontal scrolling.",
+                },
+                {
+                  icon: Images,
+                  title: "Full-screen viewing",
+                  detail: "Each image opens into a focused lightbox with keyboard and tap navigation support.",
+                },
+                {
+                  icon: LayoutGrid,
+                  title: "Balanced layout",
+                  detail: "The gallery keeps a clean visual rhythm across phones, tablets and larger screens.",
+                },
+              ].map(({ icon: Icon, title, detail }) => (
+                <div key={title} className="flex items-start gap-3 rounded-[1.35rem] bg-white/75 p-4 shadow-soft">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-navy-deep text-white">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <div className="font-display text-lg font-black text-navy-deep">{title}</div>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        }
+      />
 
       <section className="sticky top-20 z-30 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="container-fluid flex items-center gap-2 overflow-x-auto py-3 sm:py-4">
@@ -92,6 +136,22 @@ function GalleryPage() {
 
       <section className="bg-background py-10 md:py-16">
         <div className="container-fluid">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:mb-8">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky sm:text-xs">
+                Filtered View
+              </p>
+              <h2 className="mt-2 font-display text-2xl font-black text-navy-deep sm:text-3xl">
+                {filter === "All" ? "All academy moments" : `${filter} moments`}
+              </h2>
+            </div>
+            <div className="stat-pill text-xs font-semibold text-navy sm:text-sm">
+              <Images className="h-4 w-4 text-gold" />
+              {visible.length} image{visible.length === 1 ? "" : "s"}
+            </div>
+          </div>
+
+          {visible.length ? (
           <div className="columns-1 gap-4 [column-fill:_balance] sm:columns-2 sm:gap-5 lg:columns-3">
             {visible.map((image, i) => (
               <button
@@ -115,6 +175,14 @@ function GalleryPage() {
               </button>
             ))}
           </div>
+          ) : (
+            <div className="paper-panel rounded-[1.8rem] px-6 py-10 text-center sm:px-8">
+              <h3 className="font-display text-2xl font-black text-navy-deep">No images in this filter yet</h3>
+              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Try another category to explore more of the academy, faculty and classroom environment.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
