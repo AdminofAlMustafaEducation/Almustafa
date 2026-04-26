@@ -32,28 +32,28 @@ function ContactPage() {
 
   return (
     <>
-      <section className="relative bg-navy-deep text-primary-foreground py-24 md:py-28 overflow-hidden">
+      <section className="relative bg-navy-deep text-primary-foreground py-fluid-hero overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 to-navy-deep" />
-        <div className="relative mx-auto max-w-5xl px-4 text-center">
-          <p className="ornament text-xs uppercase tracking-[0.3em] text-gold">Get in Touch</p>
-          <h1 className="mt-6 font-display text-5xl md:text-7xl font-bold leading-tight">
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center">
+          <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold">Get in Touch</p>
+          <h1 className="mt-5 sm:mt-6 font-display text-fluid-h1 font-bold">
             We'd love to <em className="text-shimmer font-serif-elegant">hear from you.</em>
           </h1>
-          <p className="mt-6 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
+          <p className="mt-5 sm:mt-6 text-fluid-base text-primary-foreground/80 max-w-2xl mx-auto">
             Visit one of our two campuses in G-11/2 Islamabad, or send a quick message and we'll respond within one working day.
           </p>
         </div>
       </section>
 
-      <section className="bg-background py-20 md:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-5 gap-12">
+      <section className="bg-background py-fluid-section">
+        <div className="container-fluid grid lg:grid-cols-5 gap-10 lg:gap-12">
           {/* CONTACT INFO */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-5 sm:space-y-6">
             <div>
-              <p className="ornament text-xs uppercase tracking-[0.3em] text-gold font-semibold inline-block">Reach Us</p>
-              <h2 className="mt-3 font-display text-3xl md:text-4xl text-navy font-bold">Contact Information</h2>
-              <div className="gold-divider my-5 w-20" />
+              <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold font-semibold inline-block">Reach Us</p>
+              <h2 className="mt-3 font-display text-fluid-h2 text-navy font-bold">Contact Information</h2>
+              <div className="gold-divider my-4 sm:my-5 w-20" />
             </div>
 
             {[
@@ -65,13 +65,13 @@ function ContactPage() {
               { icon: Facebook, t: "Facebook", d: "@Almustafa614", href: academy.facebook },
             ].map(({ icon: Icon, t, d, href }) => {
               const inner = (
-                <div className="flex gap-4 p-5 bg-card border border-border rounded-2xl hover:border-gold hover:shadow-card transition-all">
-                  <div className="h-11 w-11 shrink-0 rounded-xl bg-gold-gradient flex items-center justify-center">
+                <div className="flex gap-3 sm:gap-4 p-4 sm:p-5 bg-card border border-border rounded-2xl hover:border-gold hover:shadow-card transition-all">
+                  <div className="h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-xl bg-gold-gradient flex items-center justify-center">
                     <Icon className="h-5 w-5 text-navy-deep" />
                   </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-wider text-muted-foreground">{t}</div>
-                    <div className="font-semibold text-navy mt-0.5">{d}</div>
+                  <div className="min-w-0">
+                    <div className="text-[11px] sm:text-xs uppercase tracking-wider text-muted-foreground">{t}</div>
+                    <div className="font-semibold text-navy mt-0.5 text-sm sm:text-base break-words">{d}</div>
                   </div>
                 </div>
               );
@@ -87,14 +87,14 @@ function ContactPage() {
 
           {/* FORM */}
           <div className="lg:col-span-3">
-            <div className="bg-navy-deep text-primary-foreground rounded-3xl p-8 md:p-10 shadow-elegant relative overflow-hidden">
+            <div className="bg-navy-deep text-primary-foreground rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-elegant relative overflow-hidden">
               <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-gold/10 blur-3xl" />
               <div className="relative">
-                <p className="text-xs uppercase tracking-[0.3em] text-gold font-semibold">Admission Inquiry</p>
-                <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold">Send us a message</h2>
-                <p className="mt-2 text-primary-foreground/70 text-sm">We'll get back to you within one working day.</p>
+                <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold font-semibold">Admission Inquiry</p>
+                <h2 className="mt-3 font-display text-2xl sm:text-3xl md:text-4xl font-bold">Send us a message</h2>
+                <p className="mt-2 text-primary-foreground/70 text-xs sm:text-sm">We'll get back to you within one working day.</p>
 
-                <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 space-y-4 sm:space-y-5">
                   <div className="grid sm:grid-cols-2 gap-5">
                     <div>
                       <label className="text-xs uppercase tracking-wider text-gold-soft/80">Full Name</label>
@@ -125,7 +125,7 @@ function ContactPage() {
                     <textarea name="message" rows={4} className="mt-2 w-full bg-navy border border-gold/20 rounded-lg px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none resize-none" placeholder="Tell us a little about your child..." />
                   </div>
 
-                  <button type="submit" className="w-full inline-flex items-center justify-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-7 py-4 rounded-full shadow-gold hover:scale-[1.02] transition-transform">
+                  <button type="submit" className="w-full inline-flex items-center justify-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-7 py-3.5 sm:py-4 rounded-full shadow-gold hover:scale-[1.02] transition-transform">
                     <Send className="h-4 w-4" /> {sent ? "Opening your email..." : "Send Inquiry"}
                   </button>
                 </form>
@@ -136,22 +136,22 @@ function ContactPage() {
       </section>
 
       {/* BRANCHES */}
-      <section className="bg-navy-deep text-primary-foreground py-20 md:py-28 border-t border-gold/15">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="ornament text-xs uppercase tracking-[0.3em] text-gold font-semibold">Our Branches</p>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold">
+      <section className="bg-navy-deep text-primary-foreground py-fluid-section border-t border-gold/15">
+        <div className="container-fluid">
+          <div className="text-center mb-10 sm:mb-14">
+            <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold font-semibold">Our Branches</p>
+            <h2 className="mt-4 font-display text-fluid-h2 font-bold">
               Two campuses, <em className="font-serif-elegant text-gold">one neighbourhood.</em>
             </h2>
-            <p className="mt-4 text-primary-foreground/70 max-w-xl mx-auto">
+            <p className="mt-4 text-fluid-base text-primary-foreground/70 max-w-xl mx-auto">
               Both branches sit just minutes apart in G-11/2 — choose whichever is closer to home.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
             {branches.map((b, i) => (
-              <article key={b.id} className="group relative bg-navy rounded-3xl border border-gold/20 overflow-hidden shadow-elegant hover:border-gold/60 transition-colors">
-                <div className="relative aspect-[16/10] overflow-hidden">
+              <article key={b.id} className="group relative bg-navy rounded-2xl sm:rounded-3xl border border-gold/20 overflow-hidden shadow-elegant hover:border-gold/60 transition-colors">
+                <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                   <iframe
                     src={b.mapsEmbed}
                     className="w-full h-full border-0 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
@@ -164,19 +164,19 @@ function ContactPage() {
                   </div>
                 </div>
 
-                <div className="p-6 md:p-8">
-                  <h3 className="font-display text-2xl text-gold font-bold">{b.label}</h3>
+                <div className="p-5 sm:p-6 md:p-8">
+                  <h3 className="font-display text-xl sm:text-2xl text-gold font-bold">{b.label}</h3>
                   <div className="gold-divider my-4 w-16" />
-                  <ul className="space-y-3 text-sm text-primary-foreground/80">
+                  <ul className="space-y-3 text-xs sm:text-sm text-primary-foreground/80">
                     <li className="flex gap-3"><MapPin className="h-4 w-4 text-gold shrink-0 mt-0.5" /><span>{b.address}</span></li>
                     <li className="flex gap-3"><Phone className="h-4 w-4 text-gold shrink-0 mt-0.5" /><a href={`tel:${b.phoneIntl}`} className="hover:text-gold">{b.phone}</a></li>
                     <li className="flex gap-3"><Clock className="h-4 w-4 text-gold shrink-0 mt-0.5" /><span>{b.hours}</span></li>
                   </ul>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <a href={b.mapsLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-5 py-2.5 rounded-full text-sm shadow-gold hover:scale-105 transition-transform">
+                  <div className="mt-5 sm:mt-6 flex flex-wrap gap-3">
+                    <a href={b.mapsLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm shadow-gold hover:scale-105 transition-transform">
                       <Navigation className="h-4 w-4" /> Get Directions
                     </a>
-                    <a href={`tel:${b.phoneIntl}`} className="inline-flex items-center gap-2 border border-gold/40 text-gold-soft px-5 py-2.5 rounded-full text-sm hover:bg-gold/10 transition-colors">
+                    <a href={`tel:${b.phoneIntl}`} className="inline-flex items-center gap-2 border border-gold/40 text-gold-soft px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm hover:bg-gold/10 transition-colors">
                       <Phone className="h-4 w-4" /> Call Branch
                     </a>
                   </div>
