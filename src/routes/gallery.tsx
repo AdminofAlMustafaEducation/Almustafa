@@ -52,16 +52,16 @@ function GalleryPage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative bg-navy-deep text-primary-foreground py-24 md:py-28 overflow-hidden">
+      <section className="relative bg-navy-deep text-primary-foreground py-fluid-hero overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 to-navy-deep" />
-        <div className="relative mx-auto max-w-5xl px-4 text-center">
-          <p className="ornament text-xs uppercase tracking-[0.3em] text-gold">Gallery</p>
-          <h1 className="mt-6 font-display text-5xl md:text-7xl font-bold leading-tight">
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center">
+          <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold">Gallery</p>
+          <h1 className="mt-5 sm:mt-6 font-display text-fluid-h1 font-bold">
             A look inside our<br/>
             <em className="text-shimmer font-serif-elegant">academy.</em>
           </h1>
-          <p className="mt-8 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
+          <p className="mt-6 sm:mt-8 text-fluid-base text-primary-foreground/80 max-w-2xl mx-auto">
             Twenty-seven years of teaching, learning and quiet milestones — captured in light.
           </p>
         </div>
@@ -69,13 +69,13 @@ function GalleryPage() {
 
       {/* FILTER BAR */}
       <section className="bg-background border-b border-border sticky top-20 z-30 backdrop-blur-md bg-background/85">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-2 overflow-x-auto">
-          <Camera className="h-4 w-4 text-gold shrink-0 mr-2" />
+        <div className="container-fluid py-3 sm:py-4 flex items-center gap-2 overflow-x-auto scrollbar-thin">
+          <Camera className="h-4 w-4 text-gold shrink-0 mr-1 sm:mr-2" />
           {galleryCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`shrink-0 px-4 py-1.5 rounded-full text-xs uppercase tracking-wider font-semibold transition-all ${
+              className={`shrink-0 px-3 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs uppercase tracking-wider font-semibold transition-all ${
                 filter === cat
                   ? "bg-navy text-primary-foreground shadow-card"
                   : "text-muted-foreground hover:text-navy hover:bg-muted"
@@ -88,14 +88,14 @@ function GalleryPage() {
       </section>
 
       {/* MASONRY */}
-      <section className="bg-background py-12 md:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [column-fill:_balance]">
+      <section className="bg-background py-10 md:py-16">
+        <div className="container-fluid">
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-5 [column-fill:_balance]">
             {visible.map((img, i) => (
               <button
                 key={img.src + filter}
                 onClick={() => setActiveIndex(i)}
-                className="group relative mb-5 block w-full break-inside-avoid overflow-hidden rounded-2xl bg-navy-deep cursor-zoom-in shadow-card"
+                className="group relative mb-4 sm:mb-5 block w-full break-inside-avoid overflow-hidden rounded-2xl bg-navy-deep cursor-zoom-in shadow-card"
               >
                 <img
                   src={img.src}
@@ -104,9 +104,9 @@ function GalleryPage() {
                   className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute bottom-0 inset-x-0 p-5 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 text-left">
+                <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 text-left">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-gold">{img.category}</span>
-                  <h3 className="font-display text-lg text-primary-foreground mt-1">{img.caption}</h3>
+                  <h3 className="font-display text-base sm:text-lg text-primary-foreground mt-1">{img.caption}</h3>
                 </div>
               </button>
             ))}
@@ -119,25 +119,25 @@ function GalleryPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[100] bg-navy-deep/98 backdrop-blur-md flex items-center justify-center p-4 animate-fade-up"
+          className="fixed inset-0 z-[100] bg-navy-deep/98 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-up"
           onClick={close}
         >
-          <button onClick={close} aria-label="Close" className="absolute top-5 right-5 h-11 w-11 rounded-full bg-navy/80 border border-gold/30 text-gold-soft flex items-center justify-center hover:bg-gold hover:text-navy-deep transition-colors">
+          <button onClick={close} aria-label="Close" className="absolute top-3 right-3 sm:top-5 sm:right-5 h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-navy/80 border border-gold/30 text-gold-soft flex items-center justify-center hover:bg-gold hover:text-navy-deep transition-colors z-10">
             <X className="h-5 w-5" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Previous" className="absolute left-3 md:left-8 h-12 w-12 rounded-full bg-navy/80 border border-gold/30 text-gold-soft flex items-center justify-center hover:bg-gold hover:text-navy-deep transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Previous" className="absolute left-2 sm:left-3 md:left-8 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-navy/80 border border-gold/30 text-gold-soft flex items-center justify-center hover:bg-gold hover:text-navy-deep transition-colors z-10">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Next" className="absolute right-3 md:right-8 h-12 w-12 rounded-full bg-navy/80 border border-gold/30 text-gold-soft flex items-center justify-center hover:bg-gold hover:text-navy-deep transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Next" className="absolute right-2 sm:right-3 md:right-8 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-navy/80 border border-gold/30 text-gold-soft flex items-center justify-center hover:bg-gold hover:text-navy-deep transition-colors z-10">
             <ChevronRight className="h-5 w-5" />
           </button>
 
-          <figure onClick={(e) => e.stopPropagation()} className="max-w-5xl w-full max-h-[88vh] flex flex-col items-center">
-            <img src={active.src} alt={active.alt} className="max-h-[78vh] w-auto rounded-xl shadow-elegant object-contain" />
-            <figcaption className="mt-4 text-center">
+          <figure onClick={(e) => e.stopPropagation()} className="max-w-5xl w-full max-h-[88vh] flex flex-col items-center px-10 sm:px-14">
+            <img src={active.src} alt={active.alt} className="max-h-[70vh] sm:max-h-[78vh] max-w-full w-auto rounded-xl shadow-elegant object-contain" />
+            <figcaption className="mt-3 sm:mt-4 text-center px-4">
               <span className="text-[10px] uppercase tracking-[0.3em] text-gold">{active.category}</span>
-              <p className="font-display text-xl text-primary-foreground mt-1">{active.caption}</p>
-              <p className="text-xs text-primary-foreground/50 mt-1">{activeIndex + 1} / {visible.length}</p>
+              <p className="font-display text-base sm:text-xl text-primary-foreground mt-1">{active.caption}</p>
+              <p className="text-[11px] sm:text-xs text-primary-foreground/50 mt-1">{activeIndex + 1} / {visible.length}</p>
             </figcaption>
           </figure>
         </div>
