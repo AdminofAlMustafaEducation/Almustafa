@@ -18,7 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-white/60 bg-background/82 backdrop-blur-xl">
       <div className="container-fluid">
         <div className="flex h-16 items-center justify-between gap-3 sm:h-20">
           <Link to="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3.5">
@@ -36,19 +36,22 @@ export function SiteHeader() {
               <span className="truncate font-display text-base font-bold tracking-tight text-navy-deep sm:text-2xl">
                 Al-Mustafa
               </span>
-              <span className="truncate text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[10px] sm:tracking-[0.2em]">
+              <span className="truncate text-[9px] uppercase tracking-[0.24em] text-muted-foreground sm:text-[10px] sm:tracking-[0.26em]">
                 Academy | Since 1998
               </span>
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+          <nav
+            className="hidden items-center gap-1 rounded-full border border-white/60 bg-white/55 px-2 py-1 shadow-soft backdrop-blur-md lg:flex"
+            aria-label="Primary"
+          >
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="group relative px-4 py-2 text-sm font-semibold text-navy-deep/80 transition-colors hover:text-gold"
-                activeProps={{ className: "relative px-4 py-2 text-sm font-semibold text-gold" }}
+                className="group relative rounded-full px-4 py-2 text-sm font-semibold text-navy-deep/82 transition-colors hover:text-gold"
+                activeProps={{ className: "relative rounded-full bg-navy-deep px-4 py-2 text-sm font-semibold text-white shadow-soft" }}
               >
                 {item.label}
                 <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-gold transition-transform group-hover:scale-x-100" />
@@ -82,8 +85,8 @@ export function SiteHeader() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="block rounded-md px-3 py-2 text-navy-deep/85 hover:bg-muted hover:text-gold"
-                activeProps={{ className: "block rounded-md bg-muted px-3 py-2 text-gold" }}
+                className="block rounded-2xl px-3 py-2.5 text-navy-deep/85 hover:bg-white hover:text-gold"
+                activeProps={{ className: "block rounded-2xl bg-white px-3 py-2.5 text-gold shadow-soft" }}
               >
                 {item.label}
               </Link>
