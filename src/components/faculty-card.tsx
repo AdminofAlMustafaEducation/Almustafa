@@ -10,9 +10,20 @@ export function FacultyCard({ member, featured = false }: { member: Faculty; fea
 
         <div className="relative mx-auto mb-4 sm:mb-5">
           <div className={`mx-auto rounded-full bg-gold-gradient p-[3px] ${featured ? "h-28 w-28 sm:h-32 sm:w-32" : "h-24 w-24 sm:h-28 sm:w-28"}`}>
-            <div className="h-full w-full rounded-full bg-navy-deep flex items-center justify-center">
-              <span className="font-display text-2xl sm:text-3xl text-gold font-bold">{member.initials}</span>
-            </div>
+            {member.image ? (
+              <img
+                src={member.image}
+                alt={`${member.name} profile photo`}
+                className="h-full w-full rounded-full object-cover object-top bg-navy-deep"
+                loading="lazy"
+                width={featured ? 128 : 112}
+                height={featured ? 128 : 112}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-navy-deep">
+                <span className="font-display text-2xl sm:text-3xl text-gold font-bold">{member.initials}</span>
+              </div>
+            )}
           </div>
         </div>
 

@@ -3,14 +3,39 @@ export type Faculty = {
   subject: string;
   position: string;
   initials: string;
+  image?: string;
 };
 
 export const faculty: Faculty[] = [
-  { name: "Syed Ali Azeem Kazmi", subject: "Mathematics", position: "Director Academy", initials: "AA" },
-  { name: "Syed Ali Abbas Kazmi", subject: "Mathematics", position: "Director Academy", initials: "AB" },
+  {
+    name: "Syed Ali Azeem Kazmi",
+    subject: "Mathematics",
+    position: "Director Academy",
+    initials: "AA",
+    image: "/faculty/syed-ali-azeem-kazmi.jpg",
+  },
+  {
+    name: "Syed Ali Abbas Kazmi",
+    subject: "Mathematics",
+    position: "Director Academy",
+    initials: "AB",
+    image: "/faculty/syed-ali-abbas-kazmi.jpg",
+  },
   { name: "Syed Sajid Kazmi", subject: "Biology", position: "V.P ICB G-6/3", initials: "SK" },
-  { name: "Ch. Muhammad Zareef", subject: "Coordinator", position: "IMCB G-10/4", initials: "MZ" },
-  { name: "Nabeel Kanwar", subject: "Physics", position: "Lecturer IMCB H-9", initials: "NK" },
+  {
+    name: "Ch. Muhammad Zareef",
+    subject: "Coordinator",
+    position: "IMCB G-10/4",
+    initials: "MZ",
+    image: "/faculty/ch-muhammad-zareef.jpg",
+  },
+  {
+    name: "Nabeel Kanwar",
+    subject: "Physics",
+    position: "Lecturer IMCB H-9",
+    initials: "NK",
+    image: "/faculty/nabeel-kanwar.jpg",
+  },
   { name: "Zahid Abbas Hiraj", subject: "Admin Accounts", position: "Bahria College", initials: "ZH" },
   { name: "Syed Assad Abbas", subject: "Chemistry", position: "Lecturer IMCB G-11/1", initials: "AA" },
   { name: "Mr. Sajid", subject: "Chemistry", position: "Lecturer IMCB H-9", initials: "MS" },

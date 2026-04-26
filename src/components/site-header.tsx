@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
-import logo from "@/assets/logo.png";
 import { academy } from "@/data/faculty";
+
+const logo = "/brand/almustafa-logo.jpg";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -17,43 +18,53 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="container-fluid">
-        <div className="flex h-16 sm:h-20 items-center justify-between gap-3">
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
-            <span className="grid place-items-center h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-gold-gradient shadow-gold transition-transform group-hover:scale-105 shrink-0">
-              <img src={logo} alt="Al-Mustafa Academy logo" className="h-7 w-7 sm:h-9 sm:w-9" width={36} height={36} />
+        <div className="flex h-16 items-center justify-between gap-3 sm:h-20">
+          <Link to="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3.5">
+            <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white p-1 shadow-[0_12px_32px_-16px_rgba(40,15,10,0.45)] ring-1 ring-gold/25 transition-transform group-hover:scale-[1.03] sm:h-14 sm:w-14">
+              <img
+                src={logo}
+                alt="Al-Mustafa Academy logo"
+                className="h-full w-full rounded-full object-cover"
+                width={56}
+                height={56}
+              />
             </span>
-            <div className="flex flex-col leading-tight min-w-0">
-              <span className="font-display text-lg sm:text-2xl text-navy-deep font-bold tracking-tight truncate">Al-Mustafa</span>
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-muted-foreground truncate">Academy · Since 1998</span>
+            <div className="flex min-w-0 flex-col leading-tight">
+              <span className="truncate font-display text-base font-bold tracking-tight text-navy-deep sm:text-2xl">
+                Al-Mustafa
+              </span>
+              <span className="truncate text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[10px] sm:tracking-[0.2em]">
+                Academy · Since 1998
+              </span>
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden items-center gap-1 lg:flex">
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="px-4 py-2 text-sm font-semibold text-navy-deep/80 hover:text-gold transition-colors relative group"
-                activeProps={{ className: "px-4 py-2 text-sm font-semibold text-gold relative" }}
+                className="group relative px-4 py-2 text-sm font-semibold text-navy-deep/80 transition-colors hover:text-gold"
+                activeProps={{ className: "relative px-4 py-2 text-sm font-semibold text-gold" }}
               >
                 {item.label}
-                <span className="absolute inset-x-4 -bottom-0.5 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+                <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-gold transition-transform group-hover:scale-x-100" />
               </Link>
             ))}
           </nav>
 
           <a
             href={`tel:${academy.phoneIntl}`}
-            className="hidden lg:inline-flex items-center gap-2 bg-gold-gradient text-white font-bold px-6 py-3 rounded-full text-sm shadow-gold hover:scale-105 transition-transform uppercase tracking-wide"
+            className="hidden items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-gold transition-transform hover:scale-105 lg:inline-flex"
           >
             <Phone className="h-4 w-4" /> {academy.phone}
           </a>
 
           <button
             onClick={() => setOpen(!open)}
-            className="lg:hidden text-navy-deep p-2"
+            className="p-2 text-navy-deep lg:hidden"
             aria-label="Toggle menu"
           >
             {open ? <X /> : <Menu />}
@@ -61,19 +72,22 @@ export function SiteHeader() {
         </div>
 
         {open && (
-          <div className="lg:hidden pb-4 space-y-1 border-t border-border pt-3">
+          <div className="space-y-1 border-t border-border pb-4 pt-3 lg:hidden">
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="block px-3 py-2 rounded-md text-navy-deep/85 hover:bg-muted hover:text-gold"
-                activeProps={{ className: "block px-3 py-2 rounded-md text-gold bg-muted" }}
+                className="block rounded-md px-3 py-2 text-navy-deep/85 hover:bg-muted hover:text-gold"
+                activeProps={{ className: "block rounded-md bg-muted px-3 py-2 text-gold" }}
               >
                 {item.label}
               </Link>
             ))}
-            <a href={`tel:${academy.phoneIntl}`} className="flex items-center gap-2 px-3 py-2 text-gold font-semibold">
+            <a
+              href={`tel:${academy.phoneIntl}`}
+              className="flex items-center gap-2 px-3 py-2 font-semibold text-gold"
+            >
               <Phone className="h-4 w-4" /> {academy.phone}
             </a>
           </div>
