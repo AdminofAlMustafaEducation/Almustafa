@@ -43,6 +43,82 @@ function HomePage() {
     "from-cream/95 via-white to-lavender/85",
     "from-lavender/90 via-white to-mint/80",
   ];
+  const achievementCards = [
+    {
+      title: "Senior teaching guidance",
+      detail: "Students learn from experienced lecturers who understand classroom pacing, exam patterns and concept-building.",
+    },
+    {
+      title: "Weekly test rhythm",
+      detail: "Regular testing and revision keep progress visible, so weak areas are caught before they become bigger problems.",
+    },
+    {
+      title: "Focused batch culture",
+      detail: "Smaller groups make it easier for teachers to notice confusion, correct mistakes and encourage consistency.",
+    },
+    {
+      title: "Parent-aware follow-up",
+      detail: "The academy experience is built to feel transparent and reassuring for families, not just students.",
+    },
+  ];
+  const admissionSteps = [
+    {
+      step: "01",
+      title: "Talk to the academy",
+      detail: "Call, message or visit the campus so we can understand the student's class level and academic needs.",
+      icon: Phone,
+    },
+    {
+      step: "02",
+      title: "Choose the right program",
+      detail: "We help families place students into Juniors, Matric or F.Sc according to the correct learning stage.",
+      icon: BookOpen,
+    },
+    {
+      step: "03",
+      title: "Meet the faculty plan",
+      detail: "Teachers explain the routine, timing, subjects and the style of weekly follow-up before the session begins.",
+      icon: Users,
+    },
+    {
+      step: "04",
+      title: "Confirm admission",
+      detail: "Secure the seat and start with a clearer, more structured evening learning routine from day one.",
+      icon: Award,
+    },
+  ];
+  const faqs = [
+    {
+      question: "Which classes and programs does Al-Mustafa Academy offer?",
+      answer:
+        "The academy currently offers Juniors (Class 1-8), Matric and F.Sc programs, with separate teaching focus according to each level.",
+    },
+    {
+      question: "Are classes suitable for students who need extra attention?",
+      answer:
+        "Yes. The academy uses focused batches and regular follow-up, which helps teachers notice gaps early and support students more closely.",
+    },
+    {
+      question: "Do you prepare students for board-style exams?",
+      answer:
+        "Yes. Teaching is structured around concept clarity, revision, weekly testing and exam-oriented preparation for school and board performance.",
+    },
+    {
+      question: "Can parents visit the campus before admission?",
+      answer:
+        "Yes. Families are encouraged to visit, see the environment, ask questions and understand the routine before confirming admission.",
+    },
+    {
+      question: "Where are the campuses located?",
+      answer:
+        "The academy has two campuses in G-11/2 Islamabad, including Sachal Sarmast Road and Street 58 locations.",
+    },
+    {
+      question: "How can we start the admission process?",
+      answer:
+        "The quickest way is to call the academy or use the contact page. From there, the team can guide you toward the right program and next steps.",
+    },
+  ];
 
   return (
     <>
@@ -239,6 +315,37 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="bg-background py-fluid-section">
+        <div className="container-fluid">
+          <div className="mb-10 grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-10 sm:mb-14">
+            <div className="lg:col-span-7">
+              <p className="section-kicker text-xs font-bold uppercase tracking-[0.22em] text-sky sm:text-sm">
+                <span className="inline-block h-2 w-2 rounded-full bg-sky" />
+                Results and Achievements
+              </p>
+              <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
+                Better outcomes are built on <span className="scribble-underline">routine</span>, not noise.
+              </h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="text-fluid-base text-muted-foreground lg:max-w-lg lg:ml-auto lg:text-right">
+                We do not rely on flashy promises. We focus on the quieter systems that help students improve steadily across the session.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {achievementCards.map((card, index) => (
+              <div key={card.title} className="paper-panel card-lift rounded-[1.7rem] p-5 sm:p-6">
+                <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky">0{index + 1}</div>
+                <h3 className="mt-3 font-display text-xl font-black text-navy-deep">{card.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{card.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="relative overflow-hidden bg-mint/35 py-fluid-section">
         <div aria-hidden className="absolute right-0 top-10 h-64 w-64 rounded-full bg-lavender/60 blur-3xl" />
         <div className="container-fluid relative grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
@@ -312,6 +419,38 @@ function HomePage() {
             >
               About us <ArrowRight className="h-4 w-4" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell-alt bg-cream py-fluid-section">
+        <div className="container-fluid">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="section-kicker text-xs font-bold uppercase tracking-[0.22em] text-sky sm:text-sm">
+              <span className="inline-block h-2 w-2 rounded-full bg-sky" />
+              Admissions Process
+            </p>
+            <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
+              A simple path from <span className="scribble-underline">first inquiry</span> to first class.
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-fluid-base text-muted-foreground">
+              The admission journey is designed to feel clear and low-stress for both students and parents.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 sm:mt-14 md:grid-cols-2 xl:grid-cols-4">
+            {admissionSteps.map(({ step, title, detail, icon: Icon }) => (
+              <div key={step} className="paper-panel card-lift rounded-[1.8rem] p-5 sm:p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-navy-deep text-white shadow-soft">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky">{step}</span>
+                </div>
+                <h3 className="mt-5 font-display text-xl font-black text-navy-deep">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -472,6 +611,41 @@ function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell-alt bg-lavender/25 py-fluid-section">
+        <div className="container-fluid">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="section-kicker text-xs font-bold uppercase tracking-[0.22em] text-sky sm:text-sm">
+              <span className="inline-block h-2 w-2 rounded-full bg-sky" />
+              Frequently Asked Questions
+            </p>
+            <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
+              Common questions from <span className="scribble-underline">parents and students.</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-fluid-base text-muted-foreground">
+              A few practical answers to the questions families usually ask before visiting the academy.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:mt-14">
+            {faqs.map((faq, index) => (
+              <details key={faq.question} className="paper-panel rounded-[1.7rem] p-5 sm:p-6">
+                <summary className="cursor-pointer list-none font-display text-lg font-black text-navy-deep sm:text-xl">
+                  <span className="flex items-start gap-4">
+                    <span className="mt-1 text-[10px] font-bold uppercase tracking-[0.26em] text-sky">
+                      0{index + 1}
+                    </span>
+                    <span>{faq.question}</span>
+                  </span>
+                </summary>
+                <p className="mt-4 pl-8 text-sm leading-relaxed text-muted-foreground sm:pl-10">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
