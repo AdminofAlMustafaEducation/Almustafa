@@ -21,6 +21,24 @@
  */
 
 @theme inline {
+  /* === Responsive breakpoints (device tiers) ===
+   * xs  ≤ 374px   — small phones (iPhone SE, Galaxy Fold cover)
+   * sm  375–639px — large phones (iPhone 12/14/15, Pixel 7)
+   * md  640–767px — phablets / small tablets portrait
+   * lg  768–1023px — tablets (iPad mini, iPad portrait)
+   * xl  1024–1279px — small laptops / iPad Pro landscape
+   * 2xl ≥ 1280px  — desktops & wide screens
+   *
+   * Tailwind v4 uses min-width breakpoints. Use the `max-*` variant for
+   * upper bounds (e.g. `max-sm:hidden` hides on small phones only).
+   */
+  --breakpoint-xs: 22.5rem;   /* 360px — keep default-mobile styles ≤ this */
+  --breakpoint-sm: 23.4375rem; /* 375px — large phones kick in */
+  --breakpoint-md: 40rem;     /* 640px — phablets */
+  --breakpoint-lg: 48rem;     /* 768px — tablets */
+  --breakpoint-xl: 64rem;     /* 1024px — desktops */
+  --breakpoint-2xl: 80rem;    /* 1280px — wide desktops */
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -218,6 +236,39 @@
     max-width: 80rem; /* 1280px */
     margin-inline: auto;
     padding-inline: clamp(1rem, 0.5rem + 2vw, 2rem);
+  }
+
+  /* === Device-tier helpers ===
+   * Use these when a generic breakpoint isn't precise enough. They map to the
+   * exact tiers defined in @theme above so designs stay consistent. */
+
+  /* Show / hide per tier */
+  .only-xs { display: none; }
+  @media (max-width: 374.98px)  { .only-xs  { display: initial; } .hide-xs  { display: none; } }
+  @media (min-width: 375px) and (max-width: 639.98px)  { .only-sm  { display: initial; } .hide-sm  { display: none; } }
+  @media (min-width: 640px) and (max-width: 767.98px)  { .only-md  { display: initial; } .hide-md  { display: none; } }
+  @media (min-width: 768px) and (max-width: 1023.98px) { .only-lg  { display: initial; } .hide-lg  { display: none; } }
+  @media (min-width: 1024px) { .only-xl  { display: initial; } .hide-xl  { display: none; } }
+  .only-sm, .only-md, .only-lg, .only-xl { display: none; }
+
+  /* Tier-aware heading scale (sharper than pure clamp on tiny phones) */
+  @media (max-width: 374.98px) {
+    .text-fluid-hero { font-size: 2.1rem; line-height: 1.05; }
+    .text-fluid-h1   { font-size: 1.95rem; }
+    .text-fluid-h2   { font-size: 1.6rem; }
+    .container-fluid { padding-inline: 0.875rem; }
+  }
+  @media (min-width: 375px) and (max-width: 639.98px) {
+    .container-fluid { padding-inline: 1rem; }
+  }
+  @media (min-width: 640px) and (max-width: 767.98px) {
+    .container-fluid { padding-inline: 1.25rem; }
+  }
+  @media (min-width: 768px) and (max-width: 1023.98px) {
+    .container-fluid { padding-inline: 1.5rem; max-width: 46rem; }
+  }
+  @media (min-width: 1024px) {
+    .container-fluid { padding-inline: 2rem; }
   }
 
   .bg-hero { background: var(--gradient-hero); }
