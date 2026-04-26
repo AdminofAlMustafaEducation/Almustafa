@@ -35,34 +35,34 @@ function HomePage() {
           src={doodlePen}
           alt=""
           aria-hidden
-          className="hidden md:block absolute -left-8 top-24 w-72 opacity-70 pointer-events-none select-none"
+          className="hidden lg:block absolute -left-8 top-24 w-56 xl:w-72 opacity-70 pointer-events-none select-none"
         />
         {/* dashed orbit rings around photo area */}
-        <div aria-hidden className="hidden lg:block pointer-events-none absolute right-[6%] top-[18%] w-[34rem] h-[34rem] rounded-full border-2 border-dashed border-gold/40 animate-spin-slow" />
-        <div aria-hidden className="hidden lg:block pointer-events-none absolute right-[12%] top-[28%] w-[24rem] h-[24rem] rounded-full border-2 border-dashed border-sky/40" />
+        <div aria-hidden className="hidden xl:block pointer-events-none absolute right-[6%] top-[18%] w-[28rem] h-[28rem] 2xl:w-[34rem] 2xl:h-[34rem] rounded-full border-2 border-dashed border-gold/40 animate-spin-slow" />
+        <div aria-hidden className="hidden xl:block pointer-events-none absolute right-[12%] top-[28%] w-[20rem] h-[20rem] 2xl:w-[24rem] 2xl:h-[24rem] rounded-full border-2 border-dashed border-sky/40" />
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-20 md:pt-16 md:pb-24 grid lg:grid-cols-12 gap-10 items-center">
+        <div className="relative container-fluid py-fluid-hero grid md:grid-cols-12 gap-8 md:gap-10 items-center">
           {/* LEFT — headline */}
-          <div className="lg:col-span-7 animate-fade-up">
-            <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-sky uppercase">
+          <div className="md:col-span-7 animate-fade-up">
+            <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold tracking-wide text-sky uppercase">
               <span className="inline-block w-2 h-2 bg-sky" />
               Welcome to Al-Mustafa
               <span className="inline-block w-2 h-2 bg-sky" />
             </p>
 
-            <h1 className="mt-6 font-display font-black text-navy-deep leading-[0.95] tracking-tight text-[3rem] sm:text-6xl lg:text-[5.75rem]">
-              Bright minds <br className="hidden sm:block"/> deserve a{" "}
-              <span className="scribble-underline">brighter</span> <br className="hidden sm:block"/> evening academy.
+            <h1 className="mt-5 sm:mt-6 font-display font-black text-navy-deep tracking-tight text-fluid-hero">
+              Bright minds <br className="hidden sm:block"/>deserve a{" "}
+              <span className="scribble-underline">brighter</span> <br className="hidden sm:block"/>evening academy.
             </h1>
 
-            <p className="mt-7 max-w-xl text-base md:text-lg text-navy-deep/70 leading-relaxed">
+            <p className="mt-6 sm:mt-7 max-w-xl text-fluid-base text-navy-deep/70">
               Trusted in G-11/2 Islamabad since 1998. Senior college lecturers teaching Juniors, Matric and F.Sc — with the discipline, care and proven results parents talk about.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-7 sm:mt-9 flex flex-wrap items-center gap-4">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 bg-gold-gradient text-white font-bold px-8 py-4 rounded-full shadow-gold hover:scale-[1.04] transition-transform uppercase tracking-wider text-sm"
+                className="inline-flex items-center gap-2 bg-gold-gradient text-white font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-full shadow-gold hover:scale-[1.04] transition-transform uppercase tracking-wider text-xs sm:text-sm"
               >
                 Read More <ArrowRight className="h-4 w-4" />
               </Link>
@@ -72,15 +72,15 @@ function HomePage() {
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-3 text-navy-deep font-semibold"
               >
-                <span className="grid place-items-center h-12 w-12 rounded-full bg-navy-deep text-white shadow-elegant transition-transform group-hover:scale-110">
+                <span className="grid place-items-center h-11 w-11 sm:h-12 sm:w-12 rounded-full bg-navy-deep text-white shadow-elegant transition-transform group-hover:scale-110">
                   <Play className="h-4 w-4 fill-white" />
                 </span>
-                <span className="text-sm">Watch our story</span>
+                <span className="text-xs sm:text-sm">Watch our story</span>
               </a>
             </div>
 
             {/* mini trust strip */}
-            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-navy-deep/70">
+            <div className="mt-10 sm:mt-12 flex flex-wrap items-center gap-x-6 sm:gap-x-8 gap-y-3 text-xs sm:text-sm text-navy-deep/70">
               <div className="flex items-center gap-2"><Award className="h-4 w-4 text-gold" /> 27 years trusted</div>
               <div className="flex items-center gap-2"><Users className="h-4 w-4 text-gold" /> 11 senior lecturers</div>
               <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gold" /> 2 G-11/2 campuses</div>
@@ -88,8 +88,8 @@ function HomePage() {
           </div>
 
           {/* RIGHT — cheerful student cutout */}
-          <div className="lg:col-span-5 relative animate-fade-up" style={{ animationDelay: "0.15s" }}>
-            <div className="relative aspect-square max-w-md mx-auto">
+          <div className="md:col-span-5 relative animate-fade-up" style={{ animationDelay: "0.15s" }}>
+            <div className="relative aspect-square w-full max-w-sm sm:max-w-md mx-auto">
               {/* soft blob behind */}
               <div aria-hidden className="absolute inset-6 rounded-full bg-white/50 blur-2xl" />
               <img
@@ -102,24 +102,24 @@ function HomePage() {
               />
 
               {/* Floating since-1998 pill */}
-              <div className="absolute -top-2 -left-2 md:top-4 md:-left-4 bg-white rounded-2xl px-4 py-3 shadow-elegant border border-border flex items-center gap-3 animate-wiggle">
-                <span className="grid place-items-center h-10 w-10 rounded-xl bg-gold-gradient">
-                  <CalendarCheck className="h-5 w-5 text-white" />
+              <div className="absolute top-2 left-0 sm:top-4 sm:-left-4 bg-white rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-elegant border border-border flex items-center gap-2 sm:gap-3 animate-wiggle">
+                <span className="grid place-items-center h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-gold-gradient">
+                  <CalendarCheck className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </span>
                 <div className="leading-tight">
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Since</div>
-                  <div className="font-display font-bold text-navy-deep">1998</div>
+                  <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground">Since</div>
+                  <div className="font-display font-bold text-navy-deep text-sm sm:text-base">1998</div>
                 </div>
               </div>
 
               {/* Floating rating pill */}
-              <div className="absolute bottom-6 -right-2 md:-right-6 bg-white rounded-2xl px-4 py-3 shadow-elegant border border-border flex items-center gap-3">
+              <div className="absolute bottom-4 sm:bottom-6 right-0 sm:-right-6 bg-white rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-elegant border border-border flex items-center gap-2 sm:gap-3">
                 <div className="flex gap-0.5">
                   {[0,1,2,3,4].map(i => <Star key={i} className="h-3.5 w-3.5 fill-gold text-gold" />)}
                 </div>
                 <div className="leading-tight">
-                  <div className="font-display font-bold text-navy-deep text-sm">Loved by parents</div>
-                  <div className="text-[10px] text-muted-foreground">G-11/2 community</div>
+                  <div className="font-display font-bold text-navy-deep text-xs sm:text-sm">Loved by parents</div>
+                  <div className="text-[9px] sm:text-[10px] text-muted-foreground">G-11/2 community</div>
                 </div>
               </div>
             </div>
