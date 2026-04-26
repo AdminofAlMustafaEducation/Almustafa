@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Award, BookOpen, GraduationCap, Users } from "lucide-react";
+import { BookOpen, GraduationCap, MapPin, Users } from "lucide-react";
 import { faculty } from "@/data/faculty";
 import { FacultyCard } from "@/components/faculty-card";
+import { PageHero } from "@/components/page-hero";
 import heroBg from "@/assets/hero-bg.jpg";
 import { buildPageHead } from "@/lib/seo";
 
@@ -22,54 +23,69 @@ function FacultyPage() {
 
   return (
     <>
-      <section className="section-shell relative overflow-hidden bg-navy-deep py-fluid-hero text-primary-foreground">
-        <div
-          className="absolute inset-0 opacity-25"
-          style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
-        />
-        <div className="soft-grid absolute inset-0 opacity-15" />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/65 via-navy-deep/82 to-navy-deep" />
+      <PageHero
+        eyebrow="Our Faculty"
+        title={
+          <>
+            Experienced teachers.
+            <br />
+            <em className="font-serif-elegant text-shimmer">A steadier learning journey.</em>
+          </>
+        }
+        description="Our faculty brings together senior lecturers, coordinators and subject specialists from well-known institutions across Islamabad and Rawalpindi, giving students guidance that feels both disciplined and personal."
+        backgroundImage={heroBg}
+        stats={[
+          { value: "11", label: "expert teachers" },
+          { value: "27+", label: "years of trust" },
+          { value: "2", label: "campus locations" },
+          { value: "3", label: "program streams" },
+        ]}
+        aside={
+          <div className="paper-panel overflow-hidden p-5 sm:p-6">
+            <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
+              Faculty Snapshot
+            </div>
+            <div className="mt-3 headline-balance font-display text-2xl font-black text-navy-deep sm:text-3xl">
+              A teaching team built for consistency, care and board-focused preparation.
+            </div>
 
-        <div className="container-fluid relative">
-          <div className="mx-auto max-w-5xl text-center">
-            <p className="section-kicker text-[10px] font-bold uppercase tracking-[0.28em] text-sky sm:text-xs">
-              <span className="inline-block h-2 w-2 rounded-full bg-sky" />
-              Our Faculty
-            </p>
-            <h1 className="headline-balance mt-5 font-display text-fluid-h1 font-black sm:mt-6">
-              The teachers who turn
-              <br />
-              <em className="font-serif-elegant text-shimmer">effort into results.</em>
-            </h1>
-            <p className="mx-auto mt-6 max-w-3xl text-fluid-base text-primary-foreground/80 sm:mt-8">
-              Eleven dedicated educators, senior lecturers, coordinators and subject specialists drawn from Islamabad&apos;s most respected colleges and institutions.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { icon: Users, value: "11", label: "expert teachers" },
-              { icon: GraduationCap, value: "27+", label: "years of trust" },
-              { icon: Award, value: "2", label: "campus locations" },
-              { icon: BookOpen, value: "3", label: "program streams" },
-            ].map(({ icon: Icon, value, label }) => (
-              <div key={label} className="glass-panel rounded-[1.5rem] px-4 py-4 text-left sm:px-5">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-gold shadow-soft">
+            <div className="mt-5 grid gap-3">
+              {[
+                {
+                  icon: Users,
+                  title: "Personal attention",
+                  detail: "Small batches make it easier to notice gaps early and guide students properly.",
+                },
+                {
+                  icon: GraduationCap,
+                  title: "Experienced teaching",
+                  detail: "Students learn from educators already used to academic standards and exam pacing.",
+                },
+                {
+                  icon: BookOpen,
+                  title: "Subject depth",
+                  detail: "Science, maths, English and coordination support are handled by specialists.",
+                },
+                {
+                  icon: MapPin,
+                  title: "Accessible campuses",
+                  detail: "Two G-11/2 locations keep the academy close to families in the area.",
+                },
+              ].map(({ icon: Icon, title, detail }) => (
+                <div key={title} className="flex items-start gap-3 rounded-[1.35rem] bg-white/75 p-4 shadow-soft">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-navy-deep text-white">
                     <Icon className="h-5 w-5" />
                   </span>
                   <div>
-                    <div className="font-display text-2xl font-black text-white">{value}</div>
-                    <div className="text-[10px] uppercase tracking-[0.22em] text-white/70 sm:text-[11px]">
-                      {label}
-                    </div>
+                    <div className="font-display text-lg font-black text-navy-deep">{title}</div>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{detail}</p>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <section className="section-shell-alt bg-lavender/30 py-fluid-section">
         <div className="container-fluid">

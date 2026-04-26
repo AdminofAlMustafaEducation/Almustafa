@@ -3,14 +3,12 @@ import {
   ArrowRight,
   Award,
   BookOpen,
-  CalendarCheck,
   FlaskConical,
   GraduationCap,
   Mail,
   MapPin,
   Navigation,
   Phone,
-  Play,
   Quote,
   Star,
   Users,
@@ -49,37 +47,37 @@ function HomePage() {
   return (
     <>
       <section className="section-shell relative overflow-hidden bg-pastel">
-        <div aria-hidden className="soft-grid absolute inset-0 opacity-35" />
+        <div aria-hidden className="soft-grid absolute inset-0 opacity-25" />
         <img
           src={doodlePen}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute -left-8 top-20 hidden w-56 select-none opacity-65 lg:block xl:w-72"
+          className="pointer-events-none absolute -left-8 top-20 hidden w-56 select-none opacity-55 lg:block xl:w-72"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute right-[6%] top-[18%] hidden h-[28rem] w-[28rem] rounded-full border-2 border-dashed border-gold/35 xl:block 2xl:h-[34rem] 2xl:w-[34rem] animate-spin-slow"
+          className="pointer-events-none absolute right-[8%] top-[16%] hidden h-[24rem] w-[24rem] rounded-full border border-gold/20 xl:block 2xl:h-[30rem] 2xl:w-[30rem]"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute right-[12%] top-[28%] hidden h-[20rem] w-[20rem] rounded-full border border-sky/30 xl:block 2xl:h-[24rem] 2xl:w-[24rem]"
+          className="pointer-events-none absolute right-[14%] top-[24%] hidden h-[18rem] w-[18rem] rounded-full bg-white/30 blur-3xl xl:block 2xl:h-[22rem] 2xl:w-[22rem]"
         />
 
-        <div className="container-fluid relative grid items-center gap-10 py-fluid-hero lg:grid-cols-12 lg:gap-12">
+        <div className="container-fluid relative grid items-center gap-8 py-fluid-hero lg:grid-cols-12 lg:gap-12">
           <div className="animate-fade-up lg:col-span-7">
             <div className="section-kicker text-xs font-bold uppercase tracking-[0.22em] text-sky sm:text-sm">
               <span className="inline-block h-2 w-2 rounded-full bg-sky" />
-              Admissions Open for 2026
+              Evening Coaching in G-11/2
             </div>
 
             <h1 className="headline-balance mt-5 font-display text-fluid-hero font-black tracking-tight text-navy-deep sm:mt-6">
-              A warmer, sharper
-              <br className="hidden sm:block" /> place for
-              <span className="scribble-underline"> evening learning.</span>
+              Calm after-school learning,
+              <br className="hidden sm:block" />
+              <span className="scribble-underline"> taught with purpose.</span>
             </h1>
 
             <p className="mt-6 max-w-2xl text-fluid-base text-navy-deep/72 sm:mt-7">
-              Trusted in G-11/2 Islamabad since 1998. Senior college lecturers teach Juniors, Matric and F.Sc with the discipline, care and weekly follow-through families actually notice.
+              Trusted in G-11/2 Islamabad since 1998. Senior college lecturers guide Juniors, Matric and F.Sc students with clear routines, focused teaching and thoughtful follow-up that parents can actually feel.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-9 sm:gap-4">
@@ -99,29 +97,26 @@ function HomePage() {
                 href={academy.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-3 font-semibold text-navy-deep"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-navy-deep/80 transition-colors hover:text-gold"
               >
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-navy-deep text-white shadow-elegant transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
-                  <Play className="h-4 w-4 fill-white" />
-                </span>
-                <span className="text-xs sm:text-sm">Watch our story</span>
+                See campus updates <ArrowRight className="h-4 w-4" />
               </a>
             </div>
 
             <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-3">
               {[
                 { icon: Award, value: "27 Years", label: "community trust" },
-                { icon: Users, value: "11 Experts", label: "senior lecturers" },
-                { icon: MapPin, value: "2 Campuses", label: "in G-11/2" },
+                { icon: Users, value: "11 Faculty", label: "experienced teachers" },
+                { icon: MapPin, value: "2 Campuses", label: "within G-11/2" },
               ].map(({ icon: Icon, value, label }) => (
-                <div key={value} className="glass-panel card-lift rounded-[1.6rem] p-4 sm:p-5">
+                <div key={value} className="paper-panel card-lift rounded-[1.5rem] p-4 sm:p-5">
                   <div className="flex items-center gap-3">
-                    <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/90 shadow-soft">
+                    <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white shadow-soft">
                       <Icon className="h-5 w-5 text-gold" />
                     </span>
                     <div>
                       <div className="font-display text-lg font-black text-navy-deep">{value}</div>
-                      <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                      <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
                         {label}
                       </div>
                     </div>
@@ -130,67 +125,52 @@ function HomePage() {
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-navy-deep/75 sm:gap-4 sm:text-sm">
+            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-navy-deep/75 sm:gap-4 sm:text-sm">
               <span className="stat-pill">Small batches</span>
               <span className="stat-pill">Weekly tests</span>
-              <span className="stat-pill">Parent-friendly feedback</span>
+              <span className="stat-pill">Parent feedback</span>
             </div>
           </div>
 
-          <div className="relative animate-fade-up lg:col-span-5" style={{ animationDelay: "0.15s" }}>
-            <div className="hero-frame mx-auto max-w-md p-4 sm:max-w-lg sm:p-5">
-              <div className="relative rounded-[1.7rem] bg-gradient-to-br from-white/80 via-white/45 to-white/15 px-4 pb-4 pt-6 sm:px-6 sm:pb-6 sm:pt-8">
-                <div aria-hidden className="absolute inset-x-6 top-5 h-24 rounded-full bg-gold/12 blur-3xl" />
+          <div className="relative animate-fade-up lg:col-span-5" style={{ animationDelay: "0.12s" }}>
+            <div className="hero-frame mx-auto max-w-md p-3 sm:max-w-lg sm:p-4">
+              <div className="relative rounded-[1.7rem] bg-gradient-to-br from-white/88 via-white/56 to-white/22 px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-7">
+                <div aria-hidden className="absolute inset-x-6 top-5 h-24 rounded-full bg-gold/10 blur-3xl" />
                 <img
                   src={heroStudent}
                   alt="A bright student ready for evening coaching at Al-Mustafa Academy"
-                  className="relative mx-auto h-full max-h-[28rem] w-full object-contain drop-shadow-2xl sm:max-h-[34rem]"
+                  className="relative mx-auto h-full max-h-[24rem] w-full object-contain drop-shadow-2xl sm:max-h-[31rem]"
                   loading="eager"
                   width={1024}
                   height={1024}
                 />
 
-                <div className="glass-panel absolute left-3 top-3 flex items-center gap-2 rounded-2xl px-3 py-2.5 sm:left-4 sm:top-4 sm:gap-3 sm:px-4 sm:py-3">
-                  <span className="grid h-8 w-8 place-items-center rounded-xl bg-gold-gradient sm:h-10 sm:w-10">
-                    <CalendarCheck className="h-4 w-4 text-white sm:h-5 sm:w-5" />
-                  </span>
-                  <div className="leading-tight">
-                    <div className="text-[9px] uppercase tracking-widest text-muted-foreground sm:text-[10px]">
-                      Since
-                    </div>
-                    <div className="font-display text-sm font-bold text-navy-deep sm:text-base">1998</div>
+                <div className="glass-panel absolute left-3 top-3 rounded-2xl px-3 py-2.5 sm:left-4 sm:top-4 sm:px-4 sm:py-3">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.24em] text-sky sm:text-[10px]">
+                    Admissions Open
                   </div>
+                  <div className="mt-1 font-display text-sm font-black text-navy-deep sm:text-base">2026 Session</div>
                 </div>
 
-                <div className="glass-panel absolute bottom-3 right-3 max-w-[11rem] rounded-2xl px-3 py-3 sm:bottom-5 sm:right-5 sm:max-w-[12rem] sm:px-4">
-                  <div className="flex gap-0.5">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-gold text-gold" />
-                    ))}
-                  </div>
-                  <div className="mt-2 font-display text-sm font-bold text-navy-deep">Loved by parents</div>
-                  <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
-                    warm teaching culture
+                <div className="glass-panel absolute bottom-3 right-3 max-w-[12rem] rounded-2xl px-3 py-3 sm:bottom-4 sm:right-4 sm:max-w-[13rem] sm:px-4">
+                  <div className="font-display text-sm font-black text-navy-deep sm:text-base">Why families stay</div>
+                  <div className="mt-2 space-y-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[12px]">
+                    <div>Small batches</div>
+                    <div>Weekly testing</div>
+                    <div>Supportive teachers</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="paper-panel p-4 sm:p-5">
-                <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky">What families love</div>
-                <div className="mt-2 font-display text-lg font-black text-navy-deep">Structured evenings</div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Clear routines, calm classrooms and better habits after school.
-                </p>
+            <div className="paper-panel mx-auto mt-4 max-w-lg p-4 sm:p-5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky">A better evening routine</div>
+              <div className="mt-2 font-display text-lg font-black text-navy-deep sm:text-xl">
+                Clear teaching, calmer classrooms, stronger revision habits.
               </div>
-              <div className="paper-panel p-4 sm:p-5">
-                <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky">Board focus</div>
-                <div className="mt-2 font-display text-lg font-black text-navy-deep">Results with follow-up</div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Weekly testing and concept revision that does not leave gaps behind.
-                </p>
-              </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Designed to feel reassuring on mobile and strong on desktop, without the noise of an over-designed banner.
+              </p>
             </div>
           </div>
         </div>
