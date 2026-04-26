@@ -1,0 +1,16 @@
+{
+  "name": "Al-Mustafa Academy",
+  "short_name": "Al-Mustafa",
+  "description": "Trusted evening coaching academy in G-11/2 Islamabad since 1998.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8ed",
+  "theme_color": "#6b1f19",
+  "icons": [
+    {
+      "src": "/brand/almustafa-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -18,7 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="container-fluid">
         <div className="flex h-16 items-center justify-between gap-3 sm:h-20">
           <Link to="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3.5">
@@ -29,6 +29,7 @@ export function SiteHeader() {
                 className="h-full w-full rounded-full object-cover"
                 width={56}
                 height={56}
+                decoding="async"
               />
             </span>
             <div className="flex min-w-0 flex-col leading-tight">
@@ -36,12 +37,12 @@ export function SiteHeader() {
                 Al-Mustafa
               </span>
               <span className="truncate text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[10px] sm:tracking-[0.2em]">
-                Academy · Since 1998
+                Academy | Since 1998
               </span>
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.to}
@@ -63,8 +64,11 @@ export function SiteHeader() {
           </a>
 
           <button
-            onClick={() => setOpen(!open)}
-            className="p-2 text-navy-deep lg:hidden"
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+            className="rounded-md p-2 text-navy-deep transition-colors hover:bg-muted lg:hidden"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
             aria-label="Toggle menu"
           >
             {open ? <X /> : <Menu />}
@@ -72,7 +76,7 @@ export function SiteHeader() {
         </div>
 
         {open && (
-          <div className="space-y-1 border-t border-border pb-4 pt-3 lg:hidden">
+          <div id="mobile-nav" className="space-y-1 border-t border-border pb-4 pt-3 lg:hidden">
             {nav.map((item) => (
               <Link
                 key={item.to}

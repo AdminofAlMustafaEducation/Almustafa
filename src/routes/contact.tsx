@@ -1,116 +1,151 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Phone, Mail, Clock, Facebook, Send, Navigation } from "lucide-react";
+import { Clock, Facebook, Mail, MapPin, Navigation, Phone, Send } from "lucide-react";
 import { useState } from "react";
 import { academy, branches } from "@/data/faculty";
 import heroBg from "@/assets/hero-bg.jpg";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact & Admissions — Al-Mustafa Academy, G-11/2 Islamabad" },
-      { name: "description", content: "Visit Al-Mustafa Academy at House# 1461, Sachal Sarmast Road, G-11/2, Islamabad. Call 0335 0555696 or email almustafaschool@gmail.com." },
-      { property: "og:title", content: "Contact Al-Mustafa Academy" },
-      { property: "og:description", content: "Two campuses in G-11/2 Islamabad. Call 0335 0555696." },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Contact and Admissions | Al-Mustafa Academy, G-11/2 Islamabad",
+      description:
+        "Visit Al-Mustafa Academy at House# 1461, Sachal Sarmast Road, G-11/2, Islamabad. Call 0335 0555696 or email almustafaschool@gmail.com.",
+      path: "/contact",
+    }),
   component: ContactPage,
 });
 
 function ContactPage() {
   const [sent, setSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const subject = encodeURIComponent(`Admission inquiry — ${data.get("name")}`);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const subject = encodeURIComponent(`Admission inquiry - ${data.get("name")}`);
     const body = encodeURIComponent(
-      `Name: ${data.get("name")}\nPhone: ${data.get("phone")}\nClass / Program: ${data.get("program")}\n\nMessage:\n${data.get("message")}`
+      `Name: ${data.get("name")}\nPhone: ${data.get("phone")}\nClass / Program: ${data.get("program")}\n\nMessage:\n${data.get("message")}`,
     );
-    window.location.href = `mailto:${academy.email}?subject=${subject}&body=${body}`;
+
+    window.location.assign(`mailto:${academy.email}?subject=${subject}&body=${body}`);
     setSent(true);
   };
 
   return (
     <>
-      <section className="relative bg-navy-deep text-primary-foreground py-fluid-hero overflow-hidden">
+      <section className="relative overflow-hidden bg-navy-deep py-fluid-hero text-primary-foreground">
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${heroBg})`, backgroundSize: "cover" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 to-navy-deep" />
-        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center">
-          <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold">Get in Touch</p>
-          <h1 className="mt-5 sm:mt-6 font-display text-fluid-h1 font-bold">
-            We'd love to <em className="text-shimmer font-serif-elegant">hear from you.</em>
+        <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6">
+          <p className="ornament text-[10px] uppercase tracking-[0.3em] text-gold sm:text-xs">Get in Touch</p>
+          <h1 className="mt-5 font-display text-fluid-h1 font-bold sm:mt-6">
+            We&apos;d love to <em className="font-serif-elegant text-shimmer">hear from you.</em>
           </h1>
-          <p className="mt-5 sm:mt-6 text-fluid-base text-primary-foreground/80 max-w-2xl mx-auto">
-            Visit one of our two campuses in G-11/2 Islamabad, or send a quick message and we'll respond within one working day.
+          <p className="mx-auto mt-5 max-w-2xl text-fluid-base text-primary-foreground/80 sm:mt-6">
+            Visit one of our two campuses in G-11/2 Islamabad, or send a quick message and we&apos;ll respond within one working day.
           </p>
         </div>
       </section>
 
       <section className="bg-background py-fluid-section">
-        <div className="container-fluid grid lg:grid-cols-5 gap-10 lg:gap-12">
-          {/* CONTACT INFO */}
-          <div className="lg:col-span-2 space-y-5 sm:space-y-6">
+        <div className="container-fluid grid gap-10 lg:grid-cols-5 lg:gap-12">
+          <div className="space-y-5 sm:space-y-6 lg:col-span-2">
             <div>
-              <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold font-semibold inline-block">Reach Us</p>
-              <h2 className="mt-3 font-display text-fluid-h2 text-navy font-bold">Contact Information</h2>
-              <div className="gold-divider my-4 sm:my-5 w-20" />
+              <p className="ornament inline-block text-[10px] font-semibold uppercase tracking-[0.3em] text-gold sm:text-xs">
+                Reach Us
+              </p>
+              <h2 className="mt-3 font-display text-fluid-h2 font-bold text-navy">Contact Information</h2>
+              <div className="gold-divider my-4 w-20 sm:my-5" />
             </div>
 
             {[
-              { icon: MapPin, t: "Main Campus", d: academy.addressPrimary },
-              { icon: MapPin, t: "Second Campus", d: academy.addressSecondary },
-              { icon: Phone, t: "Phone", d: academy.phone, href: `tel:${academy.phoneIntl}` },
-              { icon: Mail, t: "Email", d: academy.email, href: `mailto:${academy.email}` },
-              { icon: Clock, t: "Hours", d: "Monday – Saturday · 3:00 PM – 9:00 PM" },
-              { icon: Facebook, t: "Facebook", d: "@Almustafa614", href: academy.facebook },
-            ].map(({ icon: Icon, t, d, href }) => {
-              const inner = (
-                <div className="flex gap-3 sm:gap-4 p-4 sm:p-5 bg-card border border-border rounded-2xl hover:border-gold hover:shadow-card transition-all">
-                  <div className="h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-xl bg-gold-gradient flex items-center justify-center">
+              { icon: MapPin, title: "Main Campus", detail: academy.addressPrimary },
+              { icon: MapPin, title: "Second Campus", detail: academy.addressSecondary },
+              { icon: Phone, title: "Phone", detail: academy.phone, href: `tel:${academy.phoneIntl}` },
+              { icon: Mail, title: "Email", detail: academy.email, href: `mailto:${academy.email}` },
+              { icon: Clock, title: "Hours", detail: "Monday - Saturday | 3:00 PM - 9:00 PM" },
+              { icon: Facebook, title: "Facebook", detail: "@Almustafa614", href: academy.facebook },
+            ].map(({ icon: Icon, title, detail, href }) => {
+              const card = (
+                <div className="flex gap-3 rounded-2xl border border-border bg-card p-4 transition-all hover:border-gold hover:shadow-card sm:gap-4 sm:p-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-gradient sm:h-11 sm:w-11">
                     <Icon className="h-5 w-5 text-navy-deep" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11px] sm:text-xs uppercase tracking-wider text-muted-foreground">{t}</div>
-                    <div className="font-semibold text-navy mt-0.5 text-sm sm:text-base break-words">{d}</div>
+                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground sm:text-xs">{title}</div>
+                    <div className="mt-0.5 break-words text-sm font-semibold text-navy sm:text-base">{detail}</div>
                   </div>
                 </div>
               );
+
               return href ? (
-                <a key={t} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="block">
-                  {inner}
+                <a
+                  key={title}
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  {card}
                 </a>
               ) : (
-                <div key={t}>{inner}</div>
+                <div key={title}>{card}</div>
               );
             })}
           </div>
 
-          {/* FORM */}
           <div className="lg:col-span-3">
-            <div className="bg-navy-deep text-primary-foreground rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-elegant relative overflow-hidden">
-              <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-gold/10 blur-3xl" />
+            <div className="relative overflow-hidden rounded-2xl bg-navy-deep p-6 text-primary-foreground shadow-elegant sm:rounded-3xl sm:p-8 md:p-10">
+              <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-gold/10 blur-3xl" />
               <div className="relative">
-                <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold font-semibold">Admission Inquiry</p>
-                <h2 className="mt-3 font-display text-2xl sm:text-3xl md:text-4xl font-bold">Send us a message</h2>
-                <p className="mt-2 text-primary-foreground/70 text-xs sm:text-sm">We'll get back to you within one working day.</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold sm:text-xs">
+                  Admission Inquiry
+                </p>
+                <h2 className="mt-3 font-display text-2xl font-bold sm:text-3xl md:text-4xl">
+                  Send us a message
+                </h2>
+                <p className="mt-2 text-xs text-primary-foreground/70 sm:text-sm">
+                  We&apos;ll get back to you within one working day.
+                </p>
 
-                <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 space-y-4 sm:space-y-5">
-                  <div className="grid sm:grid-cols-2 gap-5">
+                <form onSubmit={handleSubmit} className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label className="text-xs uppercase tracking-wider text-gold-soft/80">Full Name</label>
-                      <input required name="name" className="mt-2 w-full bg-navy border border-gold/20 rounded-lg px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none" placeholder="Your name" />
+                      <input
+                        required
+                        name="name"
+                        autoComplete="name"
+                        className="mt-2 w-full rounded-lg border border-gold/20 bg-navy px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none"
+                        placeholder="Your name"
+                      />
                     </div>
                     <div>
                       <label className="text-xs uppercase tracking-wider text-gold-soft/80">Phone</label>
-                      <input required name="phone" type="tel" className="mt-2 w-full bg-navy border border-gold/20 rounded-lg px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none" placeholder="03XX XXXXXXX" />
+                      <input
+                        required
+                        name="phone"
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        className="mt-2 w-full rounded-lg border border-gold/20 bg-navy px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none"
+                        placeholder="03XX XXXXXXX"
+                      />
                     </div>
                   </div>
 
                   <div>
                     <label className="text-xs uppercase tracking-wider text-gold-soft/80">Class / Program</label>
-                    <select required name="program" className="mt-2 w-full bg-navy border border-gold/20 rounded-lg px-4 py-3 text-primary-foreground focus:border-gold focus:outline-none">
-                      <option value="">Select a program</option>
-                      <option>Juniors (Class 1 – 8)</option>
+                    <select
+                      required
+                      name="program"
+                      className="mt-2 w-full rounded-lg border border-gold/20 bg-navy px-4 py-3 text-primary-foreground focus:border-gold focus:outline-none"
+                      defaultValue=""
+                    >
+                      <option value="" disabled>
+                        Select a program
+                      </option>
+                      <option>Juniors (Class 1-8)</option>
                       <option>Matric (9th)</option>
                       <option>Matric (10th)</option>
                       <option>F.Sc Pre-Medical (1st Year)</option>
@@ -122,10 +157,18 @@ function ContactPage() {
 
                   <div>
                     <label className="text-xs uppercase tracking-wider text-gold-soft/80">Message</label>
-                    <textarea name="message" rows={4} className="mt-2 w-full bg-navy border border-gold/20 rounded-lg px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none resize-none" placeholder="Tell us a little about your child..." />
+                    <textarea
+                      name="message"
+                      rows={4}
+                      className="mt-2 w-full resize-none rounded-lg border border-gold/20 bg-navy px-4 py-3 text-primary-foreground placeholder:text-primary-foreground/40 focus:border-gold focus:outline-none"
+                      placeholder="Tell us a little about your child..."
+                    />
                   </div>
 
-                  <button type="submit" className="w-full inline-flex items-center justify-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-7 py-3.5 sm:py-4 rounded-full shadow-gold hover:scale-[1.02] transition-transform">
+                  <button
+                    type="submit"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient px-7 py-3.5 font-semibold text-navy-deep shadow-gold transition-transform hover:scale-[1.02] sm:py-4"
+                  >
                     <Send className="h-4 w-4" /> {sent ? "Opening your email..." : "Send Inquiry"}
                   </button>
                 </form>
@@ -135,48 +178,71 @@ function ContactPage() {
         </div>
       </section>
 
-      {/* BRANCHES */}
-      <section className="bg-navy-deep text-primary-foreground py-fluid-section border-t border-gold/15">
+      <section className="border-t border-gold/15 bg-navy-deep py-fluid-section text-primary-foreground">
         <div className="container-fluid">
-          <div className="text-center mb-10 sm:mb-14">
-            <p className="ornament text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold font-semibold">Our Branches</p>
+          <div className="mb-10 text-center sm:mb-14">
+            <p className="ornament text-[10px] font-semibold uppercase tracking-[0.3em] text-gold sm:text-xs">
+              Our Branches
+            </p>
             <h2 className="mt-4 font-display text-fluid-h2 font-bold">
               Two campuses, <em className="font-serif-elegant text-gold">one neighbourhood.</em>
             </h2>
-            <p className="mt-4 text-fluid-base text-primary-foreground/70 max-w-xl mx-auto">
-              Both branches sit just minutes apart in G-11/2 — choose whichever is closer to home.
+            <p className="mx-auto mt-4 max-w-xl text-fluid-base text-primary-foreground/70">
+              Both branches sit just minutes apart in G-11/2 - choose whichever is closer to home.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
-            {branches.map((b, i) => (
-              <article key={b.id} className="group relative bg-navy rounded-2xl sm:rounded-3xl border border-gold/20 overflow-hidden shadow-elegant hover:border-gold/60 transition-colors">
-                <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
+            {branches.map((branch, i) => (
+              <article
+                key={branch.id}
+                className="group relative overflow-hidden rounded-2xl border border-gold/20 bg-navy shadow-elegant transition-colors hover:border-gold/60 sm:rounded-3xl"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9]">
                   <iframe
-                    src={b.mapsEmbed}
-                    className="w-full h-full border-0 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+                    src={branch.mapsEmbed}
+                    className="h-full w-full border-0 grayscale-[20%] transition-all duration-700 group-hover:grayscale-0"
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title={`${b.name} location map`}
+                    title={`${branch.name} location map`}
                   />
-                  <div className="pointer-events-none absolute top-4 left-4 inline-flex items-center gap-2 bg-navy-deep/90 backdrop-blur border border-gold/40 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.25em] text-gold">
-                    Branch 0{i+1}
+                  <div className="pointer-events-none absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-gold/40 bg-navy-deep/90 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-gold backdrop-blur">
+                    Branch 0{i + 1}
                   </div>
                 </div>
 
                 <div className="p-5 sm:p-6 md:p-8">
-                  <h3 className="font-display text-xl sm:text-2xl text-gold font-bold">{b.label}</h3>
+                  <h3 className="font-display text-xl font-bold text-gold sm:text-2xl">{branch.label}</h3>
                   <div className="gold-divider my-4 w-16" />
-                  <ul className="space-y-3 text-xs sm:text-sm text-primary-foreground/80">
-                    <li className="flex gap-3"><MapPin className="h-4 w-4 text-gold shrink-0 mt-0.5" /><span>{b.address}</span></li>
-                    <li className="flex gap-3"><Phone className="h-4 w-4 text-gold shrink-0 mt-0.5" /><a href={`tel:${b.phoneIntl}`} className="hover:text-gold">{b.phone}</a></li>
-                    <li className="flex gap-3"><Clock className="h-4 w-4 text-gold shrink-0 mt-0.5" /><span>{b.hours}</span></li>
+                  <ul className="space-y-3 text-xs text-primary-foreground/80 sm:text-sm">
+                    <li className="flex gap-3">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                      <span>{branch.address}</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                      <a href={`tel:${branch.phoneIntl}`} className="hover:text-gold">
+                        {branch.phone}
+                      </a>
+                    </li>
+                    <li className="flex gap-3">
+                      <Clock className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                      <span>{branch.hours}</span>
+                    </li>
                   </ul>
-                  <div className="mt-5 sm:mt-6 flex flex-wrap gap-3">
-                    <a href={b.mapsLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-gold-gradient text-navy-deep font-semibold px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm shadow-gold hover:scale-105 transition-transform">
+                  <div className="mt-5 flex flex-wrap gap-3 sm:mt-6">
+                    <a
+                      href={branch.mapsLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-gold-gradient px-4 py-2.5 text-xs font-semibold text-navy-deep shadow-gold transition-transform hover:scale-105 sm:px-5 sm:text-sm"
+                    >
                       <Navigation className="h-4 w-4" /> Get Directions
                     </a>
-                    <a href={`tel:${b.phoneIntl}`} className="inline-flex items-center gap-2 border border-gold/40 text-gold-soft px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm hover:bg-gold/10 transition-colors">
+                    <a
+                      href={`tel:${branch.phoneIntl}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-2.5 text-xs text-gold-soft transition-colors hover:bg-gold/10 sm:px-5 sm:text-sm"
+                    >
                       <Phone className="h-4 w-4" /> Call Branch
                     </a>
                   </div>

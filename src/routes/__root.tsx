@@ -1,31 +1,38 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { academy } from "@/data/faculty";
+import { buildPageHead, logoPath, logoUrl, siteName, siteUrl } from "@/lib/seo";
 
 import appCss from "../styles.css?url";
 
-const siteUrl = "https://al-mustafa-clone.vercel.app";
-const logoPath = "/brand/almustafa-logo.jpg";
-const logoUrl = `${siteUrl}${logoPath}`;
-
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  name: academy.name,
-  url: siteUrl,
-  logo: logoUrl,
-  image: logoUrl,
-  telephone: academy.phoneIntl,
-  email: academy.email,
-  sameAs: [academy.facebook],
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: academy.addressPrimary,
-    addressLocality: "Islamabad",
-    addressCountry: "PK",
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "School",
+    name: academy.name,
+    url: siteUrl,
+    logo: logoUrl,
+    image: logoUrl,
+    telephone: academy.phoneIntl,
+    email: academy.email,
+    sameAs: [academy.facebook],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: academy.addressPrimary,
+      addressLocality: "Islamabad",
+      addressCountry: "PK",
+    },
+    openingHours: "Mo-Sa 15:00-21:00",
+    areaServed: "Islamabad",
   },
-};
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteName,
+    url: siteUrl,
+  },
+];
 
 function NotFoundComponent() {
   return (
@@ -37,7 +44,7 @@ function NotFoundComponent() {
           <div className="gold-divider mx-auto my-6 w-32" />
           <h2 className="text-xl font-semibold text-foreground">Page not found</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            The page you're looking for doesn't exist or has been moved.
+            The page you&apos;re looking for does not exist or has been moved.
           </p>
           <div className="mt-8">
             <Link
@@ -55,47 +62,34 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Al-Mustafa Academy — Evening Coaching in G-11/2 Islamabad" },
-      {
-        name: "description",
-        content:
-          "Trusted evening coaching academy in Islamabad since 1998. Juniors, Matric & F.Sc by senior college lecturers. Call 0335 0555696.",
-      },
-      { name: "author", content: academy.name },
-      { property: "og:title", content: "Al-Mustafa Academy — Since 1998" },
-      {
-        property: "og:description",
-        content: "Premier evening coaching academy in G-11/2 Islamabad. Juniors, Matric & F.Sc.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: siteUrl },
-      { property: "og:site_name", content: academy.name },
-      { property: "og:image", content: logoUrl },
-      { property: "og:image:alt", content: "Al-Mustafa Academy official logo" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Al-Mustafa Academy — Since 1998" },
-      {
-        name: "twitter:description",
-        content: "Premier evening coaching academy in G-11/2 Islamabad. Juniors, Matric & F.Sc.",
-      },
-      { name: "twitter:image", content: logoUrl },
-      { name: "theme-color", content: "#6b1f19" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "icon", href: logoPath, type: "image/jpeg" },
-      { rel: "apple-touch-icon", href: logoPath },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-    ],
-  }),
+  head: () => {
+    const pageHead = buildPageHead({
+      title: "Al-Mustafa Academy | Evening Coaching in G-11/2 Islamabad",
+      description:
+        "Trusted evening coaching academy in Islamabad since 1998. Juniors, Matric and F.Sc by senior college lecturers. Call 0335 0555696.",
+      path: "/",
+    });
+
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "author", content: siteName },
+        { name: "theme-color", content: "#6b1f19" },
+        { name: "format-detection", content: "telephone=yes" },
+        ...pageHead.meta,
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: logoPath, type: "image/jpeg" },
+        { rel: "apple-touch-icon", href: logoPath },
+        { rel: "manifest", href: "/site.webmanifest" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        ...pageHead.links,
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -103,15 +97,21 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-PK">
       <head>
         <HeadContent />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
       <body>
+        <a
+          href="#main-content"
+          className="sr-only absolute left-3 top-3 z-[200] rounded-full bg-navy px-4 py-2 text-sm font-semibold text-primary-foreground focus:not-sr-only"
+        >
+          Skip to content
+        </a>
         {children}
         <Scripts />
       </body>
@@ -123,7 +123,7 @@ function RootComponent() {
   return (
     <>
       <SiteHeader />
-      <main>
+      <main id="main-content">
         <Outlet />
       </main>
       <SiteFooter />

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Clock, Facebook, Mail, MapPin, Phone } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -19,12 +19,13 @@ export function SiteFooter() {
                   height={56}
                   className="h-full w-full rounded-full object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div>
                 <div className="font-display text-2xl font-bold text-gold">Al-Mustafa</div>
                 <div className="text-xs uppercase tracking-[0.2em] text-gold-soft/70">
-                  Academy · Since 1998
+                  Academy | Since 1998
                 </div>
               </div>
             </div>
@@ -81,9 +82,9 @@ export function SiteFooter() {
               <li className="flex gap-2">
                 <Clock className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                 <span>
-                  Mon – Sat
+                  Mon - Sat
                   <br />
-                  3:00 PM – 9:00 PM
+                  3:00 PM - 9:00 PM
                 </span>
               </li>
             </ul>
@@ -99,7 +100,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-gold/15 pt-6 text-xs text-primary-foreground/50 sm:flex-row">
-          <p>© {new Date().getFullYear()} Al-Mustafa Academy. All rights reserved.</p>
+          <p>Copyright {new Date().getFullYear()} Al-Mustafa Academy. All rights reserved.</p>
           <p className="font-serif-elegant italic text-gold-soft/70">"Education is the kindling of a flame."</p>
         </div>
       </div>
