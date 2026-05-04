@@ -1,4 +1,4 @@
-export const siteUrl = "https://al-mustafa-clone.vercel.app";
+export const siteUrl = "https://www.almustafaeducationsystem.com";
 export const siteName = "Al-Mustafa Academy";
 export const logoPath = "/brand/almustafa-logo.jpg";
 export const logoUrl = `${siteUrl}${logoPath}`;

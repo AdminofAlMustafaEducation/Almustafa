@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://al-mustafa-clone.vercel.app/sitemap.xml
+Sitemap: https://www.almustafaeducationsystem.com/sitemap.xml
