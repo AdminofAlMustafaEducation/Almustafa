@@ -10,7 +10,10 @@ const structuredData = [
   {
     "@context": "https://schema.org",
     "@type": "School",
+    "@id": `${siteUrl}/#school`,
     name: academy.name,
+    description:
+      "Evening coaching academy in G-11/2 Islamabad for Juniors, Matric and F.Sc students, trusted by families since 1998.",
     url: siteUrl,
     logo: logoUrl,
     image: logoUrl,
@@ -25,6 +28,21 @@ const structuredData = [
     },
     openingHours: "Mo-Sa 15:00-21:00",
     areaServed: "Islamabad",
+    foundingDate: "1998",
+    priceRange: "$$",
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Academic coaching programs",
+      itemListElement: academy.programNames.map((name) => ({
+        "@type": "Course",
+        name,
+        provider: {
+          "@type": "School",
+          name: academy.name,
+          sameAs: siteUrl,
+        },
+      })),
+    },
   },
   {
     "@context": "https://schema.org",

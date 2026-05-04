@@ -172,13 +172,27 @@
   --sidebar-border: oklch(0.3 0.05 265);
   --sidebar-ring: oklch(0.78 0.14 80);
 
-  --gradient-pastel: linear-gradient(115deg, var(--mint) 0%, var(--cream) 50%, var(--lavender) 100%);
+  --gradient-pastel: linear-gradient(
+    115deg,
+    var(--mint) 0%,
+    var(--cream) 50%,
+    var(--lavender) 100%
+  );
   --gradient-pill: linear-gradient(135deg, #f1a34a 0%, #dc6f1c 100%);
   --gradient-hero: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 60%, #3a4f75 100%);
   --gradient-gold: linear-gradient(135deg, #efbd74 0%, #dc6f1c 100%);
-  --gradient-overlay: linear-gradient(180deg, rgba(22, 36, 59, 0.85) 0%, rgba(22, 36, 59, 0.95) 100%);
-  --gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 246, 238, 0.92) 100%);
-  --pattern-grid: linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+  --gradient-overlay: linear-gradient(
+    180deg,
+    rgba(22, 36, 59, 0.85) 0%,
+    rgba(22, 36, 59, 0.95) 100%
+  );
+  --gradient-card: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(250, 246, 238, 0.92) 100%
+  );
+  --pattern-grid:
+    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px);
   --shadow-gold: 0 10px 40px -10px rgba(225, 120, 34, 0.45);
   --shadow-elegant: 0 20px 60px -20px rgba(22, 36, 59, 0.35);
@@ -287,7 +301,7 @@
   h4,
   h5 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   img {
@@ -343,7 +357,7 @@
   .text-fluid-hero {
     font-size: clamp(2.55rem, 1.4rem + 6.4vw, 5.75rem);
     line-height: 0.95;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 
   .py-fluid-section {
@@ -470,6 +484,24 @@
     background: var(--gradient-pastel);
   }
 
+  .bg-academic-hero {
+    background:
+      linear-gradient(
+        115deg,
+        rgba(22, 36, 59, 0.96) 0%,
+        rgba(34, 58, 87, 0.88) 38%,
+        rgba(225, 120, 34, 0.18) 100%
+      ),
+      var(--gradient-pastel);
+  }
+
+  .admission-ribbon {
+    border: 1px solid rgba(255, 255, 255, 0.68);
+    background: rgba(255, 255, 255, 0.84);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(14px);
+  }
+
   .bg-mint {
     background-color: var(--mint);
   }
@@ -563,6 +595,18 @@
     z-index: -1;
   }
 
+  .proof-tile {
+    border: 1px solid rgba(22, 36, 59, 0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 248, 237, 0.9)), white;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .news-panel {
+    border-left: 4px solid var(--gold);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: var(--shadow-soft);
+  }
+
   .section-shell-alt {
     position: relative;
     isolation: isolate;
@@ -613,6 +657,7 @@
     background: rgba(255, 255, 255, 0.85);
     padding: 0.65rem 1rem;
     box-shadow: var(--shadow-soft);
+    color: var(--navy-deep);
   }
 
   .hero-frame {

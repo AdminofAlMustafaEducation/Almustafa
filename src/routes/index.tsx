@@ -7,6 +7,7 @@ import {
   GraduationCap,
   Mail,
   MapPin,
+  Megaphone,
   Navigation,
   Phone,
   Quote,
@@ -43,47 +44,66 @@ function HomePage() {
     "from-cream/95 via-white to-lavender/85",
     "from-lavender/90 via-white to-mint/80",
   ];
+  const proofStats = [
+    { value: "1998", label: "serving Islamabad families" },
+    { value: "1-12", label: "junior to F.Sc coverage" },
+    { value: "6 days", label: "weekly evening routine" },
+    { value: "2", label: "nearby G-11/2 campuses" },
+  ];
+  const newsUpdates = [
+    "Admissions open for Juniors, Matric and F.Sc evening batches.",
+    "Weekly tests and revision sessions continue across active batches.",
+    "Campus visits are open for parents before confirming admission.",
+  ];
   const achievementCards = [
     {
       title: "Senior teaching guidance",
-      detail: "Students learn from experienced lecturers who understand classroom pacing, exam patterns and concept-building.",
+      detail:
+        "Students learn from experienced lecturers who understand classroom pacing, exam patterns and concept-building.",
     },
     {
       title: "Weekly test rhythm",
-      detail: "Regular testing and revision keep progress visible, so weak areas are caught before they become bigger problems.",
+      detail:
+        "Regular testing and revision keep progress visible, so weak areas are caught before they become bigger problems.",
     },
     {
       title: "Focused batch culture",
-      detail: "Smaller groups make it easier for teachers to notice confusion, correct mistakes and encourage consistency.",
+      detail:
+        "Smaller groups make it easier for teachers to notice confusion, correct mistakes and encourage consistency.",
     },
     {
       title: "Parent-aware follow-up",
-      detail: "The academy experience is built to feel transparent and reassuring for families, not just students.",
+      detail:
+        "The academy experience is built to feel transparent and reassuring for families, not just students.",
     },
   ];
   const admissionSteps = [
     {
       step: "01",
       title: "Talk to the academy",
-      detail: "Call, message or visit the campus so we can understand the student's class level and academic needs.",
+      detail:
+        "Call, message or visit the campus so we can understand the student's class level and academic needs.",
       icon: Phone,
     },
     {
       step: "02",
       title: "Choose the right program",
-      detail: "We help families place students into Juniors, Matric or F.Sc according to the correct learning stage.",
+      detail:
+        "We help families place students into Juniors, Matric or F.Sc according to the correct learning stage.",
       icon: BookOpen,
     },
     {
       step: "03",
       title: "Meet the faculty plan",
-      detail: "Teachers explain the routine, timing, subjects and the style of weekly follow-up before the session begins.",
+      detail:
+        "Teachers explain the routine, timing, subjects and the style of weekly follow-up before the session begins.",
       icon: Users,
     },
     {
       step: "04",
       title: "Confirm admission",
-      detail: "Secure the seat and start with a clearer, more structured evening learning routine from day one.",
+      detail:
+        "Secure the seat and start with a clearer, more structured evening learning routine from day one.",
       icon: Award,
     },
   ];
@@ -122,7 +142,7 @@ function HomePage() {
 
   return (
     <>
-      <section className="section-shell relative overflow-hidden bg-pastel">
+      <section className="relative overflow-hidden bg-academic-hero text-white">
         <div aria-hidden className="soft-grid absolute inset-0 opacity-25" />
         <img
           src={doodlePen}
@@ -132,28 +152,26 @@ function HomePage() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute right-[8%] top-[16%] hidden h-[24rem] w-[24rem] rounded-full border border-gold/20 xl:block 2xl:h-[30rem] 2xl:w-[30rem]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-[14%] top-[24%] hidden h-[18rem] w-[18rem] rounded-full bg-white/30 blur-3xl xl:block 2xl:h-[22rem] 2xl:w-[22rem]"
+          className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent"
         />
 
         <div className="container-fluid relative grid items-center gap-8 py-fluid-hero lg:grid-cols-12 lg:gap-12">
           <div className="animate-fade-up lg:col-span-7">
-            <div className="section-kicker text-xs font-bold uppercase tracking-[0.22em] text-sky sm:text-sm">
-              <span className="inline-block h-2 w-2 rounded-full bg-sky" />
-              Evening Coaching in G-11/2
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-gold-soft backdrop-blur sm:text-sm">
+              <Megaphone className="h-4 w-4" />
+              Admissions Open | 2026 Session
             </div>
 
-            <h1 className="headline-balance mt-5 font-display text-fluid-hero font-black tracking-tight text-navy-deep sm:mt-6">
-              Calm after-school learning,
+            <h1 className="headline-balance mt-5 font-display text-fluid-hero font-black tracking-tight text-white sm:mt-6">
+              Premier evening coaching
               <br className="hidden sm:block" />
-              <span className="scribble-underline"> taught with purpose.</span>
+              <span className="text-gold-soft"> in G-11/2 Islamabad.</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-fluid-base text-navy-deep/72 sm:mt-7">
-              Trusted in G-11/2 Islamabad since 1998. Senior college lecturers guide Juniors, Matric and F.Sc students with clear routines, focused teaching and thoughtful follow-up that parents can actually feel.
+            <p className="mt-6 max-w-2xl text-fluid-base text-white/82 sm:mt-7">
+              Trusted since 1998 for Juniors, Matric and F.Sc. Senior college lecturers, small
+              batches, weekly tests and parent-aware follow-up help students build stronger habits
+              after school.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-9 sm:gap-4">
@@ -165,34 +183,32 @@ function HomePage() {
               </Link>
               <Link
                 to="/programs"
-                className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-3 text-xs font-bold uppercase tracking-wider text-navy-deep transition-transform hover:scale-[1.03] sm:px-6 sm:py-3.5 sm:text-sm"
+                className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/12 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white backdrop-blur transition-transform hover:scale-[1.03] sm:px-6 sm:py-3.5 sm:text-sm"
               >
-                Explore Programs <ArrowRight className="h-4 w-4 text-gold" />
+                Explore Programs <ArrowRight className="h-4 w-4 text-gold-soft" />
               </Link>
               <a
                 href={academy.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-navy-deep/80 transition-colors hover:text-gold"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors hover:text-gold-soft"
               >
                 See campus updates <ArrowRight className="h-4 w-4" />
               </a>
             </div>
 
-            <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-3">
+            <div className="admission-ribbon mt-8 grid gap-3 rounded-[1.7rem] p-3 text-navy-deep sm:mt-10 sm:grid-cols-3 sm:p-4">
               {[
                 { icon: Award, value: "27 Years", label: "community trust" },
                 { icon: Users, value: "11 Faculty", label: "experienced teachers" },
                 { icon: MapPin, value: "2 Campuses", label: "within G-11/2" },
               ].map(({ icon: Icon, value, label }) => (
-                <div key={value} className="paper-panel card-lift rounded-[1.5rem] p-4 sm:p-5">
+                <div key={value} className="rounded-[1.25rem] bg-white/72 p-4">
                   <div className="flex items-center gap-3">
-                    <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white shadow-soft">
-                      <Icon className="h-5 w-5 text-gold" />
-                    </span>
+                    <Icon className="h-5 w-5 shrink-0 text-gold" />
                     <div>
-                      <div className="font-display text-lg font-black text-navy-deep">{value}</div>
-                      <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
+                      <div className="font-display text-lg font-black">{value}</div>
+                      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
                         {label}
                       </div>
                     </div>
@@ -201,17 +217,23 @@ function HomePage() {
               ))}
             </div>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-navy-deep/75 sm:gap-4 sm:text-sm">
+            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-white/78 sm:gap-4 sm:text-sm">
               <span className="stat-pill">Small batches</span>
               <span className="stat-pill">Weekly tests</span>
               <span className="stat-pill">Parent feedback</span>
             </div>
           </div>
 
-          <div className="relative animate-fade-up lg:col-span-5" style={{ animationDelay: "0.12s" }}>
+          <div
+            className="relative animate-fade-up lg:col-span-5"
+            style={{ animationDelay: "0.12s" }}
+          >
             <div className="hero-frame mx-auto max-w-md p-3 sm:max-w-lg sm:p-4">
               <div className="relative rounded-[1.7rem] bg-gradient-to-br from-white/88 via-white/56 to-white/22 px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-7">
-                <div aria-hidden className="absolute inset-x-6 top-5 h-24 rounded-full bg-gold/10 blur-3xl" />
+                <div
+                  aria-hidden
+                  className="absolute inset-x-6 top-5 h-24 rounded-full bg-gold/10 blur-3xl"
+                />
                 <img
                   src={heroStudent}
                   alt="A bright student ready for evening coaching at Al-Mustafa Academy"
@@ -225,11 +247,15 @@ function HomePage() {
                   <div className="text-[9px] font-bold uppercase tracking-[0.24em] text-sky sm:text-[10px]">
                     Admissions Open
                   </div>
-                  <div className="mt-1 font-display text-sm font-black text-navy-deep sm:text-base">2026 Session</div>
+                  <div className="mt-1 font-display text-sm font-black text-navy-deep sm:text-base">
+                    2026 Session
+                  </div>
                 </div>
 
                 <div className="glass-panel absolute bottom-3 right-3 max-w-[12rem] rounded-2xl px-3 py-3 sm:bottom-4 sm:right-4 sm:max-w-[13rem] sm:px-4">
-                  <div className="font-display text-sm font-black text-navy-deep sm:text-base">Why families stay</div>
+                  <div className="font-display text-sm font-black text-navy-deep sm:text-base">
+                    Why families stay
+                  </div>
                   <div className="mt-2 space-y-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[12px]">
                     <div>Small batches</div>
                     <div>Weekly testing</div>
@@ -239,14 +265,61 @@ function HomePage() {
               </div>
             </div>
 
-            <div className="paper-panel mx-auto mt-4 max-w-lg p-4 sm:p-5">
-              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky">A better evening routine</div>
+            <div className="admission-ribbon mx-auto mt-4 max-w-lg rounded-[1.5rem] p-4 text-navy-deep sm:p-5">
+              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky">
+                A better evening routine
+              </div>
               <div className="mt-2 font-display text-lg font-black text-navy-deep sm:text-xl">
                 Clear teaching, calmer classrooms, stronger revision habits.
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
-                Designed to feel reassuring on mobile and strong on desktop, without the noise of an over-designed banner.
+                Designed to feel reassuring on mobile and strong on desktop, without the noise of an
+                over-designed banner.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-background py-8 sm:py-10">
+        <div className="container-fluid grid gap-5 lg:grid-cols-12 lg:items-stretch">
+          <div className="grid gap-3 sm:grid-cols-2 lg:col-span-7">
+            {proofStats.map((item) => (
+              <div key={item.value} className="proof-tile rounded-[1.35rem] p-5 sm:p-6">
+                <div className="font-display text-2xl font-black text-navy-deep sm:text-3xl">
+                  {item.value}
+                </div>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="news-panel rounded-[1.35rem] p-5 lg:col-span-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gold-gradient text-white shadow-gold">
+                <Megaphone className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-sky">
+                  Latest Updates
+                </p>
+                <h2 className="font-display text-xl font-black text-navy-deep">
+                  Admission desk is active now.
+                </h2>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-3">
+              {newsUpdates.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground"
+                >
+                  <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-gold" />
+                  <span>{item}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -263,7 +336,8 @@ function HomePage() {
               Programs built with <span className="scribble-underline">care</span> for each stage.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-fluid-base text-muted-foreground">
-              Every level has its own pace, pressure and needs. The academy structure is adjusted for that instead of treating every batch the same.
+              Every level has its own pace, pressure and needs. The academy structure is adjusted
+              for that instead of treating every batch the same.
             </p>
           </div>
 
@@ -324,12 +398,14 @@ function HomePage() {
                 Results and Achievements
               </p>
               <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
-                Better outcomes are built on <span className="scribble-underline">routine</span>, not noise.
+                Better outcomes are built on <span className="scribble-underline">routine</span>,
+                not noise.
               </h2>
             </div>
             <div className="lg:col-span-5">
               <p className="text-fluid-base text-muted-foreground lg:max-w-lg lg:ml-auto lg:text-right">
-                We do not rely on flashy promises. We focus on the quieter systems that help students improve steadily across the session.
+                We do not rely on flashy promises. We focus on the quieter systems that help
+                students improve steadily across the session.
               </p>
             </div>
           </div>
@@ -337,8 +413,12 @@ function HomePage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {achievementCards.map((card, index) => (
               <div key={card.title} className="paper-panel card-lift rounded-[1.7rem] p-5 sm:p-6">
-                <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky">0{index + 1}</div>
-                <h3 className="mt-3 font-display text-xl font-black text-navy-deep">{card.title}</h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky">
+                  0{index + 1}
+                </div>
+                <h3 className="mt-3 font-display text-xl font-black text-navy-deep">
+                  {card.title}
+                </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{card.detail}</p>
               </div>
             ))}
@@ -347,7 +427,10 @@ function HomePage() {
       </section>
 
       <section className="relative overflow-hidden bg-mint/35 py-fluid-section">
-        <div aria-hidden className="absolute right-0 top-10 h-64 w-64 rounded-full bg-lavender/60 blur-3xl" />
+        <div
+          aria-hidden
+          className="absolute right-0 top-10 h-64 w-64 rounded-full bg-lavender/60 blur-3xl"
+        />
         <div className="container-fluid relative grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="relative mx-auto w-full max-w-md lg:col-span-6 lg:mx-0 lg:max-w-none">
             <div className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-white/30 p-3 shadow-elegant backdrop-blur-md sm:p-4">
@@ -366,7 +449,9 @@ function HomePage() {
                 <GraduationCap className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
               <div>
-                <div className="font-display text-xl font-black leading-none text-navy-deep sm:text-2xl">27+</div>
+                <div className="font-display text-xl font-black leading-none text-navy-deep sm:text-2xl">
+                  27+
+                </div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
                   Years of teaching
                 </div>
@@ -389,24 +474,40 @@ function HomePage() {
               About the Academy
             </p>
             <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
-              Good teachers, steady systems, and a culture that feels <span className="scribble-underline">human.</span>
+              Good teachers, steady systems, and a culture that feels{" "}
+              <span className="scribble-underline">human.</span>
             </h2>
             <p className="mt-5 text-fluid-base text-navy-deep/72 sm:mt-6">
-              Al-Mustafa Academy began in 1998 with a single room and a clear idea: excellence is a quiet, daily practice. Today, eleven senior lecturers from IMCB, ICB, Bahria College, APS Rawalpindi and Al-Kausar carry that same conviction across two G-11/2 campuses.
+              Al-Mustafa Academy began in 1998 with a single room and a clear idea: excellence is a
+              quiet, daily practice. Today, eleven senior lecturers from IMCB, ICB, Bahria College,
+              APS Rawalpindi and Al-Kausar carry that same conviction across two G-11/2 campuses.
             </p>
 
             <div className="mt-7 space-y-4">
               {[
-                { title: "Senior College Lecturers", detail: "Experienced teachers who know how board-facing preparation should actually be paced." },
-                { title: "Small, Focused Batches", detail: "Students are seen, corrected and encouraged before confusion grows." },
-                { title: "Weekly Tests and Feedback", detail: "Progress stays visible for both students and parents throughout the session." },
+                {
+                  title: "Senior College Lecturers",
+                  detail:
+                    "Experienced teachers who know how board-facing preparation should actually be paced.",
+                },
+                {
+                  title: "Small, Focused Batches",
+                  detail: "Students are seen, corrected and encouraged before confusion grows.",
+                },
+                {
+                  title: "Weekly Tests and Feedback",
+                  detail:
+                    "Progress stays visible for both students and parents throughout the session.",
+                },
               ].map((feature, i) => (
                 <div key={feature.title} className="paper-panel flex items-start gap-4 p-4 sm:p-5">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-navy-deep font-display text-sm font-black text-white">
                     0{i + 1}
                   </span>
                   <div>
-                    <div className="font-display text-lg font-black text-navy-deep">{feature.title}</div>
+                    <div className="font-display text-lg font-black text-navy-deep">
+                      {feature.title}
+                    </div>
                     <div className="mt-1 text-fluid-sm text-muted-foreground">{feature.detail}</div>
                   </div>
                 </div>
@@ -431,10 +532,12 @@ function HomePage() {
               Admissions Process
             </p>
             <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
-              A simple path from <span className="scribble-underline">first inquiry</span> to first class.
+              A simple path from <span className="scribble-underline">first inquiry</span> to first
+              class.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-fluid-base text-muted-foreground">
-              The admission journey is designed to feel clear and low-stress for both students and parents.
+              The admission journey is designed to feel clear and low-stress for both students and
+              parents.
             </p>
           </div>
 
@@ -445,7 +548,9 @@ function HomePage() {
                   <span className="grid h-12 w-12 place-items-center rounded-2xl bg-navy-deep text-white shadow-soft">
                     <Icon className="h-5 w-5" />
                   </span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky">{step}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-sky">
+                    {step}
+                  </span>
                 </div>
                 <h3 className="mt-5 font-display text-xl font-black text-navy-deep">{title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{detail}</p>
@@ -459,8 +564,24 @@ function HomePage() {
         <div className="animate-marquee flex gap-8 whitespace-nowrap font-display text-lg font-black uppercase tracking-wide sm:gap-12 sm:text-xl md:text-2xl">
           {Array.from({ length: 2 }).map((_, block) => (
             <div key={block} className="flex shrink-0 items-center gap-8 sm:gap-12">
-              {["Discipline", "|", "Sincerity", "|", "Excellence", "|", "Care", "|", "Mastery", "|", "Tradition", "|"].map((word, i) => (
-                <span key={`${block}-${i}`} className={i % 2 ? "text-sm opacity-75 sm:text-base" : ""}>
+              {[
+                "Discipline",
+                "|",
+                "Sincerity",
+                "|",
+                "Excellence",
+                "|",
+                "Care",
+                "|",
+                "Mastery",
+                "|",
+                "Tradition",
+                "|",
+              ].map((word, i) => (
+                <span
+                  key={`${block}-${i}`}
+                  className={i % 2 ? "text-sm opacity-75 sm:text-base" : ""}
+                >
                   {word}
                 </span>
               ))}
@@ -492,8 +613,12 @@ function HomePage() {
                   decoding="async"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy-deep/85 to-transparent p-5 text-white">
-                  <div className="text-[10px] uppercase tracking-[0.26em] text-gold-soft">Campus atmosphere</div>
-                  <div className="mt-1 font-display text-2xl font-black">A calm evening setting</div>
+                  <div className="text-[10px] uppercase tracking-[0.26em] text-gold-soft">
+                    Campus atmosphere
+                  </div>
+                  <div className="mt-1 font-display text-2xl font-black">
+                    A calm evening setting
+                  </div>
                 </div>
               </div>
             </div>
@@ -596,7 +721,9 @@ function HomePage() {
               </div>
               <div className="md:col-span-10">
                 <blockquote className="headline-balance font-display text-fluid-h3 font-medium text-navy-deep">
-                  &quot;They did not just teach my son Physics and Maths, they taught him how to <span className="scribble-underline">think</span>. The teachers genuinely care, and the results speak for themselves.&quot;
+                  &quot;They did not just teach my son Physics and Maths, they taught him how to{" "}
+                  <span className="scribble-underline">think</span>. The teachers genuinely care,
+                  and the results speak for themselves.&quot;
                 </blockquote>
                 <div className="mt-6 flex items-center justify-center gap-4 sm:mt-8 md:justify-start">
                   <div className="flex gap-0.5 text-gold">
@@ -623,10 +750,12 @@ function HomePage() {
               Frequently Asked Questions
             </p>
             <h2 className="headline-balance mt-4 font-display text-fluid-h2 font-black text-navy-deep">
-              Common questions from <span className="scribble-underline">parents and students.</span>
+              Common questions from{" "}
+              <span className="scribble-underline">parents and students.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-fluid-base text-muted-foreground">
-              A few practical answers to the questions families usually ask before visiting the academy.
+              A few practical answers to the questions families usually ask before visiting the
+              academy.
             </p>
           </div>
 
@@ -651,8 +780,14 @@ function HomePage() {
       </section>
 
       <section className="relative overflow-hidden bg-gold-gradient py-12 sm:py-16">
-        <div aria-hidden className="absolute -right-10 -top-10 h-72 w-72 rounded-full border-2 border-dashed border-white/30" />
-        <div aria-hidden className="absolute -bottom-16 -left-10 h-72 w-72 rounded-full border-2 border-dashed border-white/20" />
+        <div
+          aria-hidden
+          className="absolute -right-10 -top-10 h-72 w-72 rounded-full border-2 border-dashed border-white/30"
+        />
+        <div
+          aria-hidden
+          className="absolute -bottom-16 -left-10 h-72 w-72 rounded-full border-2 border-dashed border-white/20"
+        />
         <div className="container-fluid">
           <div className="glass-panel rounded-[2rem] bg-white/14 p-6 text-white sm:p-8 md:grid md:grid-cols-3 md:items-center md:gap-8">
             <div className="md:col-span-2">
@@ -663,7 +798,8 @@ function HomePage() {
                 Secure your child&apos;s seat for the new academic session.
               </h3>
               <p className="mt-4 max-w-2xl text-sm text-white/84 sm:text-base">
-                Visit the campus, speak to the academy team, and find the right batch before seats close.
+                Visit the campus, speak to the academy team, and find the right batch before seats
+                close.
               </p>
             </div>
             <div className="mt-6 flex flex-wrap gap-3 md:mt-0 md:justify-end">
@@ -696,7 +832,8 @@ function HomePage() {
                 Right here in <span className="scribble-underline">G-11/2.</span>
               </h2>
               <p className="mt-5 max-w-xl text-fluid-base text-navy-deep/72">
-                Two campuses, a five-minute walk apart, on Sachal Sarmast Road and Street 58. Easy parking, well-lit evenings, and right next to your neighbourhood.
+                Two campuses, a five-minute walk apart, on Sachal Sarmast Road and Street 58. Easy
+                parking, well-lit evenings, and right next to your neighbourhood.
               </p>
             </div>
             <div className="space-y-2 break-words lg:col-span-4 lg:text-right">
@@ -732,13 +869,12 @@ function HomePage() {
 
             <div className="grid gap-4 lg:col-span-4 sm:grid-cols-2 lg:grid-cols-1">
               {branches.map((branch, i) => (
-                <div
-                  key={branch.id}
-                  className="paper-panel card-lift rounded-[1.7rem] p-5 sm:p-6"
-                >
+                <div key={branch.id} className="paper-panel card-lift rounded-[1.7rem] p-5 sm:p-6">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-sky">Branch 0{i + 1}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-sky">
+                        Branch 0{i + 1}
+                      </p>
                       <h3 className="mt-1 font-display text-lg font-black text-navy-deep sm:text-xl">
                         {branch.label}
                       </h3>
@@ -750,7 +886,9 @@ function HomePage() {
                   <p className="mt-3 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                     {branch.address}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground sm:text-xs">{branch.hours}</p>
+                  <p className="mt-1 text-[11px] text-muted-foreground sm:text-xs">
+                    {branch.hours}
+                  </p>
                   <a
                     href={branch.mapsLink}
                     target="_blank"

@@ -69,8 +69,12 @@ export const academy = {
   facebook: "https://www.facebook.com/Almustafa614",
   mapsEmbed:
     "https://maps.google.com/maps?q=Al-Mustafa%20Academy%20G-11%2F2%20Islamabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
-  mapsLink:
-    "https://www.google.com/maps/search/?api=1&query=Al-Mustafa+Academy+G-11%2F2+Islamabad",
+  mapsLink: "https://www.google.com/maps/search/?api=1&query=Al-Mustafa+Academy+G-11%2F2+Islamabad",
+  programNames: [
+    "Juniors Class 1-8",
+    "Matric 9th and 10th",
+    "F.Sc Pre-Medical and Pre-Engineering",
+  ],
 };
 
 export const branches = [
