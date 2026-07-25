@@ -168,7 +168,7 @@ function HomePage() {
               <span className="text-gold-soft"> in G-11/2 Islamabad.</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-fluid-base text-white/82 sm:mt-7">
+            <p className="mt-6 max-w-2xl text-fluid-base text-white/90 sm:mt-7">
               Trusted since 1998 for Juniors, Matric and F.Sc. Senior college lecturers, small
               batches, weekly tests and parent-aware follow-up help students build stronger habits
               after school.
@@ -217,7 +217,7 @@ function HomePage() {
               ))}
             </div>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-white/78 sm:gap-4 sm:text-sm">
+            <div className="mt-7 flex flex-wrap items-center gap-3 text-xs text-white/85 sm:gap-4 sm:text-sm">
               <span className="stat-pill">Small batches</span>
               <span className="stat-pill">Weekly tests</span>
               <span className="stat-pill">Parent feedback</span>
@@ -239,6 +239,7 @@ function HomePage() {
                   alt="A bright student ready for evening coaching at Al-Mustafa Academy"
                   className="relative mx-auto h-full max-h-[24rem] w-full object-contain drop-shadow-2xl sm:max-h-[31rem]"
                   loading="eager"
+                  fetchPriority="high"
                   width={1024}
                   height={1024}
                 />

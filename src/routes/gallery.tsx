@@ -190,6 +190,7 @@ function GalleryPage() {
         <div
           role="dialog"
           aria-modal="true"
+          aria-label={`Image ${activeIndex! + 1} of ${visible.length}: ${active.caption}`}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-navy-deep/98 p-3 backdrop-blur-md sm:p-4"
           onClick={close}
         >

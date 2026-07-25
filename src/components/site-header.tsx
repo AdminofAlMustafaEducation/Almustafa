@@ -51,7 +51,7 @@ export function SiteHeader() {
                 key={item.to}
                 to={item.to}
                 className="group relative rounded-full px-4 py-2 text-sm font-semibold text-navy-deep/82 transition-colors hover:text-gold"
-                activeProps={{ className: "relative rounded-full bg-navy-deep px-4 py-2 text-sm font-semibold text-white shadow-soft" }}
+                activeProps={{ className: "relative rounded-full bg-navy-deep px-4 py-2 text-sm font-semibold text-white shadow-soft", "aria-current": "page" }}
               >
                 {item.label}
                 <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-gold transition-transform group-hover:scale-x-100" />
@@ -86,7 +86,7 @@ export function SiteHeader() {
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className="block rounded-2xl px-3 py-2.5 text-navy-deep/85 hover:bg-white hover:text-gold"
-                activeProps={{ className: "block rounded-2xl bg-white px-3 py-2.5 text-gold shadow-soft" }}
+                activeProps={{ className: "block rounded-2xl bg-white px-3 py-2.5 text-gold shadow-soft", "aria-current": "page" }}
               >
                 {item.label}
               </Link>

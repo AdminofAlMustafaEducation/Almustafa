@@ -1,6 +1,7 @@
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { AuthProvider } from "@/components/auth/auth-provider";
 import { academy } from "@/data/faculty";
 import { buildPageHead, logoPath, logoUrl, siteName, siteUrl } from "@/lib/seo";
 
@@ -93,7 +94,7 @@ export const Route = createRootRoute({
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "author", content: siteName },
-        { name: "theme-color", content: "#6b1f19" },
+        { name: "theme-color", content: "#223a57" },
         { name: "format-detection", content: "telephone=yes" },
         ...pageHead.meta,
       ],
@@ -139,12 +140,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <>
+    <AuthProvider>
       <SiteHeader />
       <main id="main-content">
         <Outlet />
       </main>
       <SiteFooter />
-    </>
+    </AuthProvider>
   );
 }
