@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { supabase } from "@/lib/supabase";
 import { AuthContext, type AuthContextType } from "@/hooks/use-auth";
+import { getStoredUser, storeUser, validateLogin } from "@/lib/auth-local";
 import type { User } from "@/types/database";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -8,72 +8,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase) {
-      setIsLoading(false);
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        fetchUser(session.user.id);
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        await fetchUser(session.user.id);
-      } else {
-        setUser(null);
-        setIsLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  async function fetchUser(userId: string) {
-    if (!supabase) {
-      setIsLoading(false);
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      console.error("Error fetching user:", error);
-      setUser(null);
-    } else {
-      setUser(data);
+    const stored = getStoredUser();
+    if (stored) {
+      setUser(stored);
     }
     setIsLoading(false);
-  }
+  }, []);
 
   async function login(email: string, password: string) {
-    if (!supabase) {
-      throw new Error("Supabase not configured");
+    const result = validateLogin(email, password);
+    if (!result.success) {
+      throw new Error(result.error);
     }
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
+    setUser(result.user);
+    storeUser(result.user);
   }
 
   async function logout() {
-    if (!supabase) {
-      throw new Error("Supabase not configured");
-    }
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
     setUser(null);
+    storeUser(null);
   }
 
   const value: AuthContextType = { user, isLoading, login, logout };
