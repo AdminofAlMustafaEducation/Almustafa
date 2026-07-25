@@ -266,17 +266,6 @@
   </div>
 
   <script>
-    // Check auth
-    var stored = localStorage.getItem("almustafa_admin");
-    if (!stored) {
-      window.location.href = "/login.html";
-    } else {
-      try {
-        var user = JSON.parse(stored);
-        document.getElementById("userName").textContent = user.name || user.email;
-      } catch(e) {}
-    }
-
     // Navigation
     var navLinks = document.querySelectorAll(".sidebar nav a");
     navLinks.forEach(function(link) {
