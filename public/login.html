@@ -116,19 +116,19 @@
     </div>
     <div class="login-card">
       <div id="error" class="error-msg"></div>
-      <form id="loginForm">
+      <div id="loginForm">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="almustafaeducationsystem408@gmail.com" required>
+          <input type="email" id="email" name="email" placeholder="almustafaeducationsystem408@gmail.com">
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <input type="password" id="password" name="password" placeholder="Enter your password">
         </div>
-        <button type="submit" class="btn-login" id="btnLogin">Sign In</button>
-      </form>
+        <button type="button" class="btn-login" id="btnLogin" onclick="doLogin()">Sign In</button>
+      </div>
     </div>
-    <a href="/" class="back-link">← Back to website</a>
+    <a href="/" class="back-link" onclick="window.location='https://www.almustafaeducationsystem.com/'; return false;">← Back to website</a>
   </div>
 
   <script>
@@ -136,35 +136,36 @@
     var ADMIN_EMAIL = "almustafaeducationsystem408@gmail.com";
     var ADMIN_PASSWORD = "AlMustafa@2026";
 
-    var form = document.getElementById("loginForm");
-    var errorDiv = document.getElementById("error");
-    var btnLogin = document.getElementById("btnLogin");
-
     // Check if already logged in
     var stored = localStorage.getItem("almustafa_admin");
     if (stored) {
       try {
         var user = JSON.parse(stored);
         if (user && user.email === ADMIN_EMAIL) {
-          window.location.href = "/admin-panel.html";
+          window.location.replace("/admin-panel.html");
         }
       } catch(e) {}
     }
 
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      
+    function doLogin() {
       var email = document.getElementById("email").value.trim();
       var password = document.getElementById("password").value;
+      var errorDiv = document.getElementById("error");
+      var btnLogin = document.getElementById("btnLogin");
 
       errorDiv.classList.remove("show");
+
+      if (!email || !password) {
+        errorDiv.textContent = "Please enter email and password.";
+        errorDiv.classList.add("show");
+        return;
+      }
+
       btnLogin.disabled = true;
       btnLogin.textContent = "Signing in...";
 
-      // Simulate small delay
       setTimeout(function() {
         if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-          // Store auth
           localStorage.setItem("almustafa_admin", JSON.stringify({
             id: "admin-001",
             email: email,
@@ -172,15 +173,21 @@
             role: "admin",
             loginTime: new Date().toISOString()
           }));
-          // Redirect to admin panel
-          window.location.href = "/admin-panel.html";
+          window.location.replace("/admin-panel.html");
         } else {
           errorDiv.textContent = "Invalid email or password. Please try again.";
           errorDiv.classList.add("show");
           btnLogin.disabled = false;
           btnLogin.textContent = "Sign In";
         }
-      }, 500);
+      }, 300);
+    }
+
+    // Handle Enter key
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        doLogin();
+      }
     });
   </script>
 </body>
