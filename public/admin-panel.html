@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Al-Mustafa Academy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
+    
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background: #000; color: #fff; position: fixed; height: 100vh; overflow-y: auto; transition: width 0.2s; z-index: 100; }
+    .sidebar.collapsed { width: 64px; }
+    .sidebar-header { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; border-bottom: 1px solid #1f1f1f; }
+    .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; }
+    .sidebar-header .toggle-btn { background: none; border: none; color: #fff; cursor: pointer; padding: 4px; border-radius: 4px; }
+    .sidebar-header .toggle-btn:hover { background: #1f1f1f; }
+    .sidebar nav { padding: 0.5rem; }
+    .sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: #9ca3af; text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 500; transition: all 0.15s; }
+    .sidebar nav a:hover { background: #1f1f1f; color: #fff; }
+    .sidebar nav a.active { background: #fff; color: #000; }
+    .sidebar nav a svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar.collapsed nav a span { display: none; }
+    .sidebar.collapsed .sidebar-header h2 { display: none; }
+    
+    /* Main content */
+    .main { flex: 1; margin-left: 260px; transition: margin-left 0.2s; }
+    .sidebar.collapsed + .main { margin-left: 64px; }
+    .header { height: 64px; background: #fff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; position: sticky; top: 0; z-index: 50; }
+    .header h1 { font-size: 1.1rem; font-weight: 600; }
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .header-right .user-name { font-size: 0.875rem; color: #6b7280; }
+    .btn-logout { background: none; border: none; color: #6b7280; cursor: pointer; padding: 6px; border-radius: 6px; }
+    .btn-logout:hover { color: #ef4444; background: #fef2f2; }
+    .content { padding: 1.5rem; }
+    
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+    .stat-card .stat-label { font-size: 0.8rem; color: #6b7280; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .stat-value { font-size: 2rem; font-weight: 700; margin-top: 0.25rem; }
+    .stat-card .stat-desc { font-size: 0.8rem; color: #22c55e; margin-top: 0.25rem; }
+    
+    /* Cards */
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+    
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; border-bottom: 1px solid #e5e7eb; }
+    table td { padding: 0.75rem 1rem; font-size: 0.875rem; border-bottom: 1px solid #f3f4f6; }
+    table tr:hover td { background: #f9fafb; }
+    
+    /* Badges */
+    .badge { display: inline-flex; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-yellow { background: #fef3c7; color: #92400e; }
+    .badge-red { background: #fef2f2; color: #991b1b; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-gray { background: #f3f4f6; color: #374151; }
+    
+    /* Buttons */
+    .btn { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+    .btn-primary { background: #000; color: #fff; }
+    .btn-primary:hover { background: #333; }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+    
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Al-Mustafa</h2>
+        <button class="toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('collapsed')" aria-label="Toggle sidebar">☰</button>
+      </div>
+      <nav>
+        <a href="#" class="active" data-page="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" data-page="students">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Students</span>
+        </a>
+        <a href="#" data-page="admissions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Admissions</span>
+        </a>
+        <a href="#" data-page="faculty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg>
+          <span>Faculty</span>
+        </a>
+        <a href="#" data-page="attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Attendance</span>
+        </a>
+        <a href="#" data-page="fees">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span>Fees</span>
+        </a>
+        <a href="#" data-page="gallery">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Gallery</span>
+        </a>
+        <a href="#" data-page="inquiries">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Inquiries</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main">
+      <header class="header">
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="header-right">
+          <span class="user-name" id="userName">Admin</span>
+          <button class="btn-logout" onclick="logout()" title="Logout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="content" id="content">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Students</div>
+              <div class="stat-value">187</div>
+              <div class="stat-desc">+12 this month</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Pending Admissions</div>
+              <div class="stat-value">23</div>
+              <div class="stat-desc">5 new today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">New Inquiries</div>
+              <div class="stat-value">8</div>
+              <div class="stat-desc">3 unread</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active Faculty</div>
+              <div class="stat-value">11</div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Recent Inquiries</h3>
+              <p style="color:#6b7280;font-size:0.875rem;">Connect to Supabase to see inquiries.</p>
+            </div>
+            <div class="card">
+              <h3>Admission Pipeline</h3>
+              <p style="color:#6b7280;font-size:0.875rem;">Connect to Supabase to see applications.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Students Page -->
+        <div id="page-students" style="display:none">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+              <h3>Students</h3>
+              <button class="btn btn-primary btn-sm">+ Add Student</button>
+            </div>
+            <table>
+              <thead><tr><th>Roll #</th><th>Name</th><th>Class</th><th>Program</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>AMS-001</td><td>Ahmed Khan</td><td>9</td><td>Matric</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>AMS-002</td><td>Fatima Ali</td><td>10</td><td>Matric</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>AMS-003</td><td>Hassan Raza</td><td>11</td><td>FSc Pre-Medical</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>AMS-004</td><td>Zainab Malik</td><td>12</td><td>FSc Pre-Engineering</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>AMS-005</td><td>Usman Ahmed</td><td>9</td><td>Matric</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>AMS-006</td><td>Ayesha Siddique</td><td>10</td><td>Matric</td><td><span class="badge badge-yellow">Inactive</span></td></tr>
+                <tr><td>AMS-007</td><td>Bilal Shah</td><td>11</td><td>FSc Pre-Medical</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>AMS-008</td><td>Mariam Nawaz</td><td>12</td><td>FSc Pre-Engineering</td><td><span class="badge badge-blue">Graduated</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admissions Page -->
+        <div id="page-admissions" style="display:none">
+          <div class="card">
+            <h3>Admission Applications</h3>
+            <table>
+              <thead><tr><th>App #</th><th>Student</th><th>Class</th><th>Program</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody>
+                <tr><td>APP-001</td><td>Ahmed Khan</td><td>9</td><td>Matric</td><td><span class="badge badge-green">Approved</span></td><td>2026-07-20</td></tr>
+                <tr><td>APP-002</td><td>Sara Bibi</td><td>10</td><td>Matric</td><td><span class="badge badge-yellow">Pending</span></td><td>2026-07-22</td></tr>
+                <tr><td>APP-003</td><td>Ali Raza</td><td>11</td><td>FSc Pre-Med</td><td><span class="badge badge-blue">Reviewing</span></td><td>2026-07-23</td></tr>
+                <tr><td>APP-004</td><td>Noor Fatima</td><td>12</td><td>FSc Pre-Eng</td><td><span class="badge badge-red">Rejected</span></td><td>2026-07-24</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Faculty Page -->
+        <div id="page-faculty" style="display:none">
+          <div class="card">
+            <h3>Faculty Members</h3>
+            <table>
+              <thead><tr><th>Name</th><th>Subject</th><th>Designation</th><th>Campus</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Syed Ali Azeem Kazmi</td><td>Mathematics</td><td>Director Academy</td><td>Main</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>Syed Ali Abbas Kazmi</td><td>Mathematics</td><td>Director Academy</td><td>Main</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>Syed Sajid Kazmi</td><td>Biology</td><td>V.P ICB G-6/3</td><td>Main</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>Mr. Ahmed</td><td>Physics</td><td>Senior Lecturer</td><td>Main</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>Mr. Tariq</td><td>Chemistry</td><td>Senior Lecturer</td><td>Second</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Attendance Page -->
+        <div id="page-attendance" style="display:none">
+          <div class="card">
+            <h3>Attendance Management</h3>
+            <p style="color:#6b7280;font-size:0.875rem;">Select a batch and date to mark attendance. Connect to Supabase for live data.</p>
+          </div>
+        </div>
+
+        <!-- Fees Page -->
+        <div id="page-fees" style="display:none">
+          <div class="card">
+            <h3>Fee Management</h3>
+            <p style="color:#6b7280;font-size:0.875rem;">Connect to Supabase to manage student fees.</p>
+          </div>
+        </div>
+
+        <!-- Gallery Page -->
+        <div id="page-gallery" style="display:none">
+          <div class="card">
+            <h3>Gallery Management</h3>
+            <p style="color:#6b7280;font-size:0.875rem;">Connect to Supabase to manage gallery images.</p>
+          </div>
+        </div>
+
+        <!-- Inquiries Page -->
+        <div id="page-inquiries" style="display:none">
+          <div class="card">
+            <h3>Contact Inquiries</h3>
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody>
+                <tr><td>Muhammad Asif</td><td>asif@gmail.com</td><td>Admission inquiry for Class 9</td><td><span class="badge badge-blue">New</span></td><td>2026-07-24</td></tr>
+                <tr><td>Amina Khan</td><td>amina@yahoo.com</td><td>Fee structure for FSc</td><td><span class="badge badge-blue">New</span></td><td>2026-07-23</td></tr>
+                <tr><td>Tariq Mehmood</td><td>tariq@hotmail.com</td><td>Campus visit appointment</td><td><span class="badge badge-green">Responded</span></td><td>2026-07-22</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check auth
+    var stored = localStorage.getItem("almustafa_admin");
+    if (!stored) {
+      window.location.href = "/login.html";
+    } else {
+      try {
+        var user = JSON.parse(stored);
+        document.getElementById("userName").textContent = user.name || user.email;
+      } catch(e) {}
+    }
+
+    // Navigation
+    var navLinks = document.querySelectorAll(".sidebar nav a");
+    navLinks.forEach(function(link) {
+      link.addEventListener("click", function(e) {
+        e.preventDefault();
+        var page = this.getAttribute("data-page");
+        
+        // Update active link
+        navLinks.forEach(function(l) { l.classList.remove("active"); });
+        this.classList.add("active");
+        
+        // Show page
+        document.querySelectorAll("[id^='page-']").forEach(function(p) { p.style.display = "none"; });
+        var pageEl = document.getElementById("page-" + page);
+        if (pageEl) pageEl.style.display = "block";
+        
+        // Update title
+        document.getElementById("pageTitle").textContent = page.charAt(0).toUpperCase() + page.slice(1);
+      });
+    });
+
+    // Logout
+    function logout() {
+      localStorage.removeItem("almustafa_admin");
+      window.location.href = "/login.html";
+    }
+  </script>
+</body>
+</html>
