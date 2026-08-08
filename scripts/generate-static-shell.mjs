@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const serverEntry = resolve(root, "dist/server/server.js");
 const shellPath = resolve(root, "dist/client/_shell.html");
-const siteUrl = "https://www.almustafaeducationsystem.com/";
+const siteUrl = process.env.SITE_URL || "https://www.almustafaeducationsystem.com/";
 
 const { default: server } = await import(pathToFileURL(serverEntry));
 const response = await server.fetch(new Request(siteUrl));

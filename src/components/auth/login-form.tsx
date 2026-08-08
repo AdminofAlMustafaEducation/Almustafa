@@ -47,7 +47,7 @@ export function LoginForm() {
           id="email"
           type="email"
           {...register("email")}
-          placeholder="admin@almustafa.edu"
+          placeholder="admin@example.com"
         />
         {errors.email && (
           <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>

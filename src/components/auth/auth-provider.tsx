@@ -1,6 +1,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { AuthContext, type AuthContextType } from "@/hooks/use-auth";
-import { getStoredUser, storeUser, validateLogin } from "@/lib/auth-local";
+import { validateLogin, signOut, getCurrentSession, storeUser } from "@/lib/auth-local";
+import { supabase } from "@/lib/supabase";
 import type { User } from "@/types/database";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -8,25 +9,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = getStoredUser();
-    if (stored) {
-      setUser(stored);
+    async function initAuth() {
+      const sessionUser = await getCurrentSession();
+      setUser(sessionUser);
+      setIsLoading(false);
     }
-    setIsLoading(false);
+
+    initAuth();
+
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (_event, session) => {
+          if (session?.user) {
+            const sessionUser = await getCurrentSession();
+            setUser(sessionUser);
+          } else {
+            setUser(null);
+            storeUser(null);
+          }
+        }
+      );
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
   }, []);
 
   async function login(email: string, password: string) {
-    const result = validateLogin(email, password);
-    if (!result.success) {
-      throw new Error(result.error);
+    const result = await validateLogin(email, password);
+    if (!result.success || !result.user) {
+      throw new Error(result.error || "Login failed");
     }
     setUser(result.user);
     storeUser(result.user);
   }
 
   async function logout() {
+    await signOut();
     setUser(null);
-    storeUser(null);
   }
 
   const value: AuthContextType = { user, isLoading, login, logout };
