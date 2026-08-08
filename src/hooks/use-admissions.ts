@@ -140,6 +140,36 @@ export function useApplication(id: string) {
   });
 }
 
+export function useCreateApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: Omit<Application, "id" | "application_number" | "status" | "documents" | "reviewer_notes" | "reviewed_by" | "reviewed_at" | "created_at" | "updated_at">) => {
+      if (USE_MOCK) {
+        const now = new Date().toISOString();
+        const newApp: Application = {
+          ...data,
+          id: String(MOCK_APPLICATIONS.length + 1),
+          application_number: generateApplicationNumber(),
+          status: "pending",
+          documents: [],
+          created_at: now,
+          updated_at: now,
+        };
+        MOCK_APPLICATIONS.push(newApp);
+        return newApp;
+      }
+
+      const { data: result, error } = await supabase!.from("applications").insert(data).select().single();
+      if (error) throw new Error(error.message);
+      return result as Application;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["applications"] });
+    },
+  });
+}
+
 export function useUpdateApplicationStatus() {
   const queryClient = useQueryClient();
 
