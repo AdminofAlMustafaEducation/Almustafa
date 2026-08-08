@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import type { Application } from "@/types/database";
 
 const MOCK_APPLICATIONS: Application[] = [
@@ -18,7 +19,6 @@ const MOCK_APPLICATIONS: Application[] = [
     parent_name: "Muhammad Khan",
     parent_phone: "03339876543",
     parent_cnic: "35202-1234567-1",
-    photo_url: undefined,
     documents: [],
     status: "approved",
     reviewer_notes: "Strong academic record. Accepted for Matric 9th.",
@@ -43,12 +43,8 @@ const MOCK_APPLICATIONS: Application[] = [
     parent_name: "Ali Raza",
     parent_phone: "03349876543",
     parent_cnic: "35202-9876543-2",
-    photo_url: undefined,
     documents: [],
     status: "reviewing",
-    reviewer_notes: undefined,
-    reviewed_by: undefined,
-    reviewed_at: undefined,
     created_at: "2026-01-18T14:00:00Z",
     updated_at: "2026-01-19T09:00:00Z",
   },
@@ -67,13 +63,8 @@ const MOCK_APPLICATIONS: Application[] = [
     previous_marks: "78%",
     parent_name: "Ahmed Raza",
     parent_phone: "03359876543",
-    parent_cnic: undefined,
-    photo_url: undefined,
     documents: [],
     status: "pending",
-    reviewer_notes: undefined,
-    reviewed_by: undefined,
-    reviewed_at: undefined,
     created_at: "2026-01-22T11:00:00Z",
     updated_at: "2026-01-22T11:00:00Z",
   },
@@ -93,7 +84,6 @@ const MOCK_APPLICATIONS: Application[] = [
     parent_name: "Noor Muhammad",
     parent_phone: "03369876543",
     parent_cnic: "35202-4567891-3",
-    photo_url: undefined,
     documents: [],
     status: "rejected",
     reviewer_notes: "Seats full for FSc Pre-Engineering 2nd year.",
@@ -104,18 +94,33 @@ const MOCK_APPLICATIONS: Application[] = [
   },
 ];
 
+const USE_MOCK = !supabase;
+
 function generateApplicationNumber(): string {
   const year = new Date().getFullYear();
   const seq = String(MOCK_APPLICATIONS.length + 1).padStart(4, "0");
   return `AMA-${year}-${seq}`;
 }
 
-export function useApplications() {
+export function useApplications(filters?: { status?: string }) {
   return useQuery<Application[]>({
-    queryKey: ["applications"],
+    queryKey: ["applications", filters],
     queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 500));
-      return MOCK_APPLICATIONS;
+      if (USE_MOCK) {
+        let result = [...MOCK_APPLICATIONS];
+        if (filters?.status && filters.status !== "all") {
+          result = result.filter((a) => a.status === filters.status);
+        }
+        return result;
+      }
+
+      let query = supabase!.from("applications").select("*").order("created_at", { ascending: false });
+      if (filters?.status && filters.status !== "all") {
+        query = query.eq("status", filters.status);
+      }
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data ?? []) as Application[];
     },
   });
 }
@@ -124,39 +129,14 @@ export function useApplication(id: string) {
   return useQuery<Application | null>({
     queryKey: ["application", id],
     queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 400));
-      return MOCK_APPLICATIONS.find((a) => a.id === id || a.application_number === id) ?? null;
+      if (USE_MOCK) {
+        return MOCK_APPLICATIONS.find((a) => a.id === id || a.application_number === id) ?? null;
+      }
+      const { data, error } = await supabase!.from("applications").select("*").eq("id", id).single();
+      if (error) throw new Error(error.message);
+      return data as Application;
     },
     enabled: !!id,
-  });
-}
-
-export function useCreateApplication() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: Omit<Application, "id" | "application_number" | "status" | "documents" | "reviewer_notes" | "reviewed_by" | "reviewed_at" | "created_at" | "updated_at">) => {
-      await new Promise((r) => setTimeout(r, 800));
-      const now = new Date().toISOString();
-      const newApp: Application = {
-        ...data,
-        id: String(MOCK_APPLICATIONS.length + 1),
-        application_number: generateApplicationNumber(),
-        status: "pending",
-        photo_url: undefined,
-        documents: [],
-        reviewer_notes: undefined,
-        reviewed_by: undefined,
-        reviewed_at: undefined,
-        created_at: now,
-        updated_at: now,
-      };
-      MOCK_APPLICATIONS.push(newApp);
-      return newApp;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
-    },
   });
 }
 
@@ -173,17 +153,27 @@ export function useUpdateApplicationStatus() {
       status: Application["status"];
       reviewer_notes?: string;
     }) => {
-      await new Promise((r) => setTimeout(r, 500));
-      const app = MOCK_APPLICATIONS.find((a) => a.id === id);
-      if (!app) throw new Error("Application not found");
-      app.status = status;
-      app.reviewer_notes = reviewer_notes;
-      app.reviewed_at = new Date().toISOString();
-      app.updated_at = new Date().toISOString();
-      return app;
+      if (USE_MOCK) {
+        const app = MOCK_APPLICATIONS.find((a) => a.id === id);
+        if (!app) throw new Error("Application not found");
+        app.status = status;
+        app.reviewer_notes = reviewer_notes;
+        app.reviewed_at = new Date().toISOString();
+        app.updated_at = new Date().toISOString();
+        return app;
+      }
+
+      const { data, error } = await supabase!.from("applications").update({
+        status,
+        reviewer_notes,
+        reviewed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }).eq("id", id).select().single();
+      if (error) throw new Error(error.message);
+      return data as Application;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      void queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
   });
 }

@@ -1,11 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { FileText, Plus, Eye, Check, X, Clock } from "lucide-react";
+import { FileText, Eye, Check, X, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatsCard } from "@/components/admin/stats-card";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable, type Column } from "@/components/admin/data-table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -15,37 +21,15 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useApplications, useUpdateApplicationStatus } from "@/hooks/use-admissions";
 import { cn } from "@/lib/utils";
+import type { Application } from "@/types/database";
 
 export const Route = createFileRoute("/admin/admissions")({
   component: AdminAdmissions,
 });
 
-type Application = {
-  id: string;
-  application_number: string;
-  student_name: string;
-  email: string;
-  phone: string;
-  class_level: number;
-  program: string;
-  campus: string;
-  parent_name: string;
-  parent_phone: string;
-  status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled";
-  reviewer_notes?: string;
-  created_at: string;
-};
-
-const mockApplications: Application[] = [
-  { id: "1", application_number: "AMA-2026-0001", student_name: "Hassan Ali", email: "hassan@example.com", phone: "0300-1111111", class_level: 9, program: "matric", campus: "main", parent_name: "Ali Ahmad", parent_phone: "0300-2222222", status: "pending", created_at: "2026-08-07T10:00:00Z" },
-  { id: "2", application_number: "AMA-2026-0002", student_name: "Zainab Fatima", email: "zainab@example.com", phone: "0301-3333333", class_level: 11, program: "fsc_pre_medical", campus: "main", parent_name: "Fatima Bibi", parent_phone: "0301-4444444", status: "reviewing", created_at: "2026-08-06T14:00:00Z" },
-  { id: "3", application_number: "AMA-2026-0003", student_name: "Omar Shah", email: "omar@example.com", phone: "0302-5555555", class_level: 10, program: "matric", campus: "second", parent_name: "Shah Muhammad", parent_phone: "0302-6666666", status: "approved", reviewer_notes: "Good academic record", created_at: "2026-08-05T09:00:00Z" },
-  { id: "4", application_number: "AMA-2026-0004", student_name: "Sara Khan", email: "sara@example.com", phone: "0303-7777777", class_level: 12, program: "fsc_pre_engineering", campus: "main", parent_name: "Imran Khan", parent_phone: "0303-8888888", status: "rejected", reviewer_notes: "Incomplete documents", created_at: "2026-08-04T16:00:00Z" },
-  { id: "5", application_number: "AMA-2026-0005", student_name: "Bilal Ahmed", email: "bilal@example.com", phone: "0304-9999999", class_level: 9, program: "matric", campus: "main", parent_name: "Ahmed Raza", parent_phone: "0304-0000000", status: "enrolled", created_at: "2026-08-03T11:00:00Z" },
-];
-
-const statusConfig = {
+const statusConfig: Record<string, { label: string; color: string; icon: typeof Clock }> = {
   pending: { label: "Pending", color: "bg-yellow-100 text-yellow-800", icon: Clock },
   reviewing: { label: "Reviewing", color: "bg-blue-100 text-blue-800", icon: Eye },
   approved: { label: "Approved", color: "bg-green-100 text-green-800", icon: Check },
@@ -54,28 +38,38 @@ const statusConfig = {
 };
 
 function AdminAdmissions() {
-  const [applications, setApplications] = useState<Application[]>(mockApplications);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const { data: applications = [], isLoading, error } = useApplications(
+    statusFilter === "all" ? undefined : { status: statusFilter }
+  );
+  const updateStatus = useUpdateApplicationStatus();
+
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reviewerNotes, setReviewerNotes] = useState("");
 
-  const filtered = statusFilter === "all" ? applications : applications.filter((a) => a.status === statusFilter);
-
+  const allApps = useApplications().data || [];
   const stats = {
-    total: applications.length,
-    pending: applications.filter((a) => a.status === "pending").length,
-    reviewing: applications.filter((a) => a.status === "reviewing").length,
-    approved: applications.filter((a) => a.status === "approved").length,
+    total: allApps.length,
+    pending: allApps.filter((a) => a.status === "pending").length,
+    reviewing: allApps.filter((a) => a.status === "reviewing").length,
+    approved: allApps.filter((a) => a.status === "approved").length,
   };
 
   function handleStatusChange(id: string, newStatus: Application["status"]) {
-    setApplications((prev) =>
-      prev.map((a) => a.id === id ? { ...a, status: newStatus, reviewer_notes: reviewerNotes || a.reviewer_notes } : a)
+    updateStatus.mutate(
+      { id, status: newStatus, reviewer_notes: reviewerNotes || undefined },
+      {
+        onSuccess: () => {
+          setDialogOpen(false);
+          setSelectedApp(null);
+          setReviewerNotes("");
+        },
+        onError: (err) => {
+          alert(`Failed to update: ${err.message}`);
+        },
+      }
     );
-    setDialogOpen(false);
-    setSelectedApp(null);
-    setReviewerNotes("");
   }
 
   function handleView(app: Application) {
@@ -84,35 +78,61 @@ function AdminAdmissions() {
     setDialogOpen(true);
   }
 
-  const columns = [
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <FileText className="mx-auto h-12 w-12 text-red-400" />
+          <p className="mt-2 text-sm text-red-600">Failed to load applications: {error.message}</p>
+          <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const columns: Column<Application>[] = [
     {
       key: "application_number",
       header: "App #",
-      render: (row: Application) => (
-        <span className="font-mono text-xs">{row.application_number}</span>
-      ),
+      render: (row) => <span className="font-mono text-xs">{row.application_number}</span>,
     },
-    { key: "student_name", header: "Student Name", render: (row: Application) => <span className="font-medium">{row.student_name}</span> },
-    { key: "program", header: "Program", render: (row: Application) => <span className="capitalize">{row.program.replace(/_/g, " ")}</span> },
-    { key: "class_level", header: "Class", render: (row: Application) => row.class_level },
-    { key: "campus", header: "Campus", render: (row: Application) => <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge> },
+    { key: "student_name", header: "Student Name", render: (row) => <span className="font-medium">{row.student_name}</span> },
+    {
+      key: "program",
+      header: "Program",
+      render: (row) => <span className="capitalize">{row.program.replace(/_/g, " ")}</span>,
+    },
+    { key: "class_level", header: "Class" },
+    {
+      key: "campus",
+      header: "Campus",
+      render: (row) => <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>,
+    },
     {
       key: "status",
       header: "Status",
-      render: (row: Application) => {
+      render: (row) => {
         const config = statusConfig[row.status];
-        return <Badge className={cn("border-0", config.color)}>{config.label}</Badge>;
+        if (!config) return <Badge>{row.status}</Badge>;
+        return (
+          <Badge className={cn("border-0", config.color)}>
+            <config.icon className="mr-1 h-3 w-3" />
+            {config.label}
+          </Badge>
+        );
       },
     },
     {
       key: "created_at",
       header: "Applied",
-      render: (row: Application) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
+      render: (row) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
     },
     {
-      key: "actions",
+      key: "id",
       header: "Actions",
-      render: (row: Application) => (
+      render: (row) => (
         <Button variant="ghost" size="sm" onClick={() => handleView(row)}>
           <Eye className="h-4 w-4" />
         </Button>
@@ -127,6 +147,18 @@ function AdminAdmissions() {
           <h2 className="text-2xl font-bold text-gray-900">Admissions</h2>
           <p className="text-gray-600">Review and manage admission applications.</p>
         </div>
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-36"><SelectValue placeholder="Filter" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="reviewing">Reviewing</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-4">
@@ -138,10 +170,12 @@ function AdminAdmissions() {
 
       <div className="rounded-xl border border-gray-200 bg-white">
         <DataTable
-          data={filtered}
+          data={applications}
           columns={columns}
+          isLoading={isLoading}
           searchKey="student_name"
           searchPlaceholder="Search by student name..."
+          emptyMessage="No applications found."
         />
       </div>
 
@@ -164,8 +198,8 @@ function AdminAdmissions() {
                 <div><span className="text-gray-500">Parent Phone:</span> {selectedApp.parent_phone}</div>
                 <div>
                   <span className="text-gray-500">Status:</span>{" "}
-                  <Badge className={cn("border-0", statusConfig[selectedApp.status].color)}>
-                    {statusConfig[selectedApp.status].label}
+                  <Badge className={cn("border-0", statusConfig[selectedApp.status]?.color)}>
+                    {statusConfig[selectedApp.status]?.label || selectedApp.status}
                   </Badge>
                 </div>
               </div>
@@ -184,25 +218,32 @@ function AdminAdmissions() {
           )}
           <DialogFooter className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Close</Button>
-            {selectedApp?.status === "pending" && (
-              <Button variant="secondary" onClick={() => handleStatusChange(selectedApp.id, "reviewing")}>
-                <Eye className="mr-1 h-3 w-3" /> Start Review
-              </Button>
+            {selectedApp && updateStatus.isPending && (
+              <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</Button>
             )}
-            {selectedApp?.status !== "approved" && selectedApp?.status !== "enrolled" && (
-              <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange(selectedApp!.id, "approved")}>
-                <Check className="mr-1 h-3 w-3" /> Approve
-              </Button>
-            )}
-            {selectedApp?.status !== "rejected" && selectedApp?.status !== "enrolled" && (
-              <Button variant="destructive" onClick={() => handleStatusChange(selectedApp!.id, "rejected")}>
-                <X className="mr-1 h-3 w-3" /> Reject
-              </Button>
-            )}
-            {selectedApp?.status === "approved" && (
-              <Button onClick={() => handleStatusChange(selectedApp.id, "enrolled")}>
-                <Check className="mr-1 h-3 w-3" /> Mark Enrolled
-              </Button>
+            {selectedApp && !updateStatus.isPending && (
+              <>
+                {selectedApp.status === "pending" && (
+                  <Button variant="secondary" onClick={() => handleStatusChange(selectedApp.id, "reviewing")}>
+                    <Eye className="mr-1 h-3 w-3" /> Start Review
+                  </Button>
+                )}
+                {selectedApp.status !== "approved" && selectedApp.status !== "enrolled" && (
+                  <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange(selectedApp.id, "approved")}>
+                    <Check className="mr-1 h-3 w-3" /> Approve
+                  </Button>
+                )}
+                {selectedApp.status !== "rejected" && selectedApp.status !== "enrolled" && (
+                  <Button variant="destructive" onClick={() => handleStatusChange(selectedApp.id, "rejected")}>
+                    <X className="mr-1 h-3 w-3" /> Reject
+                  </Button>
+                )}
+                {selectedApp.status === "approved" && (
+                  <Button onClick={() => handleStatusChange(selectedApp.id, "enrolled")}>
+                    <Check className="mr-1 h-3 w-3" /> Mark Enrolled
+                  </Button>
+                )}
+              </>
             )}
           </DialogFooter>
         </DialogContent>

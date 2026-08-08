@@ -77,22 +77,31 @@ function AdminFaculty() {
 
     const initials = formData.initials || formData.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
 
+    const callbacks = {
+      onSuccess: () => setDialogOpen(false),
+      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+    };
+
     if (editingFaculty) {
-      updateFaculty.mutate({ id: editingFaculty.id, ...formData, initials });
+      updateFaculty.mutate({ id: editingFaculty.id, ...formData, initials }, callbacks);
     } else {
-      createFaculty.mutate({ ...formData, initials, sort_order: faculty.length + 1 });
+      createFaculty.mutate({ ...formData, initials, sort_order: faculty.length + 1 }, callbacks);
     }
-    setDialogOpen(false);
   }
 
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this faculty member?")) {
-      deleteFaculty.mutate(id);
+      deleteFaculty.mutate(id, {
+        onError: (err) => alert(`Failed to delete: ${err.message}`),
+      });
     }
   }
 
   function handleToggleActive(member: Faculty) {
-    updateFaculty.mutate({ id: member.id, is_active: !member.is_active });
+    updateFaculty.mutate(
+      { id: member.id, is_active: !member.is_active },
+      { onError: (err) => alert(`Failed to update: ${err.message}`) }
+    );
   }
 
   return (

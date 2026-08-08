@@ -61,6 +61,7 @@ function AdminSettings() {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       },
+      onError: (err) => alert(`Failed to save settings: ${err.message}`),
     });
   }
 

@@ -36,26 +36,31 @@ const statusColors: Record<string, string> = {
 
 function FeesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const { data: fees = [], isLoading } = useFees(statusFilter === "all" ? undefined : { status: statusFilter });
+  const { data: allFees = [], isLoading } = useFees();
+  const { data: filteredFees = [] } = useFees(statusFilter === "all" ? undefined : { status: statusFilter });
   const updateFee = useUpdateFee();
 
   const [selectedFee, setSelectedFee] = useState<Fee | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const allFees = useFees().data || [];
   const totalAmount = allFees.reduce((sum, f) => sum + f.amount, 0);
   const paidAmount = allFees.filter((f) => f.status === "paid").reduce((sum, f) => sum + f.amount, 0);
   const pendingAmount = allFees.filter((f) => f.status === "pending").reduce((sum, f) => sum + f.amount, 0);
 
   function handleMarkPaid(fee: Fee) {
-    updateFee.mutate({
-      id: fee.id,
-      status: "paid",
-      paid_date: new Date().toISOString().split("T")[0],
-      payment_method: "cash",
-      receipt_number: `RCP-${Date.now().toString().slice(-6)}`,
-    });
-    setDialogOpen(false);
+    updateFee.mutate(
+      {
+        id: fee.id,
+        status: "paid",
+        paid_date: new Date().toISOString().split("T")[0],
+        payment_method: "cash",
+        receipt_number: `RCP-${Date.now().toString().slice(-6)}`,
+      },
+      {
+        onSuccess: () => setDialogOpen(false),
+        onError: (err) => alert(`Failed to update: ${err.message}`),
+      }
+    );
   }
 
   function handleView(fee: Fee) {
@@ -134,7 +139,7 @@ function FeesPage() {
         <StatsCard title="Records" value={String(allFees.length)} icon={CreditCard} />
       </div>
 
-      <DataTable data={fees} columns={columns} isLoading={isLoading} emptyMessage="No fee records found." />
+      <DataTable data={filteredFees} columns={columns} isLoading={isLoading} emptyMessage="No fee records found." />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">

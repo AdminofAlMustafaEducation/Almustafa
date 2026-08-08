@@ -1,4 +1,4 @@
-import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { HeadContent, Link, Outlet, Scripts, createRootRoute, useLocation } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
@@ -143,6 +143,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -155,13 +158,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <SiteHeader />
+        {!isAdmin && <SiteHeader />}
         <main id="main-content">
           <Outlet />
         </main>
-        <SiteFooter />
-        <NotificationBell />
-        <WhatsAppChat />
+        {!isAdmin && <SiteFooter />}
+        {!isAdmin && <NotificationBell />}
+        {!isAdmin && <WhatsAppChat />}
       </AuthProvider>
     </QueryClientProvider>
   );

@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { MessageSquare, Eye, CheckCircle, XCircle } from "lucide-react";
+import { MessageSquare, Eye, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DataTable, type Column } from "@/components/admin/data-table";
+import { StatsCard } from "@/components/admin/stats-card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -17,269 +18,176 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useInquiries, useUpdateInquiry } from "@/hooks/use-inquiries";
 import { cn } from "@/lib/utils";
+import type { Inquiry } from "@/types/database";
 
 export const Route = createFileRoute("/admin/inquiries")({
   component: AdminInquiries,
 });
 
-type InquiryItem = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-  status: "new" | "responded" | "closed";
-  created_at: string;
-};
-
-const mockInquiries: InquiryItem[] = [
-  {
-    id: "1",
-    name: "Ahmed Khan",
-    email: "ahmed.khan@email.com",
-    phone: "0300-1234567",
-    subject: "Admission Inquiry",
-    message:
-      "I would like to know about the admission process for my son who is currently in class 8. What are the requirements and fees for class 9 FSc Pre-Medical?",
-    status: "new",
-    created_at: "2025-01-20T10:30:00Z",
-  },
-  {
-    id: "2",
-    name: "Fatima Ali",
-    email: "fatima.ali@email.com",
-    phone: "0312-9876543",
-    subject: "Fee Structure",
-    message:
-      "Could you please share the complete fee structure for FSc Pre-Engineering? Also, do you offer any scholarships or discounts?",
-    status: "new",
-    created_at: "2025-01-19T14:15:00Z",
-  },
-  {
-    id: "3",
-    name: "Muhammad Asif",
-    email: "asif@email.com",
-    phone: "0333-5551234",
-    subject: "Campus Visit",
-    message:
-      "I would like to visit the campus with my daughter. What are the visiting hours? Can we meet the faculty?",
-    status: "responded",
-    created_at: "2025-01-18T09:00:00Z",
-  },
-  {
-    id: "4",
-    name: "Sara Malik",
-    email: "sara.m@email.com",
-    phone: "0345-1112233",
-    subject: "Transfer Student",
-    message:
-      "My son wants to transfer from another academy. Is it possible to join mid-session? What documents are required?",
-    status: "responded",
-    created_at: "2025-01-17T16:45:00Z",
-  },
-  {
-    id: "5",
-    name: "Usman Ahmed",
-    email: "usman.a@email.com",
-    phone: "0321-7778899",
-    subject: "Timings Query",
-    message:
-      "What are the coaching timings for class 10 students? Do you have separate batches for boys and girls?",
-    status: "closed",
-    created_at: "2025-01-15T11:20:00Z",
-  },
-  {
-    id: "6",
-    name: "Zainab Bibi",
-    email: "zainab@email.com",
-    phone: "0300-4445566",
-    subject: "Results Inquiry",
-    message:
-      "I want to check the board results of last year's students. What was the pass percentage?",
-    status: "closed",
-    created_at: "2025-01-12T08:30:00Z",
-  },
-];
-
-const statusConfig = {
-  new: { label: "New", className: "bg-blue-100 text-blue-800" },
-  responded: { label: "Responded", className: "bg-green-100 text-green-800" },
-  closed: { label: "Closed", className: "bg-gray-100 text-gray-600" },
+const statusConfig: Record<string, { label: string; color: string }> = {
+  new: { label: "New", color: "bg-blue-100 text-blue-800" },
+  responded: { label: "Responded", color: "bg-green-100 text-green-800" },
+  closed: { label: "Closed", color: "bg-gray-100 text-gray-600" },
 };
 
 function AdminInquiries() {
-  const [inquiries, setInquiries] = useState<InquiryItem[]>(mockInquiries);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [selectedInquiry, setSelectedInquiry] = useState<InquiryItem | null>(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const { data: inquiries = [], isLoading, error } = useInquiries(
+    statusFilter === "all" ? undefined : { status: statusFilter }
+  );
+  const updateInquiry = useUpdateInquiry();
 
-  const filtered =
-    statusFilter === "all"
-      ? inquiries
-      : inquiries.filter((inq) => inq.status === statusFilter);
+  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  function handleUpdateStatus(id: string, status: "responded" | "closed") {
-    setInquiries((prev) =>
-      prev.map((inq) => (inq.id === id ? { ...inq, status } : inq)),
+  const allInquiries = useInquiries().data || [];
+  const stats = {
+    total: allInquiries.length,
+    newCount: allInquiries.filter((i) => i.status === "new").length,
+    responded: allInquiries.filter((i) => i.status === "responded").length,
+    closed: allInquiries.filter((i) => i.status === "closed").length,
+  };
+
+  function handleStatusChange(id: string, newStatus: Inquiry["status"]) {
+    updateInquiry.mutate(
+      { id, status: newStatus, responded_at: newStatus === "responded" ? new Date().toISOString() : undefined },
+      {
+        onSuccess: () => {
+          setDialogOpen(false);
+          setSelectedInquiry(null);
+        },
+        onError: (err) => alert(`Failed to update: ${err.message}`),
+      }
     );
-    if (selectedInquiry?.id === id) {
-      setSelectedInquiry((prev) => (prev ? { ...prev, status } : null));
-    }
   }
 
-  function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("en-PK", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+  function handleView(inquiry: Inquiry) {
+    setSelectedInquiry(inquiry);
+    setDialogOpen(true);
   }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <MessageSquare className="mx-auto h-12 w-12 text-red-400" />
+          <p className="mt-2 text-sm text-red-600">Failed to load inquiries: {error.message}</p>
+          <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const columns: Column<Inquiry>[] = [
+    {
+      key: "name",
+      header: "Name",
+      sortable: true,
+      render: (row) => <span className="font-medium">{row.name}</span>,
+    },
+    { key: "email", header: "Email" },
+    { key: "phone", header: "Phone" },
+    { key: "subject", header: "Subject" },
+    {
+      key: "status",
+      header: "Status",
+      render: (row) => {
+        const config = statusConfig[row.status];
+        return <Badge className={cn("border-0", config?.color)}>{config?.label || row.status}</Badge>;
+      },
+    },
+    {
+      key: "created_at",
+      header: "Date",
+      render: (row) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
+    },
+    {
+      key: "id",
+      header: "Actions",
+      render: (row) => (
+        <Button variant="ghost" size="sm" onClick={() => handleView(row)}>
+          <Eye className="h-4 w-4" />
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">Inquiries</h2>
-        <p className="text-gray-600">Manage contact form submissions.</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Inquiries</h2>
+          <p className="text-gray-600">Manage contact form submissions and inquiries.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-36"><SelectValue placeholder="Filter" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="responded">Responded</SelectItem>
+              <SelectItem value="closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="responded">Responded</SelectItem>
-            <SelectItem value="closed">Closed</SelectItem>
-          </SelectContent>
-        </Select>
-        <span className="text-sm text-gray-500">
-          {filtered.length} inquir{filtered.length !== 1 ? "ies" : "y"}
-        </span>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatsCard title="Total Inquiries" value={String(stats.total)} icon={MessageSquare} />
+        <StatsCard title="New" value={String(stats.newCount)} icon={MessageSquare} trend="up" />
+        <StatsCard title="Responded" value={String(stats.responded)} icon={CheckCircle} />
+        <StatsCard title="Closed" value={String(stats.closed)} icon={XCircle} />
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Subject</th>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((inq) => {
-              const status = statusConfig[inq.status];
-              return (
-                <tr key={inq.id}>
-                  <td className="font-medium">{inq.name}</td>
-                  <td>{inq.email}</td>
-                  <td>{inq.phone}</td>
-                  <td>{inq.subject}</td>
-                  <td>
-                    <Badge className={cn("border-0", status.className)}>
-                      {status.label}
-                    </Badge>
-                  </td>
-                  <td>{formatDate(inq.created_at)}</td>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedInquiry(inq)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      {inq.status === "new" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-green-600 hover:text-green-700"
-                          onClick={() => handleUpdateStatus(inq.id, "responded")}
-                        >
-                          <CheckCircle className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {inq.status !== "closed" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-gray-500 hover:text-gray-700"
-                          onClick={() => handleUpdateStatus(inq.id, "closed")}
-                        >
-                          <XCircle className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <DataTable
+        data={inquiries}
+        columns={columns}
+        isLoading={isLoading}
+        searchKey="name"
+        searchPlaceholder="Search by name..."
+        emptyMessage="No inquiries found."
+      />
 
-        {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <MessageSquare className="h-12 w-12 text-gray-300" />
-            <p className="mt-2 text-sm text-gray-500">No inquiries found.</p>
-          </div>
-        )}
-      </div>
-
-      <Dialog open={!!selectedInquiry} onOpenChange={() => setSelectedInquiry(null)}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{selectedInquiry?.subject}</DialogTitle>
-            <DialogDescription>
-              From {selectedInquiry?.name} &middot; {selectedInquiry && formatDate(selectedInquiry.created_at)}
-            </DialogDescription>
+            <DialogTitle>Inquiry Details</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-gray-500">Email</span>
-                <p className="font-medium">{selectedInquiry?.email}</p>
+          {selectedInquiry && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div><span className="text-gray-500">Name:</span> <span className="font-medium">{selectedInquiry.name}</span></div>
+                <div><span className="text-gray-500">Email:</span> {selectedInquiry.email || "N/A"}</div>
+                <div><span className="text-gray-500">Phone:</span> {selectedInquiry.phone || "N/A"}</div>
+                <div><span className="text-gray-500">Subject:</span> {selectedInquiry.subject || "N/A"}</div>
+                <div>
+                  <span className="text-gray-500">Status:</span>{" "}
+                  <Badge className={cn("border-0", statusConfig[selectedInquiry.status]?.color)}>
+                    {statusConfig[selectedInquiry.status]?.label || selectedInquiry.status}
+                  </Badge>
+                </div>
+                <div><span className="text-gray-500">Date:</span> {new Date(selectedInquiry.created_at).toLocaleString()}</div>
               </div>
               <div>
-                <span className="text-gray-500">Phone</span>
-                <p className="font-medium">{selectedInquiry?.phone}</p>
+                <p className="text-xs text-gray-500 mb-1">Message</p>
+                <p className="text-sm text-gray-900 rounded-lg bg-gray-50 p-3">{selectedInquiry.message}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {selectedInquiry.status === "new" && (
+                  <Button size="sm" onClick={() => handleStatusChange(selectedInquiry.id, "responded")}>
+                    <CheckCircle className="mr-1 h-3 w-3" /> Mark Responded
+                  </Button>
+                )}
+                {selectedInquiry.status !== "closed" && (
+                  <Button variant="outline" size="sm" onClick={() => handleStatusChange(selectedInquiry.id, "closed")}>
+                    <XCircle className="mr-1 h-3 w-3" /> Close
+                  </Button>
+                )}
               </div>
             </div>
-            <div>
-              <span className="text-sm text-gray-500">Message</span>
-              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-900">
-                {selectedInquiry?.message}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {selectedInquiry?.status === "new" && (
-                <Button
-                  size="sm"
-                  onClick={() => handleUpdateStatus(selectedInquiry.id, "responded")}
-                >
-                  <CheckCircle className="mr-1 h-4 w-4" />
-                  Mark as Responded
-                </Button>
-              )}
-              {selectedInquiry?.status !== "closed" && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleUpdateStatus(selectedInquiry!.id, "closed")}
-                >
-                  <XCircle className="mr-1 h-4 w-4" />
-                  Close
-                </Button>
-              )}
-            </div>
-          </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

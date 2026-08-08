@@ -48,22 +48,28 @@ function AdminNotifications() {
   function handleSave() {
     if (!formData.title || !formData.message) return;
 
+    const callbacks = {
+      onSuccess: () => setDialogOpen(false),
+      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+    };
+
     if (editingNotif) {
-      updateNotification.mutate({ id: editingNotif.id, ...formData });
+      updateNotification.mutate({ id: editingNotif.id, ...formData }, callbacks);
     } else {
       createNotification.mutate({
         ...formData,
         date: new Date().toISOString().split("T")[0],
         is_read: false,
         sort_order: notifications.length + 1,
-      });
+      }, callbacks);
     }
-    setDialogOpen(false);
   }
 
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this notification?")) {
-      deleteNotification.mutate(id);
+      deleteNotification.mutate(id, {
+        onError: (err) => alert(`Failed to delete: ${err.message}`),
+      });
     }
   }
 

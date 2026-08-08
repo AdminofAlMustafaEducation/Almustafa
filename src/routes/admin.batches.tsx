@@ -87,17 +87,23 @@ function BatchesPage() {
   function handleSave() {
     if (!formData.name) return;
 
+    const callbacks = {
+      onSuccess: () => setDialogOpen(false),
+      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+    };
+
     if (editingBatch) {
-      updateBatch.mutate({ id: editingBatch.id, ...formData });
+      updateBatch.mutate({ id: editingBatch.id, ...formData }, callbacks);
     } else {
-      createBatch.mutate(formData);
+      createBatch.mutate(formData, callbacks);
     }
-    setDialogOpen(false);
   }
 
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this batch?")) {
-      deleteBatch.mutate(id);
+      deleteBatch.mutate(id, {
+        onError: (err) => alert(`Failed to delete: ${err.message}`),
+      });
     }
   }
 

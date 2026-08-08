@@ -48,23 +48,32 @@ function AdminChatAgents() {
   function handleSave() {
     if (!formData.name || !formData.whatsapp_number) return;
 
+    const callbacks = {
+      onSuccess: () => setDialogOpen(false),
+      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+    };
+
     if (editingAgent) {
-      updateAgent.mutate({ id: editingAgent.id, ...formData, photo_url: formData.photo_url || undefined });
+      updateAgent.mutate({ id: editingAgent.id, ...formData, photo_url: formData.photo_url || undefined }, callbacks);
     } else {
-      createAgent.mutate({ ...formData, photo_url: formData.photo_url || undefined, sort_order: agents.length + 1 });
+      createAgent.mutate({ ...formData, photo_url: formData.photo_url || undefined, sort_order: agents.length + 1 }, callbacks);
     }
-    setDialogOpen(false);
   }
 
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this agent?")) {
-      deleteAgent.mutate(id);
+      deleteAgent.mutate(id, {
+        onError: (err) => alert(`Failed to delete: ${err.message}`),
+      });
     }
   }
 
   function handleToggleActive(agent: typeof editingAgent) {
     if (!agent) return;
-    updateAgent.mutate({ id: agent.id, is_active: !agent.is_active });
+    updateAgent.mutate(
+      { id: agent.id, is_active: !agent.is_active },
+      { onError: (err) => alert(`Failed to update: ${err.message}`) }
+    );
   }
 
   return (
