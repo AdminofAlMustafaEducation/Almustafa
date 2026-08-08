@@ -1,4 +1,6 @@
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppChat } from "@/components/whatsapp-chat";
@@ -141,15 +143,26 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 * 5,
+        retry: false,
+      },
+    },
+  }));
+
   return (
-    <AuthProvider>
-      <SiteHeader />
-      <main id="main-content">
-        <Outlet />
-      </main>
-      <SiteFooter />
-      <NotificationBell />
-      <WhatsAppChat />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <SiteHeader />
+        <main id="main-content">
+          <Outlet />
+        </main>
+        <SiteFooter />
+        <NotificationBell />
+        <WhatsAppChat />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
