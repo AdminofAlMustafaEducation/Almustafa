@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Clock, Facebook, Mail, MapPin, Navigation, Phone, Send } from "lucide-react";
+import { Clock, Facebook, Mail, MapPin, Navigation, Phone, Send, Youtube } from "lucide-react";
 import { useState } from "react";
 import { academy, branches } from "@/data/faculty";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -43,7 +43,7 @@ function ContactPage() {
             <em className="font-serif-elegant text-shimmer">hear from you.</em>
           </>
         }
-        description="Visit one of our two campuses in G-11/2 Islamabad, call the academy directly, or send a quick admission inquiry so the team can guide you toward the right program."
+        description="Visit one of our campuses in G-11/2 and G-10 Islamabad, call the academy directly, or send a quick admission inquiry so the team can guide you toward the right program."
         backgroundImage={heroBg}
         stats={[
           { value: "2", label: "academy campuses" },
@@ -116,12 +116,12 @@ function ContactPage() {
             </div>
 
             {[
-              { icon: MapPin, title: "Main Campus", detail: academy.addressPrimary },
               { icon: MapPin, title: "Second Campus", detail: academy.addressSecondary },
               { icon: Phone, title: "Phone", detail: academy.phone, href: `tel:${academy.phoneIntl}` },
               { icon: Mail, title: "Email", detail: academy.email, href: `mailto:${academy.email}` },
               { icon: Clock, title: "Hours", detail: "Monday - Saturday | 3:00 PM - 9:00 PM" },
               { icon: Facebook, title: "Facebook", detail: "@Almustafa614", href: academy.facebook },
+              { icon: Youtube, title: "YouTube", detail: "@almustafa1292", href: academy.youtube },
             ].map(({ icon: Icon, title, detail, href }) => {
               const card = (
                 <div className="flex gap-3 rounded-2xl border border-border bg-card p-4 transition-all hover:border-gold hover:shadow-card sm:gap-4 sm:p-5">
@@ -258,7 +258,7 @@ function ContactPage() {
               Two campuses, <em className="font-serif-elegant text-gold">one neighbourhood.</em>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-fluid-base text-primary-foreground/70">
-              Both branches sit just minutes apart in G-11/2 - choose whichever is closer to home.
+              Both branches sit in G-11/2 and G-10 - choose whichever is closer to home.
             </p>
           </div>
 

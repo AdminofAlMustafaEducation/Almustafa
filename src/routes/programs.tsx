@@ -23,7 +23,7 @@ function ProgramsPage() {
         eyebrow="Academic Programs"
         title={
           <>
-            Three programs.
+            Programs.
             <br />
             <em className="font-serif-elegant text-shimmer">One standard of excellence.</em>
           </>

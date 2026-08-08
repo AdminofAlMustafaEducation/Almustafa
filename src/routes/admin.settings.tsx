@@ -21,6 +21,7 @@ type SiteSettings = {
   addressSecondary: string;
   city: string;
   facebook: string;
+  youtube: string;
 };
 
 const defaultSettings: SiteSettings = {
@@ -29,10 +30,11 @@ const defaultSettings: SiteSettings = {
   phone: "0335 0555696",
   phoneIntl: "+923350555696",
   email: "almustafaschool@gmail.com",
-  addressPrimary: "House# 1461 Sachal Sarmast Road, G-11/2, Islamabad",
-  addressSecondary: "House# 1300, Street 58, G-11/2, Islamabad",
+  addressPrimary: "House# 1460 Sachal Sarmast Road, G-11/2, Islamabad",
+  addressSecondary: "House 417, Sawan Road, G-10/4, Islamabad",
   city: "Islamabad, Pakistan 44000",
   facebook: "https://www.facebook.com/Almustafa614",
+  youtube: "https://youtube.com/@almustafa1292",
 };
 
 function AdminSettings() {
@@ -152,14 +154,25 @@ function AdminSettings() {
             <CardTitle>Social Media</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="max-w-md space-y-2">
-              <Label htmlFor="facebook">Facebook URL</Label>
-              <Input
-                id="facebook"
-                value={settings.facebook}
-                onChange={(e) => handleChange("facebook", e.target.value)}
-                placeholder="https://www.facebook.com/..."
-              />
+            <div className="max-w-md space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="facebook">Facebook URL</Label>
+                <Input
+                  id="facebook"
+                  value={settings.facebook}
+                  onChange={(e) => handleChange("facebook", e.target.value)}
+                  placeholder="https://www.facebook.com/..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="youtube">YouTube URL</Label>
+                <Input
+                  id="youtube"
+                  value={settings.youtube}
+                  onChange={(e) => handleChange("youtube", e.target.value)}
+                  placeholder="https://youtube.com/..."
+                />
+              </div>
             </div>
           </CardContent>
         </Card>

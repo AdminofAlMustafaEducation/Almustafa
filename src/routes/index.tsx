@@ -28,9 +28,9 @@ import { buildPageHead } from "@/lib/seo";
 export const Route = createFileRoute("/")({
   head: () =>
     buildPageHead({
-      title: "Al-Mustafa Academy | Premier Evening Coaching in G-11/2 Islamabad",
+      title: "Al-Mustafa Academy | Premier Evening Coaching in G-11/2 & G-10 Islamabad",
       description:
-        "Registration open for Juniors (1-8), Matric and F.Sc. Trusted since 1998 in G-11/2 Islamabad with senior college lecturers, small batches and proven results.",
+        "Registration open for Juniors (1-8), Matric and F.Sc. Trusted since 1998 in G-11/2 & G-10 Islamabad with senior college lecturers, small batches and proven results.",
       path: "/",
     }),
   component: HomePage,
@@ -48,7 +48,7 @@ function HomePage() {
     { value: "1998", label: "serving Islamabad families" },
     { value: "1-12", label: "junior to F.Sc coverage" },
     { value: "6 days", label: "weekly evening routine" },
-    { value: "2", label: "nearby G-11/2 campuses" },
+    { value: "2", label: "campuses in G-11 & G-10" },
   ];
   const newsUpdates = [
     "Admissions open for Juniors, Matric and F.Sc evening batches.",
@@ -131,7 +131,7 @@ function HomePage() {
     {
       question: "Where are the campuses located?",
       answer:
-        "The academy has two campuses in G-11/2 Islamabad, including Sachal Sarmast Road and Street 58 locations.",
+        "The academy has two campuses in G-11/2 and G-10 Islamabad.",
     },
     {
       question: "How can we start the admission process?",
@@ -163,9 +163,9 @@ function HomePage() {
             </div>
 
             <h1 className="headline-balance mt-5 font-display text-fluid-hero font-black tracking-tight text-white sm:mt-6">
-              Premier evening coaching
+              2026-27
               <br className="hidden sm:block" />
-              <span className="text-gold-soft"> in G-11/2 Islamabad.</span>
+              <span className="text-gold-soft">Premier Evening Coaching Academy</span>
             </h1>
 
             <p className="mt-6 max-w-2xl text-fluid-base text-white/90 sm:mt-7">
@@ -195,13 +195,21 @@ function HomePage() {
               >
                 See campus updates <ArrowRight className="h-4 w-4" />
               </a>
+              <a
+                href={academy.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors hover:text-gold-soft"
+              >
+                Watch on YouTube <ArrowRight className="h-4 w-4" />
+              </a>
             </div>
 
             <div className="admission-ribbon mt-8 grid gap-3 rounded-[1.7rem] p-3 text-navy-deep sm:mt-10 sm:grid-cols-3 sm:p-4">
               {[
                 { icon: Award, value: "27 Years", label: "community trust" },
-                { icon: Users, value: "11 Faculty", label: "experienced teachers" },
-                { icon: MapPin, value: "2 Campuses", label: "within G-11/2" },
+                { icon: Users, value: "Our Faculty", label: "experienced teachers" },
+                { icon: MapPin, value: "2 Campuses", label: "in G-11 & G-10" },
               ].map(({ icon: Icon, value, label }) => (
                 <div key={value} className="rounded-[1.25rem] bg-white/72 p-4">
                   <div className="flex items-center gap-3">
@@ -481,7 +489,7 @@ function HomePage() {
             <p className="mt-5 text-fluid-base text-navy-deep/72 sm:mt-6">
               Al-Mustafa Academy began in 1998 with a single room and a clear idea: excellence is a
               quiet, daily practice. Today, eleven senior lecturers from IMCB, ICB, Bahria College,
-              APS Rawalpindi and Al-Kausar carry that same conviction across two G-11/2 campuses.
+              APS Rawalpindi and Al-Kausar               carry that same conviction across G-11/2 and G-10 campuses.
             </p>
 
             <div className="mt-7 space-y-4">
@@ -698,7 +706,7 @@ function HomePage() {
                 to="/faculty"
                 className="inline-flex items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-gold transition-transform hover:scale-105 sm:px-7 sm:py-3.5 sm:text-sm"
               >
-                Meet all 11 faculty <ArrowRight className="h-4 w-4" />
+                Meet our faculty <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -830,10 +838,10 @@ function HomePage() {
                 Find Us
               </p>
               <h2 className="headline-balance mt-4 font-display text-fluid-h1 font-black text-navy-deep">
-                Right here in <span className="scribble-underline">G-11/2.</span>
+                Right here in <span className="scribble-underline">G-11 & G-10.</span>
               </h2>
               <p className="mt-5 max-w-xl text-fluid-base text-navy-deep/72">
-                Two campuses, a five-minute walk apart, on Sachal Sarmast Road and Street 58. Easy
+                Two campuses in G-11/2 and G-10, offering easy
                 parking, well-lit evenings, and right next to your neighbourhood.
               </p>
             </div>

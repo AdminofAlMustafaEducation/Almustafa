@@ -20,7 +20,7 @@ const structuredData = [
     image: logoUrl,
     telephone: academy.phoneIntl,
     email: academy.email,
-    sameAs: [academy.facebook],
+    sameAs: [academy.facebook, academy.youtube],
     address: {
       "@type": "PostalAddress",
       streetAddress: academy.addressPrimary,

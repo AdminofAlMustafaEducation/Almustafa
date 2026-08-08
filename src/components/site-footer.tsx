@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, Facebook, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Facebook, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -62,6 +62,10 @@ export function SiteFooter() {
                 <span>{academy.addressPrimary}</span>
               </li>
               <li className="flex gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                <span>{academy.addressSecondary}</span>
+              </li>
+              <li className="flex gap-2">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                 <a href={`tel:${academy.phoneIntl}`} className="hover:text-gold">
                   {academy.phone}
@@ -95,6 +99,14 @@ export function SiteFooter() {
               className="mt-5 inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-gold"
             >
               <Facebook className="h-4 w-4" /> Follow on Facebook
+            </a>
+            <a
+              href={academy.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-gold"
+            >
+              <Youtube className="h-4 w-4" /> Subscribe on YouTube
             </a>
           </div>
         </div>

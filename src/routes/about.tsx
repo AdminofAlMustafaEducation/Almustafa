@@ -9,7 +9,7 @@ import { buildPageHead } from "@/lib/seo";
 export const Route = createFileRoute("/about")({
   head: () =>
     buildPageHead({
-      title: "About | Al-Mustafa Academy, G-11/2 Islamabad",
+      title: "About | Al-Mustafa Academy, G-11/2 & G-10 Islamabad",
       description:
         "Learn about Al-Mustafa Academy - a 27-year legacy of evening coaching in Islamabad. Our mission, vision and the values that shape our teaching.",
       path: "/about",
@@ -33,9 +33,8 @@ function AboutPage() {
         backgroundImage={study}
         stats={[
           { value: "27+", label: "years of teaching trust" },
-          { value: "2", label: "G-11/2 campuses" },
-          { value: "11", label: "faculty members" },
-          { value: "3", label: "core program streams" },
+          { value: "2", label: "campuses in G-11 & G-10" },
+          { value: "Our Faculty", label: "experienced members" },
         ]}
         aside={
           <div className="paper-panel overflow-hidden p-5 sm:p-6">
@@ -61,7 +60,7 @@ function AboutPage() {
                 {
                   icon: MapPin,
                   title: "Neighbourhood roots",
-                  detail: "Two nearby campuses keep the academy practical and accessible for families in G-11/2 Islamabad.",
+                  detail: "Two campuses in G-11/2 and G-10 keep the academy practical and accessible for families in Islamabad.",
                 },
               ].map(({ icon: Icon, title, detail }) => (
                 <div key={title} className="flex items-start gap-3 rounded-[1.35rem] bg-white/75 p-4 shadow-soft">
@@ -105,7 +104,7 @@ function AboutPage() {
               Founded by Syed Ali Azeem Kazmi and Syed Ali Abbas Kazmi, Al-Mustafa Academy began with a simple conviction: that every child in Islamabad deserves access to the same quality of teaching as the country&apos;s best institutions.
             </p>
             <p className="mt-4 text-fluid-base text-muted-foreground">
-              Over more than two decades, that conviction has shaped every classroom, every test, and every student conversation. Today, we coach hundreds of students each year, from Class 1 through F.Sc, across two campuses in G-11/2.
+              Over more than two decades, that conviction has shaped every classroom, every test, and every student conversation. Today, we coach hundreds of students each year, from Class 1 through F.Sc, across campuses in G-11/2 and G-10.
             </p>
             <p className="mt-4 font-serif-elegant text-base italic leading-relaxed text-navy sm:text-lg">
               &quot;Education is not the filling of a pail, but the lighting of a fire.&quot;
@@ -174,7 +173,7 @@ function AboutPage() {
             {[
               { year: "1998", t: "The Founding", d: "Al-Mustafa Academy opens its doors in G-11/2, Islamabad with a small evening batch." },
               { year: "2005", t: "Faculty Expansion", d: "Senior lecturers from IMCB and Bahria College join the academy, raising the standard of teaching." },
-              { year: "2012", t: "Second Campus", d: "A second campus opens on Street 58, G-11/2 to accommodate growing demand." },
+              { year: "2007", t: "Second Campus", d: "A second campus opens on Sawan Road, G-10/4 to accommodate growing demand." },
               { year: "2020", t: "Two Decades Strong", d: "Thousands of alumni, consistent board toppers and a community that trusts us with its children." },
               { year: "Today", t: "A Living Legacy", d: "11 expert faculty members, three full programs, and one mission - every student, every day." },
             ].map((milestone, i) => (

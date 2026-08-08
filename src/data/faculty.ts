@@ -63,10 +63,11 @@ export const academy = {
   phone: "0335 0555696",
   phoneIntl: "+923350555696",
   email: "almustafaschool@gmail.com",
-  addressPrimary: "House# 1461 Sachal Sarmast Road, G-11/2, Islamabad",
-  addressSecondary: "House# 1300, Street 58, G-11/2, Islamabad",
+  addressPrimary: "House# 1460 Sachal Sarmast Road, G-11/2, Islamabad",
+  addressSecondary: "House 417, Sawan Road, G-10/4, Islamabad",
   city: "Islamabad, Pakistan 44000",
   facebook: "https://www.facebook.com/Almustafa614",
+  youtube: "https://youtube.com/@almustafa1292",
   mapsEmbed:
     "https://maps.google.com/maps?q=Al-Mustafa%20Academy%20G-11%2F2%20Islamabad&t=&z=15&ie=UTF8&iwloc=&output=embed",
   mapsLink: "https://www.google.com/maps/search/?api=1&query=Al-Mustafa+Academy+G-11%2F2+Islamabad",
@@ -82,27 +83,27 @@ export const branches = [
     id: "main",
     label: "Main Campus",
     name: "Al-Mustafa Academy - Main",
-    address: "House# 1461, Sachal Sarmast Road, G-11/2, Islamabad",
+    address: "House# 1460, Sachal Sarmast Road, G-11/2, Islamabad",
     phone: "0335 0555696",
     phoneIntl: "+923350555696",
     hours: "Mon - Sat | 3:00 PM - 9:00 PM",
     mapsEmbed:
-      "https://maps.google.com/maps?q=House%201461%20Sachal%20Sarmast%20Road%20G-11%2F2%20Islamabad&t=&z=16&ie=UTF8&iwloc=&output=embed",
+      "https://maps.google.com/maps?q=House%201460%20Sachal%20Sarmast%20Road%20G-11%2F2%20Islamabad&t=&z=16&ie=UTF8&iwloc=&output=embed",
     mapsLink:
-      "https://www.google.com/maps/search/?api=1&query=House+1461+Sachal+Sarmast+Road+G-11%2F2+Islamabad",
+      "https://www.google.com/maps/search/?api=1&query=House+1460+Sachal+Sarmast+Road+G-11%2F2+Islamabad",
   },
   {
     id: "second",
     label: "Second Campus",
     name: "Al-Mustafa Academy - Branch II",
-    address: "House# 1300, Street 58, G-11/2, Islamabad",
+    address: "House 417, Sawan Road, G-10/4, Islamabad",
     phone: "0335 0555696",
     phoneIntl: "+923350555696",
     hours: "Mon - Sat | 3:00 PM - 9:00 PM",
     mapsEmbed:
-      "https://maps.google.com/maps?q=House%201300%20Street%2058%20G-11%2F2%20Islamabad&t=&z=16&ie=UTF8&iwloc=&output=embed",
+      "https://maps.google.com/maps?q=House%20417%20Sawan%20Road%20G-10%2F4%20Islamabad&t=&z=16&ie=UTF8&iwloc=&output=embed",
     mapsLink:
-      "https://www.google.com/maps/search/?api=1&query=House+1300+Street+58+G-11%2F2+Islamabad",
+      "https://www.google.com/maps/search/?api=1&query=House+417+Sawan+Road+G-10%2F4+Islamabad",
   },
 ] as const;
 
@@ -111,21 +112,21 @@ export const programs = [
     title: "Juniors (Class 1-8)",
     description:
       "Strong foundation in core subjects with personalised attention. We focus on conceptual clarity, study habits and confidence-building from an early age.",
-    subjects: ["English", "Mathematics", "Science", "Urdu", "Islamiat", "Computer"],
+    subjects: ["English", "Mathematics", "Science", "Urdu", "Islamiat", "Computer", "Pakistan Studies"],
     icon: "1-8",
   },
   {
     title: "Matric (9th & 10th)",
     description:
       "FBISE-aligned coaching for Matric students. Concept-based teaching, weekly tests, past-paper practice and exam strategy from senior subject specialists.",
-    subjects: ["Physics", "Chemistry", "Biology", "Mathematics", "English", "Computer"],
+    subjects: ["Physics", "Chemistry", "Biology", "Mathematics", "English", "Computer", "Urdu", "Islamiat", "Pakistan Studies"],
     icon: "9-10",
   },
   {
     title: "F.Sc (1st & 2nd Year)",
     description:
       "Pre-Medical and Pre-Engineering coaching by college-level lecturers. Designed to maximise board marks and prepare students for MDCAT / ECAT entry tests.",
-    subjects: ["Physics", "Chemistry", "Biology", "Mathematics", "English"],
+    subjects: ["Physics", "Chemistry", "Biology", "Mathematics", "English", "Urdu", "Islamiat", "Pakistan Studies"],
     icon: "FSc",
   },
 ];
