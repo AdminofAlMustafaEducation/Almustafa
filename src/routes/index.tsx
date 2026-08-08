@@ -238,48 +238,8 @@ function HomePage() {
             className="relative animate-fade-up lg:col-span-5"
             style={{ animationDelay: "0.12s" }}
           >
-            <div className="hero-frame mx-auto max-w-md p-3 sm:max-w-lg sm:p-4">
-              <div className="relative rounded-[1.7rem] bg-gradient-to-br from-white/88 via-white/56 to-white/22 px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-7">
-                <div
-                  aria-hidden
-                  className="absolute inset-x-6 top-5 h-24 rounded-full bg-gold/10 blur-3xl"
-                />
-
-                <HoverExpandGallery images={brochureImages} />
-
-                <div className="glass-panel absolute left-3 top-3 rounded-2xl px-3 py-2.5 sm:left-4 sm:top-4 sm:px-4 sm:py-3 z-10">
-                  <div className="text-[9px] font-bold uppercase tracking-[0.24em] text-sky sm:text-[10px]">
-                    Admissions Open
-                  </div>
-                  <div className="mt-1 font-display text-sm font-black text-navy-deep sm:text-base">
-                    2026-27
-                  </div>
-                </div>
-
-                <div className="glass-panel absolute bottom-3 right-3 max-w-[12rem] rounded-2xl px-3 py-3 sm:bottom-4 sm:right-4 sm:max-w-[13rem] sm:px-4 z-10">
-                  <div className="font-display text-sm font-black text-navy-deep sm:text-base">
-                    Why families stay
-                  </div>
-                  <div className="mt-2 space-y-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[12px]">
-                    <div>Small batches</div>
-                    <div>Weekly testing</div>
-                    <div>Supportive teachers</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="admission-ribbon mx-auto mt-4 max-w-lg rounded-[1.5rem] p-4 text-navy-deep sm:p-5">
-              <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-sky">
-                A better evening routine
-              </div>
-              <div className="mt-2 font-display text-lg font-black text-navy-deep sm:text-xl">
-                Clear teaching, calmer classrooms, stronger revision habits.
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Designed to feel reassuring on mobile and strong on desktop, without the noise of an
-                over-designed banner.
-              </p>
+            <div className="mx-auto max-w-md sm:max-w-lg">
+              <HoverExpandGallery images={brochureImages} className="mt-4" />
             </div>
           </div>
         </div>

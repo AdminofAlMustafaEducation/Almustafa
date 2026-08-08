@@ -2,6 +2,7 @@ import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/r
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppChat } from "@/components/whatsapp-chat";
+import { NotificationBell } from "@/components/notification-bell";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { academy } from "@/data/faculty";
 import { buildPageHead, logoPath, logoUrl, siteName, siteUrl } from "@/lib/seo";
@@ -147,6 +148,7 @@ function RootComponent() {
         <Outlet />
       </main>
       <SiteFooter />
+      <NotificationBell />
       <WhatsAppChat />
     </AuthProvider>
   );
