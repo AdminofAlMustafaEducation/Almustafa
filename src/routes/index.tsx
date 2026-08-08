@@ -22,7 +22,9 @@ import teacherBoard from "@/assets/gallery/teacher-board.jpg";
 import doodlePen from "@/assets/eduor/doodle-pen.png";
 import heroStudent from "@/assets/eduor/hero-student.png";
 import { FacultyCard } from "@/components/faculty-card";
+import { HoverExpandGallery } from "@/components/hover-expand-gallery";
 import { academy, branches, faculty, programs } from "@/data/faculty";
+import { brochureImages } from "@/data/brochures";
 import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -242,26 +244,19 @@ function HomePage() {
                   aria-hidden
                   className="absolute inset-x-6 top-5 h-24 rounded-full bg-gold/10 blur-3xl"
                 />
-                <img
-                  src={heroStudent}
-                  alt="A bright student ready for evening coaching at Al-Mustafa Academy"
-                  className="relative mx-auto h-full max-h-[24rem] w-full object-contain drop-shadow-2xl sm:max-h-[31rem]"
-                  loading="eager"
-                  fetchPriority="high"
-                  width={1024}
-                  height={1024}
-                />
 
-                <div className="glass-panel absolute left-3 top-3 rounded-2xl px-3 py-2.5 sm:left-4 sm:top-4 sm:px-4 sm:py-3">
+                <HoverExpandGallery images={brochureImages} />
+
+                <div className="glass-panel absolute left-3 top-3 rounded-2xl px-3 py-2.5 sm:left-4 sm:top-4 sm:px-4 sm:py-3 z-10">
                   <div className="text-[9px] font-bold uppercase tracking-[0.24em] text-sky sm:text-[10px]">
                     Admissions Open
                   </div>
                   <div className="mt-1 font-display text-sm font-black text-navy-deep sm:text-base">
-                    2026 Session
+                    2026-27
                   </div>
                 </div>
 
-                <div className="glass-panel absolute bottom-3 right-3 max-w-[12rem] rounded-2xl px-3 py-3 sm:bottom-4 sm:right-4 sm:max-w-[13rem] sm:px-4">
+                <div className="glass-panel absolute bottom-3 right-3 max-w-[12rem] rounded-2xl px-3 py-3 sm:bottom-4 sm:right-4 sm:max-w-[13rem] sm:px-4 z-10">
                   <div className="font-display text-sm font-black text-navy-deep sm:text-base">
                     Why families stay
                   </div>

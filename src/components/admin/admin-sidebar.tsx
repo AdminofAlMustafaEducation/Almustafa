@@ -12,6 +12,7 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  MessageCircle,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ const navItems = [
   { to: "/admin/fees", label: "Fees", icon: CreditCard },
   { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
+  { to: "/admin/chat-agents", label: "Chat Agents", icon: MessageCircle },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
