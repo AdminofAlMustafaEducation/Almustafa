@@ -192,29 +192,41 @@ export function useStudents(filters?: {
         return result;
       }
 
-      let query = supabase!.from("students").select("*").order("created_at", { ascending: false });
+      try {
+        let query = supabase!.from("students").select("*").order("created_at", { ascending: false });
 
-      if (filters?.classLevel) {
-        query = query.eq("class_level", filters.classLevel);
+        if (filters?.classLevel) {
+          query = query.eq("class_level", filters.classLevel);
+        }
+
+        if (filters?.status) {
+          query = query.eq("status", filters.status);
+        }
+
+        if (filters?.search) {
+          query = query.or(
+            `name.ilike.%${filters.search}%,roll_number.ilike.%${filters.search}%`,
+          );
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Students table not found, falling back to mock data");
+            return [...mockStudents];
+          }
+          throw new Error(error.message);
+        }
+
+        return (data ?? []) as Student[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Students table not found, falling back to mock data");
+          return [...mockStudents];
+        }
+        throw err;
       }
-
-      if (filters?.status) {
-        query = query.eq("status", filters.status);
-      }
-
-      if (filters?.search) {
-        query = query.or(
-          `name.ilike.%${filters.search}%,roll_number.ilike.%${filters.search}%`,
-        );
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      return (data ?? []) as Student[];
     },
   });
 }
@@ -261,17 +273,43 @@ export function useCreateStudent() {
         return newStudent;
       }
 
-      const { data, error } = await supabase!
-        .from("students")
-        .insert(student)
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabase!
+          .from("students")
+          .insert(student)
+          .select()
+          .single();
 
-      if (error) {
-        throw new Error(error.message);
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Students table not found, using mock data");
+            const newStudent: Student = {
+              ...student,
+              id: String(Date.now()),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            };
+            mockStudents.push(newStudent);
+            return newStudent;
+          }
+          throw new Error(error.message);
+        }
+
+        return data as Student;
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Students table not found, using mock data");
+          const newStudent: Student = {
+            ...student,
+            id: String(Date.now()),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+          mockStudents.push(newStudent);
+          return newStudent;
+        }
+        throw err;
       }
-
-      return data as Student;
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["students"] });
