@@ -83,16 +83,16 @@ function AdminInquiries() {
   const columns: Column<Inquiry>[] = [
     {
       key: "name",
-      header: "Name",
+      label: "Name",
       sortable: true,
       render: (row) => <span className="font-medium">{row.name}</span>,
     },
-    { key: "email", header: "Email" },
-    { key: "phone", header: "Phone" },
-    { key: "subject", header: "Subject" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Phone" },
+    { key: "subject", label: "Subject" },
     {
       key: "status",
-      header: "Status",
+      label: "Status",
       render: (row) => {
         const config = statusConfig[row.status];
         return <Badge className={cn("border-0", config?.color)}>{config?.label || row.status}</Badge>;
@@ -100,12 +100,12 @@ function AdminInquiries() {
     },
     {
       key: "created_at",
-      header: "Date",
+      label: "Date",
       render: (row) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
     },
     {
       key: "id",
-      header: "Actions",
+      label: "Actions",
       render: (row) => (
         <Button variant="ghost" size="sm" onClick={() => handleView(row)}>
           <Eye className="h-4 w-4" />

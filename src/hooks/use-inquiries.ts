@@ -21,11 +21,25 @@ export function useInquiries(filters?: { status?: string }) {
         if (filters?.status) result = result.filter((i) => i.status === filters.status);
         return result;
       }
-      let query = supabase!.from("inquiries").select("*").order("created_at", { ascending: false });
-      if (filters?.status) query = query.eq("status", filters.status);
-      const { data, error } = await query;
-      if (error) throw new Error(error.message);
-      return (data ?? []) as Inquiry[];
+      try {
+        let query = supabase!.from("inquiries").select("*").order("created_at", { ascending: false });
+        if (filters?.status) query = query.eq("status", filters.status);
+        const { data, error } = await query;
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Inquiries table not found, falling back to mock data");
+            return [...mockInquiries];
+          }
+          throw new Error(error.message);
+        }
+        return (data ?? []) as Inquiry[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Inquiries table not found, falling back to mock data");
+          return [...mockInquiries];
+        }
+        throw err;
+      }
     },
   });
 }

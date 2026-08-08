@@ -24,12 +24,26 @@ export function useBatches(filters?: { session?: string; isActive?: boolean }) {
         if (filters?.isActive !== undefined) result = result.filter((b) => b.is_active === filters.isActive);
         return result;
       }
-      let query = supabase!.from("batches").select("*").order("created_at", { ascending: false });
-      if (filters?.session) query = query.eq("session", filters.session);
-      if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
-      const { data, error } = await query;
-      if (error) throw new Error(error.message);
-      return (data ?? []) as Batch[];
+      try {
+        let query = supabase!.from("batches").select("*").order("created_at", { ascending: false });
+        if (filters?.session) query = query.eq("session", filters.session);
+        if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
+        const { data, error } = await query;
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Batches table not found, falling back to mock data");
+            return [...mockBatches];
+          }
+          throw new Error(error.message);
+        }
+        return (data ?? []) as Batch[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Batches table not found, falling back to mock data");
+          return [...mockBatches];
+        }
+        throw err;
+      }
     },
   });
 }

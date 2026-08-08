@@ -29,13 +29,30 @@ export function useFaculty(filters?: { campus?: string; isActive?: boolean }) {
         return result.sort((a, b) => a.sort_order - b.sort_order);
       }
 
-      let query = supabase!.from("faculty").select("*").order("sort_order");
-      if (filters?.campus) query = query.eq("campus", filters.campus);
-      if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
+      try {
+        let query = supabase!.from("faculty").select("*").order("sort_order");
+        if (filters?.campus) query = query.eq("campus", filters.campus);
+        if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
 
-      const { data, error } = await query;
-      if (error) throw new Error(error.message);
-      return (data ?? []) as Faculty[];
+        const { data, error } = await query;
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Faculty table not found, falling back to mock data");
+            let result = [...mockFaculty];
+            if (filters?.campus) result = result.filter((f) => f.campus === filters.campus);
+            if (filters?.isActive !== undefined) result = result.filter((f) => f.is_active === filters.isActive);
+            return result.sort((a, b) => a.sort_order - b.sort_order);
+          }
+          throw new Error(error.message);
+        }
+        return (data ?? []) as Faculty[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Faculty table not found, falling back to mock data");
+          return [...mockFaculty];
+        }
+        throw err;
+      }
     },
   });
 }

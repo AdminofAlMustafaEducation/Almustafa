@@ -22,12 +22,26 @@ export function useFees(filters?: { status?: string; studentId?: string }) {
         if (filters?.studentId) result = result.filter((f) => f.student_id === filters.studentId);
         return result;
       }
-      let query = supabase!.from("fees").select("*").order("created_at", { ascending: false });
-      if (filters?.status) query = query.eq("status", filters.status);
-      if (filters?.studentId) query = query.eq("student_id", filters.studentId);
-      const { data, error } = await query;
-      if (error) throw new Error(error.message);
-      return (data ?? []) as Fee[];
+      try {
+        let query = supabase!.from("fees").select("*").order("created_at", { ascending: false });
+        if (filters?.status) query = query.eq("status", filters.status);
+        if (filters?.studentId) query = query.eq("student_id", filters.studentId);
+        const { data, error } = await query;
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Fees table not found, falling back to mock data");
+            return [...mockFees];
+          }
+          throw new Error(error.message);
+        }
+        return (data ?? []) as Fee[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Fees table not found, falling back to mock data");
+          return [...mockFees];
+        }
+        throw err;
+      }
     },
   });
 }

@@ -1,6 +1,6 @@
-import { HeadContent, Link, Outlet, Scripts, createRootRoute, useRouterState } from "@tanstack/react-router";
+import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppChat } from "@/components/whatsapp-chat";
@@ -142,11 +142,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RootComponent() {
-  const routerState = useRouterState();
-  const pathname = routerState.location.pathname;
-  const isAdmin = pathname.startsWith("/admin");
+function ClientOnly({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return <>{children}</>;
+}
 
+function RootComponent() {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -159,14 +162,35 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {!isAdmin && <SiteHeader />}
-        <main id="main-content">
-          <Outlet />
-        </main>
-        {!isAdmin && <SiteFooter />}
-        {!isAdmin && <NotificationBell />}
-        {!isAdmin && <WhatsAppChat />}
+        <AdminLayoutWrapper />
       </AuthProvider>
     </QueryClientProvider>
+  );
+}
+
+function AdminLayoutWrapper() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(window.location.pathname.startsWith("/admin"));
+    
+    const handleRouteChange = () => {
+      setIsAdmin(window.location.pathname.startsWith("/admin"));
+    };
+    
+    window.addEventListener("popstate", handleRouteChange);
+    return () => window.removeEventListener("popstate", handleRouteChange);
+  }, []);
+
+  return (
+    <>
+      {!isAdmin && <SiteHeader />}
+      <main id="main-content">
+        <Outlet />
+      </main>
+      {!isAdmin && <SiteFooter />}
+      {!isAdmin && <ClientOnly><NotificationBell /></ClientOnly>}
+      {!isAdmin && <ClientOnly><WhatsAppChat /></ClientOnly>}
+    </>
   );
 }

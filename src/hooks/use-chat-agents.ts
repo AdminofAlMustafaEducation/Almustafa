@@ -26,9 +26,23 @@ export function useChatAgents() {
       if (USE_MOCK) {
         return [...mockAgents].sort((a, b) => a.sort_order - b.sort_order);
       }
-      const { data, error } = await supabase!.from("chat_agents").select("*").order("sort_order");
-      if (error) throw new Error(error.message);
-      return (data ?? []) as ChatAgent[];
+      try {
+        const { data, error } = await supabase!.from("chat_agents").select("*").order("sort_order");
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Chat agents table not found, falling back to mock data");
+            return [...mockAgents];
+          }
+          throw new Error(error.message);
+        }
+        return (data ?? []) as ChatAgent[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Chat agents table not found, falling back to mock data");
+          return [...mockAgents];
+        }
+        throw err;
+      }
     },
   });
 }
@@ -40,9 +54,23 @@ export function useActiveChatAgents() {
       if (USE_MOCK) {
         return mockAgents.filter((a) => a.is_active).sort((a, b) => a.sort_order - b.sort_order);
       }
-      const { data, error } = await supabase!.from("chat_agents").select("*").eq("is_active", true).order("sort_order");
-      if (error) throw new Error(error.message);
-      return (data ?? []) as ChatAgent[];
+      try {
+        const { data, error } = await supabase!.from("chat_agents").select("*").eq("is_active", true).order("sort_order");
+        if (error) {
+          if (error.message.includes("Could not find the table")) {
+            console.warn("Chat agents table not found, falling back to mock data");
+            return mockAgents.filter((a) => a.is_active).sort((a, b) => a.sort_order - b.sort_order);
+          }
+          throw new Error(error.message);
+        }
+        return (data ?? []) as ChatAgent[];
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("Could not find the table")) {
+          console.warn("Chat agents table not found, falling back to mock data");
+          return mockAgents.filter((a) => a.is_active).sort((a, b) => a.sort_order - b.sort_order);
+        }
+        throw err;
+      }
     },
   });
 }

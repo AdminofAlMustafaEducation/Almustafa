@@ -95,24 +95,24 @@ function AdminAdmissions() {
   const columns: Column<Application>[] = [
     {
       key: "application_number",
-      header: "App #",
+      label: "App #",
       render: (row) => <span className="font-mono text-xs">{row.application_number}</span>,
     },
-    { key: "student_name", header: "Student Name", render: (row) => <span className="font-medium">{row.student_name}</span> },
+    { key: "student_name", label: "Student Name", render: (row) => <span className="font-medium">{row.student_name}</span> },
     {
       key: "program",
-      header: "Program",
+      label: "Program",
       render: (row) => <span className="capitalize">{row.program.replace(/_/g, " ")}</span>,
     },
-    { key: "class_level", header: "Class" },
+    { key: "class_level", label: "Class" },
     {
       key: "campus",
-      header: "Campus",
+      label: "Campus",
       render: (row) => <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>,
     },
     {
       key: "status",
-      header: "Status",
+      label: "Status",
       render: (row) => {
         const config = statusConfig[row.status];
         if (!config) return <Badge>{row.status}</Badge>;
@@ -126,12 +126,12 @@ function AdminAdmissions() {
     },
     {
       key: "created_at",
-      header: "Applied",
+      label: "Applied",
       render: (row) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
     },
     {
       key: "id",
-      header: "Actions",
+      label: "Actions",
       render: (row) => (
         <Button variant="ghost" size="sm" onClick={() => handleView(row)}>
           <Eye className="h-4 w-4" />
