@@ -9,6 +9,27 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export const supabase = supabaseUrl
-  ? createClient(supabaseUrl, supabaseAnonKey ?? "")
+// Validate URL format
+function isValidSupabaseUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" && parsed.hostname.endsWith(".supabase.co");
+  } catch {
+    return false;
+  }
+}
+
+const isConfigured = isValidSupabaseUrl(supabaseUrl) && !!supabaseAnonKey;
+
+if (supabaseUrl && !isValidSupabaseUrl(supabaseUrl)) {
+  console.error(
+    `Invalid Supabase URL format: "${supabaseUrl}". Expected format: https://your-project.supabase.co`,
+  );
+}
+
+export const supabase = isConfigured
+  ? createClient(supabaseUrl!, supabaseAnonKey!)
   : null;
+
+export const supabaseConfigured = isConfigured;
