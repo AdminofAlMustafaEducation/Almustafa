@@ -52,6 +52,40 @@ CREATE TRIGGER on_auth_user_created
 -- 002: Extend Students Table
 -- ============================================================
 
+-- Create students table if it doesn't exist
+CREATE TABLE IF NOT EXISTS students (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_number TEXT UNIQUE,
+  auth_user_id UUID UNIQUE REFERENCES auth.users(id),
+  full_name TEXT NOT NULL,
+  father_name TEXT,
+  guardian_name TEXT,
+  date_of_birth DATE,
+  gender TEXT CHECK (gender IN ('male', 'female')),
+  id_number TEXT,
+  identity_type TEXT,
+  identity_number TEXT UNIQUE,
+  student_whatsapp TEXT,
+  student_whatsapp_verified BOOLEAN DEFAULT false,
+  parent_whatsapp TEXT,
+  parent_whatsapp_verified BOOLEAN DEFAULT false,
+  grade TEXT,
+  class_id UUID,
+  monthly_fee NUMERIC DEFAULT 0,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  roll_number TEXT,
+  photo TEXT,
+  photo_url TEXT,
+  admission_date DATE DEFAULT CURRENT_DATE,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'graduated', 'withdrawn')),
+  password TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Add columns if table already exists
 ALTER TABLE students ADD COLUMN IF NOT EXISTS student_number TEXT UNIQUE;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS auth_user_id UUID UNIQUE REFERENCES auth.users(id);
 ALTER TABLE students ADD COLUMN IF NOT EXISTS identity_type TEXT;
@@ -64,8 +98,162 @@ ALTER TABLE students ADD COLUMN IF NOT EXISTS parent_whatsapp TEXT;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS parent_whatsapp_verified BOOLEAN DEFAULT false;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS guardian_name TEXT;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS gender TEXT CHECK (gender IN ('male', 'female'));
+ALTER TABLE students ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS password TEXT;
 
 CREATE SEQUENCE IF NOT EXISTS student_number_seq START 1001;
+
+-- ============================================================
+-- 002b: Create Applications Table
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS applications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  application_number TEXT UNIQUE NOT NULL,
+  full_name TEXT NOT NULL,
+  student_name TEXT,
+  father_name TEXT,
+  email TEXT,
+  phone TEXT NOT NULL,
+  identity_type TEXT,
+  identity_number TEXT,
+  id_number TEXT,
+  gender TEXT,
+  grade TEXT,
+  dob TEXT,
+  date_of_birth TEXT,
+  address TEXT,
+  previous_school TEXT,
+  previous_marks TEXT,
+  guardian_occupation TEXT,
+  message TEXT,
+  parent_name TEXT,
+  parent_phone TEXT,
+  parent_cnic TEXT,
+  photo_url TEXT,
+  documents TEXT[],
+  class_level INT,
+  program TEXT,
+  campus TEXT,
+  password TEXT,
+  tracking_code TEXT,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'under_review', 'reviewing', 'approved', 'rejected', 'enrolled', 'withdrawn')),
+  reviewer_notes TEXT,
+  reviewed_by UUID,
+  reviewed_at TIMESTAMPTZ,
+  student_id UUID REFERENCES students(id),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
+CREATE INDEX IF NOT EXISTS idx_applications_email ON applications(email);
+CREATE INDEX IF NOT EXISTS idx_applications_tracking_code ON applications(tracking_code);
+
+-- Sequence for application numbers
+CREATE SEQUENCE IF NOT EXISTS application_number_seq START 1001;
+
+-- Function to auto-generate application number
+CREATE OR REPLACE FUNCTION generate_application_number()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.application_number IS NULL OR NEW.application_number = '' THEN
+    NEW.application_number := 'AMA-' || EXTRACT(YEAR FROM NOW()) || '-' || LPAD(nextval('application_number_seq')::TEXT, 4, '0');
+  END IF;
+  IF NEW.tracking_code IS NULL OR NEW.tracking_code = '' THEN
+    NEW.tracking_code := NEW.application_number;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS on_application_created ON applications;
+CREATE TRIGGER on_application_created
+  BEFORE INSERT ON applications
+  FOR EACH ROW EXECUTE FUNCTION generate_application_number();
+
+-- Application Status History
+CREATE TABLE IF NOT EXISTS application_status_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  old_status TEXT,
+  new_status TEXT NOT NULL,
+  changed_by UUID,
+  changed_at TIMESTAMPTZ DEFAULT now(),
+  reason TEXT
+);
+
+-- Approve & Create Account RPC
+CREATE OR REPLACE FUNCTION approve_and_create_account(
+  app_id UUID,
+  reviewer_id UUID
+)
+RETURNS JSONB AS $$
+DECLARE
+  app RECORD;
+  new_student_id UUID;
+  new_student_number TEXT;
+  result JSONB;
+BEGIN
+  SELECT * INTO app FROM applications WHERE id = app_id FOR UPDATE;
+
+  IF app.status NOT IN ('pending', 'under_review', 'reviewing') THEN
+    RAISE EXCEPTION 'Cannot approve application with status: %', app.status;
+  END IF;
+
+  IF app.email IS NOT NULL AND app.email != '' THEN
+    IF EXISTS (SELECT 1 FROM students WHERE email = app.email) THEN
+      RAISE EXCEPTION 'Student with email % already exists', app.email;
+    END IF;
+  END IF;
+
+  IF app.identity_number IS NOT NULL AND app.identity_number != '' THEN
+    IF EXISTS (SELECT 1 FROM students WHERE identity_number = app.identity_number) THEN
+      RAISE EXCEPTION 'Student with identity number % already exists', app.identity_number;
+    END IF;
+  END IF;
+
+  new_student_number := 'STU-' || EXTRACT(YEAR FROM NOW()) || '-' ||
+    LPAD(nextval('student_number_seq')::TEXT, 4, '0');
+
+  INSERT INTO students (student_number, full_name, father_name, phone,
+    identity_type, identity_number, gender, grade, address,
+    admission_date, monthly_fee, status, email, password)
+  VALUES (new_student_number, app.full_name, COALESCE(app.father_name, ''), app.phone,
+    'b_form', app.identity_number, COALESCE(app.gender, 'male'),
+    COALESCE(app.grade, '9th'), COALESCE(app.address, ''),
+    CURRENT_DATE, 0, 'active', app.email, app.password)
+  RETURNING id INTO new_student_id;
+
+  UPDATE applications
+  SET status = 'approved',
+      student_id = new_student_id,
+      reviewed_by = reviewer_id,
+      reviewed_at = now(),
+      updated_at = now()
+  WHERE id = app_id;
+
+  INSERT INTO application_status_history
+    (application_id, old_status, new_status, changed_by, reason)
+  VALUES (app_id, app.status, 'approved', reviewer_id, 'Approved and student admitted');
+
+  result := jsonb_build_object(
+    'student_id', new_student_id,
+    'student_number', new_student_number,
+    'application_number', app.application_number
+  );
+
+  RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Enable RLS on applications
+ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE application_status_history ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admin can manage applications" ON applications FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+CREATE POLICY "Public can insert applications" ON applications FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin can manage application_history" ON application_status_history FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
 
 CREATE OR REPLACE FUNCTION generate_student_number()
 RETURNS TRIGGER AS $$
@@ -443,6 +631,37 @@ CREATE POLICY "Students can read class notes" ON notes FOR SELECT USING (is_publ
 -- 011: Extend Notifications Table
 -- ============================================================
 
+-- Create notifications table if it doesn't exist
+CREATE TABLE IF NOT EXISTS notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID,
+  type TEXT DEFAULT 'general',
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  date DATE DEFAULT CURRENT_DATE,
+  is_read BOOLEAN DEFAULT false,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INT DEFAULT 0,
+  reference_type TEXT,
+  reference_id UUID,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Create chat_agents table if it doesn't exist
+CREATE TABLE IF NOT EXISTS chat_agents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  role TEXT NOT NULL,
+  photo_url TEXT,
+  whatsapp_number TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Add columns if tables already exist
 ALTER TABLE notifications ADD COLUMN IF NOT EXISTS user_id UUID;
 ALTER TABLE notifications ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'general';
 ALTER TABLE notifications ADD COLUMN IF NOT EXISTS reference_type TEXT;
