@@ -16,6 +16,7 @@ import {
   Bell,
   ClipboardList,
   BookOpen,
+  Video,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const navItems = [
   { to: "/admin/batches", label: "Batches", icon: Calendar },
   { to: "/admin/exams", label: "Exams", icon: ClipboardList },
   { to: "/admin/notes", label: "Notes", icon: BookOpen },
+  { to: "/admin/live-classes", label: "Live Classes", icon: Video },
   { to: "/admin/fees", label: "Fees", icon: CreditCard },
   { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
