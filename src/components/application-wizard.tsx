@@ -497,7 +497,7 @@ export function ApplicationWizard() {
                 "Submit Application"
               )}
             </Button>
-          </        </div>
+          </div>
 
         {createApp.isError && (
           <p className="mt-4 text-center text-sm text-destructive">
