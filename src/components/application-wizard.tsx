@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronLeft, ChevronRight, GraduationCap, Loader2, User, Users } from "lucide-react";
 import { applicationSchema, type ApplicationFormData } from "@/data/schema";
 import { useCreateApplication } from "@/hooks/use-admissions";
+import { GRADES } from "@/lib/academy";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -26,24 +27,6 @@ const STEPS = [
   { label: "Review", icon: Check },
 ] as const;
 
-const PROGRAM_LABELS: Record<string, string> = {
-  matric: "Matric (9th & 10th)",
-  fsc_pre_medical: "F.Sc Pre-Medical",
-  fsc_pre_engineering: "F.Sc Pre-Engineering",
-};
-
-const CAMPUS_LABELS: Record<string, string> = {
-  main: "Main Campus — House# 1461, G-11/2",
-  second: "Second Campus — House# 1300, G-11/2",
-};
-
-const CLASS_OPTIONS = [
-  { value: 9, label: "Class 9th" },
-  { value: 10, label: "Class 10th" },
-  { value: 11, label: "Class 11th (1st Year)" },
-  { value: 12, label: "Class 12th (2nd Year)" },
-];
-
 export function ApplicationWizard() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -53,15 +36,23 @@ export function ApplicationWizard() {
   const form = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema),
     defaultValues: {
-      student_name: "",
-      email: "",
+      full_name: "",
+      father_name: "",
       phone: "",
+      id_number: "",
+      gender: "male",
+      grade: "9th",
       date_of_birth: "",
       address: "",
+      previous_school: "",
+      guardian_occupation: "",
+      message: "",
+      // Legacy fields
+      student_name: "",
+      email: "",
       class_level: 9,
       program: "matric",
       campus: "main",
-      previous_school: "",
       previous_marks: "",
       parent_name: "",
       parent_phone: "",
@@ -73,8 +64,8 @@ export function ApplicationWizard() {
   const values = watch();
 
   const stepFields: (keyof ApplicationFormData)[][] = [
-    ["student_name", "email", "phone", "date_of_birth", "address"],
-    ["class_level", "program", "campus"],
+    ["full_name", "phone", "id_number", "date_of_birth", "address"],
+    ["grade", "gender"],
     ["parent_name", "parent_phone"],
     [],
   ];
@@ -222,35 +213,31 @@ export function ApplicationWizard() {
 
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="student_name">Full Name *</Label>
+                    <Label htmlFor="full_name">Full Name *</Label>
                     <Input
-                      id="student_name"
+                      id="full_name"
                       placeholder="e.g. Ahmed Khan"
-                      {...register("student_name")}
+                      {...register("full_name")}
                     />
-                    {formState.errors.student_name && (
+                    {formState.errors.full_name && (
                       <p className="text-xs text-destructive">
-                        {formState.errors.student_name.message}
+                        {formState.errors.full_name.message}
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="father_name">Father / Guardian Name</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="e.g. ahmed@email.com"
-                      {...register("email")}
+                      id="father_name"
+                      placeholder="e.g. Muhammad Khan"
+                      {...register("father_name")}
                     />
-                    {formState.errors.email && (
-                      <p className="text-xs text-destructive">{formState.errors.email.message}</p>
-                    )}
                   </div>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Label htmlFor="phone">Phone / WhatsApp *</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -263,31 +250,38 @@ export function ApplicationWizard() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="date_of_birth">Date of Birth *</Label>
+                    <Label htmlFor="id_number">B-Form / ID Number *</Label>
                     <Input
-                      id="date_of_birth"
-                      type="date"
-                      {...register("date_of_birth")}
+                      id="id_number"
+                      placeholder="Child registration / CNIC number"
+                      {...register("id_number")}
                     />
-                    {formState.errors.date_of_birth && (
+                    {formState.errors.id_number && (
                       <p className="text-xs text-destructive">
-                        {formState.errors.date_of_birth.message}
+                        {formState.errors.id_number.message}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="address">Home Address *</Label>
-                  <Textarea
-                    id="address"
-                    placeholder="House#, Street, Area, City"
-                    rows={3}
-                    {...register("address")}
-                  />
-                  {formState.errors.address && (
-                    <p className="text-xs text-destructive">{formState.errors.address.message}</p>
-                  )}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="date_of_birth">Date of Birth</Label>
+                    <Input
+                      id="date_of_birth"
+                      type="date"
+                      {...register("date_of_birth")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Home Address</Label>
+                    <Textarea
+                      id="address"
+                      placeholder="House#, Street, Area, City"
+                      rows={2}
+                      {...register("address")}
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -300,65 +294,44 @@ export function ApplicationWizard() {
                     Academic Information
                   </h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Select the class, program and campus.
+                    Select the class and gender.
                   </p>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>Class Level *</Label>
+                    <Label>Class Applying For *</Label>
                     <Select
-                      value={String(values.class_level)}
-                      onValueChange={(v) => setValue("class_level", Number(v))}
+                      value={values.grade}
+                      onValueChange={(v) => setValue("grade", v as ApplicationFormData["grade"])}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select class" />
                       </SelectTrigger>
                       <SelectContent>
-                        {CLASS_OPTIONS.map((opt) => (
-                          <SelectItem key={opt.value} value={String(opt.value)}>
-                            {opt.label}
+                        {GRADES.map((grade) => (
+                          <SelectItem key={grade} value={grade}>
+                            {grade}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Program *</Label>
+                    <Label>Gender *</Label>
                     <Select
-                      value={values.program}
-                      onValueChange={(v) =>
-                        setValue("program", v as ApplicationFormData["program"])
-                      }
+                      value={values.gender}
+                      onValueChange={(v) => setValue("gender", v as ApplicationFormData["gender"])}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select program" />
+                        <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="matric">Matric (9th & 10th)</SelectItem>
-                        <SelectItem value="fsc_pre_medical">F.Sc Pre-Medical</SelectItem>
-                        <SelectItem value="fsc_pre_engineering">F.Sc Pre-Engineering</SelectItem>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Campus *</Label>
-                  <Select
-                    value={values.campus}
-                    onValueChange={(v) =>
-                      setValue("campus", v as ApplicationFormData["campus"])
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select campus" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="main">Main Campus — House# 1461, G-11/2</SelectItem>
-                      <SelectItem value="second">Second Campus — House# 1300, G-11/2</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -371,13 +344,23 @@ export function ApplicationWizard() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="previous_marks">Previous Marks / Percentage (optional)</Label>
+                    <Label htmlFor="guardian_occupation">Guardian Occupation (optional)</Label>
                     <Input
-                      id="previous_marks"
-                      placeholder="e.g. 85%"
-                      {...register("previous_marks")}
+                      id="guardian_occupation"
+                      placeholder="e.g. Business, Government Job"
+                      {...register("guardian_occupation")}
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="message">Message / Notes (optional)</Label>
+                  <Textarea
+                    id="message"
+                    placeholder="Anything you'd like us to know..."
+                    rows={3}
+                    {...register("message")}
+                  />
                 </div>
               </div>
             )}
@@ -452,11 +435,12 @@ export function ApplicationWizard() {
                   title="Personal Information"
                   onEdit={() => handleEdit(0)}
                   rows={[
-                    { label: "Full Name", value: values.student_name },
-                    { label: "Email", value: values.email },
+                    { label: "Full Name", value: values.full_name },
+                    { label: "Father Name", value: values.father_name || "—" },
                     { label: "Phone", value: values.phone },
-                    { label: "Date of Birth", value: values.date_of_birth },
-                    { label: "Address", value: values.address },
+                    { label: "B-Form/ID", value: values.id_number },
+                    { label: "Date of Birth", value: values.date_of_birth || "—" },
+                    { label: "Address", value: values.address || "—" },
                   ]}
                 />
 
@@ -464,14 +448,10 @@ export function ApplicationWizard() {
                   title="Academic Information"
                   onEdit={() => handleEdit(1)}
                   rows={[
-                    {
-                      label: "Class",
-                      value: CLASS_OPTIONS.find((o) => o.value === values.class_level)?.label ?? "",
-                    },
-                    { label: "Program", value: PROGRAM_LABELS[values.program] ?? "" },
-                    { label: "Campus", value: CAMPUS_LABELS[values.campus] ?? "" },
+                    { label: "Class", value: values.grade },
+                    { label: "Gender", value: values.gender === "male" ? "Male" : "Female" },
                     { label: "Previous School", value: values.previous_school || "—" },
-                    { label: "Previous Marks", value: values.previous_marks || "—" },
+                    { label: "Guardian Occupation", value: values.guardian_occupation || "—" },
                   ]}
                 />
 
@@ -517,8 +497,7 @@ export function ApplicationWizard() {
                 "Submit Application"
               )}
             </Button>
-          )}
-        </div>
+          </        </div>
 
         {createApp.isError && (
           <p className="mt-4 text-center text-sm text-destructive">

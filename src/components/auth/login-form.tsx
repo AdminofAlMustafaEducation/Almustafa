@@ -33,8 +33,15 @@ export function LoginForm() {
     setIsLoading(true);
     setError(null);
     try {
-      await login(data.email, data.password);
-      navigate({ to: "/admin" });
+      const user = await login(data.email, data.password);
+      // Redirect based on user role
+      if (user.role === "teacher") {
+        navigate({ to: "/teacher" });
+      } else if (user.role === "student") {
+        navigate({ to: "/portal" });
+      } else {
+        navigate({ to: "/admin" });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

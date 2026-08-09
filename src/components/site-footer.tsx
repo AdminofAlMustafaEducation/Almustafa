@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, Facebook, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { Clock, Facebook, Mail, MapPin, Phone, Youtube, LayoutDashboard, GraduationCap, BookOpen, ArrowRight } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -51,6 +51,42 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-4 font-display text-lg text-gold">Portals</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/apply" className="flex items-center gap-2 font-semibold text-emerald-400 transition-colors hover:text-emerald-300">
+                  <ArrowRight className="h-4 w-4" /> Apply for Admission
+                </Link>
+              </li>
+              <li>
+                <Link to="/track" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
+                  <ArrowRight className="h-4 w-4" /> Track Application
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
+                  <LayoutDashboard className="h-4 w-4" /> Admin Panel
+                </Link>
+              </li>
+              <li>
+                <Link to="/portal" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
+                  <GraduationCap className="h-4 w-4" /> Student Portal
+                </Link>
+              </li>
+              <li>
+                <Link to="/teacher" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
+                  <BookOpen className="h-4 w-4" /> Teacher Portal
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  Login
+                </Link>
+              </li>
             </ul>
           </div>
 

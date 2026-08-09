@@ -25,7 +25,8 @@ export function ProtectedRoute({
     return <Navigate to="/login" />;
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  // Admin can access all portals
+  if (!allowedRoles.includes(user.role) && user.role !== "admin") {
     return <Navigate to="/" />;
   }
 

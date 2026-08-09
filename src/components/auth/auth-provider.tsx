@@ -36,13 +36,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string): Promise<User> {
     const result = await validateLogin(email, password);
     if (!result.success || !result.user) {
       throw new Error(result.error || "Login failed");
     }
     setUser(result.user);
     storeUser(result.user);
+    return result.user;
   }
 
   async function logout() {

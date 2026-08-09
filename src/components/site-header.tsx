@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, Phone, X } from "lucide-react";
+import { Menu, Phone, X, GraduationCap, BookOpen, LayoutDashboard } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -13,6 +13,12 @@ const nav = [
   { to: "/gallery", label: "Gallery" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
+const portalLinks = [
+  { to: "/admin", label: "Admin", icon: LayoutDashboard },
+  { to: "/portal", label: "Student", icon: GraduationCap },
+  { to: "/teacher", label: "Teacher", icon: BookOpen },
+];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -66,6 +72,13 @@ export function SiteHeader() {
             <Phone className="h-4 w-4" /> {academy.phone}
           </a>
 
+          <Link
+            to="/apply"
+            className="hidden items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg transition-transform hover:scale-105 hover:bg-emerald-700 lg:inline-flex"
+          >
+            Apply Now
+          </Link>
+
           <button
             type="button"
             onClick={() => setOpen((current) => !current)}
@@ -91,6 +104,29 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <div className="mt-2 border-t border-border pt-2">
+              <p className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Portals
+              </p>
+              {portalLinks.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-navy-deep/85 hover:bg-white hover:text-gold"
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <Link
+              to="/apply"
+              onClick={() => setOpen(false)}
+              className="mt-2 block rounded-2xl bg-emerald-600 px-3 py-2.5 text-center text-sm font-bold text-white hover:bg-emerald-700"
+            >
+              Apply for Admission
+            </Link>
             <a
               href={`tel:${academy.phoneIntl}`}
               className="flex items-center gap-2 px-3 py-2 font-semibold text-gold"
