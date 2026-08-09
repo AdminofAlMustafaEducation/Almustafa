@@ -21,7 +21,8 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useApplications, useUpdateApplicationStatus } from "@/hooks/use-admissions";
+import { useApplications, useUpdateApplicationStatus, useApproveAndAdmit } from "@/hooks/use-admissions";
+import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import type { Application } from "@/types/database";
 
@@ -38,11 +39,13 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
 };
 
 function AdminAdmissions() {
+  const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState("all");
   const { data: applications = [], isLoading, error } = useApplications(
     statusFilter === "all" ? undefined : { status: statusFilter }
   );
   const updateStatus = useUpdateApplicationStatus();
+  const approveAndAdmit = useApproveAndAdmit();
 
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -218,19 +221,34 @@ function AdminAdmissions() {
           )}
           <DialogFooter className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Close</Button>
-            {selectedApp && updateStatus.isPending && (
-              <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</Button>
+            {(updateStatus.isPending || approveAndAdmit.isPending) && (
+              <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</Button>
             )}
-            {selectedApp && !updateStatus.isPending && (
+            {selectedApp && !updateStatus.isPending && !approveAndAdmit.isPending && (
               <>
                 {selectedApp.status === "pending" && (
                   <Button variant="secondary" onClick={() => handleStatusChange(selectedApp.id, "reviewing")}>
                     <Eye className="mr-1 h-3 w-3" /> Start Review
                   </Button>
                 )}
-                {selectedApp.status !== "approved" && selectedApp.status !== "enrolled" && (
-                  <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange(selectedApp.id, "approved")}>
-                    <Check className="mr-1 h-3 w-3" /> Approve
+                {(selectedApp.status === "pending" || selectedApp.status === "reviewing") && (
+                  <Button
+                    className="bg-green-600 hover:bg-green-700"
+                    onClick={() => {
+                      approveAndAdmit.mutate(
+                        { applicationId: selectedApp.id, reviewerId: user?.id || "admin" },
+                        {
+                          onSuccess: () => {
+                            setDialogOpen(false);
+                            setSelectedApp(null);
+                            setReviewerNotes("");
+                          },
+                          onError: (err) => alert(`Failed to approve: ${err.message}`),
+                        }
+                      );
+                    }}
+                  >
+                    <Check className="mr-1 h-3 w-3" /> Approve & Admit
                   </Button>
                 )}
                 {selectedApp.status !== "rejected" && selectedApp.status !== "enrolled" && (
@@ -244,7 +262,7 @@ function AdminAdmissions() {
                   </Button>
                 )}
               </>
-            )}
+            )}}
           </DialogFooter>
         </DialogContent>
       </Dialog>

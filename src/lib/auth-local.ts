@@ -22,11 +22,15 @@ export function storeUser(user: User | null) {
   }
 }
 
-export async function validateLogin(email: string, password: string): Promise<{ success: boolean; user?: User; error?: string }> {
+export async function validateLogin(
+  email: string,
+  password: string
+): Promise<{ success: boolean; user?: User; error?: string }> {
   if (!supabaseConfigured || !supabase) {
     return {
       success: false,
-      error: "Authentication service not configured. Please check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables in Vercel."
+      error:
+        "Authentication service not configured. Please check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
     };
   }
 
@@ -37,14 +41,48 @@ export async function validateLogin(email: string, password: string): Promise<{ 
     });
 
     if (error || !data.user) {
-      return { success: false, error: error?.message || "Invalid email or password" };
+      return {
+        success: false,
+        error: error?.message || "Invalid email or password",
+      };
+    }
+
+    // Try to load profile from profiles table
+    let role: UserRole = "admin";
+    let name = data.user.email?.split("@")[0] || "Admin";
+
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, full_name")
+        .eq("auth_user_id", data.user.id)
+        .single();
+
+      if (profile) {
+        role = profile.role as UserRole;
+        name = profile.full_name;
+      } else {
+        // Fallback to user metadata
+        role = (data.user.user_metadata?.role as UserRole) || "admin";
+        name =
+          data.user.user_metadata?.name ||
+          data.user.email?.split("@")[0] ||
+          "Admin";
+      }
+    } catch {
+      // Profile table might not exist yet, use metadata
+      role = (data.user.user_metadata?.role as UserRole) || "admin";
+      name =
+        data.user.user_metadata?.name ||
+        data.user.email?.split("@")[0] ||
+        "Admin";
     }
 
     const user: User = {
       id: data.user.id,
       email: data.user.email || email,
-      role: (data.user.user_metadata?.role as UserRole) || "admin",
-      name: data.user.user_metadata?.name || data.user.email?.split("@")[0] || "Admin",
+      role,
+      name,
       is_active: true,
       created_at: data.user.created_at,
       updated_at: data.user.updated_at || data.user.created_at,
@@ -58,7 +96,8 @@ export async function validateLogin(email: string, password: string): Promise<{ 
     if (message.includes("Failed to fetch") || message.includes("fetch")) {
       return {
         success: false,
-        error: "Cannot connect to authentication server. Please verify your Supabase URL is correct and the project is active."
+        error:
+          "Cannot connect to authentication server. Please verify your Supabase URL is correct and the project is active.",
       };
     }
 
@@ -77,15 +116,46 @@ export async function getCurrentSession(): Promise<User | null> {
   if (!supabase) return getStoredUser();
 
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
     if (!session?.user) return null;
+
+    // Try to load profile
+    let role: UserRole = "admin";
+    let name = session.user.email?.split("@")[0] || "Admin";
+
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, full_name")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profile) {
+        role = profile.role as UserRole;
+        name = profile.full_name;
+      } else {
+        role = (session.user.user_metadata?.role as UserRole) || "admin";
+        name =
+          session.user.user_metadata?.name ||
+          session.user.email?.split("@")[0] ||
+          "Admin";
+      }
+    } catch {
+      role = (session.user.user_metadata?.role as UserRole) || "admin";
+      name =
+        session.user.user_metadata?.name ||
+        session.user.email?.split("@")[0] ||
+        "Admin";
+    }
 
     const user: User = {
       id: session.user.id,
       email: session.user.email || "",
-      role: (session.user.user_metadata?.role as UserRole) || "admin",
-      name: session.user.user_metadata?.name || session.user.email?.split("@")[0] || "Admin",
+      role,
+      name,
       is_active: true,
       created_at: session.user.created_at,
       updated_at: session.user.updated_at || session.user.created_at,

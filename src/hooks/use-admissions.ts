@@ -296,3 +296,46 @@ export function useUpdateApplicationStatus() {
     },
   });
 }
+
+export function useApproveAndAdmit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      applicationId,
+      reviewerId,
+    }: {
+      applicationId: string;
+      reviewerId: string;
+    }) => {
+      if (USE_MOCK) {
+        const app = MOCK_APPLICATIONS.find((a) => a.id === applicationId);
+        if (!app) throw new Error("Application not found");
+
+        const studentId = String(Date.now());
+        app.status = "approved";
+        app.reviewed_by = reviewerId;
+        app.reviewed_at = new Date().toISOString();
+        app.updated_at = new Date().toISOString();
+
+        return { studentId, application: app };
+      }
+
+      // Call the approve_application RPC function
+      const { data, error } = await supabase!.rpc("approve_application", {
+        app_id: applicationId,
+        reviewer_id: reviewerId,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return { studentId: data, applicationId };
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["applications"] });
+      void queryClient.invalidateQueries({ queryKey: ["students"] });
+    },
+  });
+}

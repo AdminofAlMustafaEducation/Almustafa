@@ -14,6 +14,7 @@ import {
   ChevronRight,
   MessageCircle,
   Bell,
+  ClipboardList,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ const navItems = [
   { to: "/admin/faculty", label: "Faculty", icon: GraduationCap },
   { to: "/admin/attendance", label: "Attendance", icon: ClipboardCheck },
   { to: "/admin/batches", label: "Batches", icon: Calendar },
+  { to: "/admin/exams", label: "Exams", icon: ClipboardList },
   { to: "/admin/fees", label: "Fees", icon: CreditCard },
   { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
