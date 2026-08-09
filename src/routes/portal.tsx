@@ -10,6 +10,7 @@ import {
   User,
   Menu,
   X,
+  BookOpen,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,7 @@ const navItems = [
   { to: "/portal", label: "Dashboard", icon: LayoutDashboard },
   { to: "/portal/attendance", label: "Attendance", icon: CalendarCheck },
   { to: "/portal/results", label: "Results", icon: GraduationCap },
+  { to: "/portal/notes", label: "Notes", icon: BookOpen },
   { to: "/portal/fees", label: "Fees", icon: CreditCard },
 ];
 

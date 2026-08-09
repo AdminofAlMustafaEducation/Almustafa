@@ -6,6 +6,7 @@ import {
   BarChart3,
   ChevronLeft,
   ChevronRight,
+  BookOpen,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ const navItems = [
   { to: "/teacher/attendance", label: "Mark Attendance", icon: CalendarCheck },
   { to: "/teacher/tests", label: "Tests", icon: FileText },
   { to: "/teacher/results", label: "Results", icon: BarChart3 },
+  { to: "/teacher/notes", label: "Notes", icon: BookOpen },
 ];
 
 export function TeacherSidebar() {
