@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, Phone, X, GraduationCap, BookOpen, LayoutDashboard } from "lucide-react";
+import { Menu, Phone, X, GraduationCap, BookOpen, LayoutDashboard, ChevronDown } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -15,13 +15,14 @@ const nav = [
 ] as const;
 
 const portalLinks = [
-  { to: "/admin", label: "Admin", icon: LayoutDashboard },
-  { to: "/portal", label: "Student", icon: GraduationCap },
-  { to: "/teacher", label: "Teacher", icon: BookOpen },
+  { to: "/admin", label: "Admin Panel", icon: LayoutDashboard },
+  { to: "/portal", label: "Student Portal", icon: GraduationCap },
+  { to: "/teacher", label: "Teacher Portal", icon: BookOpen },
 ];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [portalsOpen, setPortalsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/60 bg-background/82 backdrop-blur-xl">
@@ -63,21 +64,51 @@ export function SiteHeader() {
                 <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-gold transition-transform group-hover:scale-x-100" />
               </Link>
             ))}
+
+            {/* Portals Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setPortalsOpen(!portalsOpen)}
+                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold text-navy-deep/82 transition-colors hover:text-gold"
+              >
+                Portals <ChevronDown className="h-3 w-3" />
+              </button>
+              {portalsOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setPortalsOpen(false)} />
+                  <div className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+                    {portalLinks.map((item) => (
+                      <Link
+                        key={item.to}
+                        to={item.to}
+                        onClick={() => setPortalsOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-600"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </nav>
 
-          <a
-            href={`tel:${academy.phoneIntl}`}
-            className="hidden items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-gold transition-transform hover:scale-105 lg:inline-flex"
-          >
-            <Phone className="h-4 w-4" /> {academy.phone}
-          </a>
-
-          <Link
-            to="/apply"
-            className="hidden items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg transition-transform hover:scale-105 hover:bg-emerald-700 lg:inline-flex"
-          >
-            Apply Now
-          </Link>
+          <div className="hidden items-center gap-3 lg:flex">
+            <a
+              href={`tel:${academy.phoneIntl}`}
+              className="flex items-center gap-2 rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow-gold transition-transform hover:scale-105"
+            >
+              <Phone className="h-4 w-4" /> {academy.phone}
+            </a>
+            <Link
+              to="/apply"
+              className="flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow-lg transition-transform hover:scale-105 hover:bg-emerald-700"
+            >
+              Apply Now
+            </Link>
+          </div>
 
           <button
             type="button"

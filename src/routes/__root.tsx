@@ -1,6 +1,7 @@
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { GraduationCap } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppChat } from "@/components/whatsapp-chat";
@@ -169,28 +170,43 @@ function RootComponent() {
 }
 
 function AdminLayoutWrapper() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isPortal, setIsPortal] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(window.location.pathname.startsWith("/admin"));
-    
-    const handleRouteChange = () => {
-      setIsAdmin(window.location.pathname.startsWith("/admin"));
+    const checkPortal = () => {
+      const path = window.location.pathname;
+      setIsPortal(
+        path.startsWith("/admin") ||
+        path.startsWith("/portal") ||
+        path.startsWith("/teacher")
+      );
     };
     
-    window.addEventListener("popstate", handleRouteChange);
-    return () => window.removeEventListener("popstate", handleRouteChange);
+    checkPortal();
+    window.addEventListener("popstate", checkPortal);
+    return () => window.removeEventListener("popstate", checkPortal);
   }, []);
 
   return (
     <>
-      {!isAdmin && <SiteHeader />}
+      {!isPortal && <SiteHeader />}
       <main id="main-content">
         <Outlet />
       </main>
-      {!isAdmin && <SiteFooter />}
-      {!isAdmin && <ClientOnly><NotificationBell /></ClientOnly>}
-      {!isAdmin && <ClientOnly><WhatsAppChat /></ClientOnly>}
+      {!isPortal && <SiteFooter />}
+      {!isPortal && <ClientOnly><NotificationBell /></ClientOnly>}
+      {!isPortal && <ClientOnly><WhatsAppChat /></ClientOnly>}
+      
+      {/* Floating Apply Button - Mobile Only */}
+      {!isPortal && (
+        <Link
+          to="/apply"
+          className="fixed bottom-24 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg transition-all hover:bg-emerald-700 hover:scale-105 sm:hidden"
+          title="Apply for Admission"
+        >
+          <GraduationCap className="h-6 w-6" />
+        </Link>
+      )}
     </>
   );
 }

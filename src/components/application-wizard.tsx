@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronLeft, ChevronRight, GraduationCap, Loader2, User, Users } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy, GraduationCap, Loader2, User, Users } from "lucide-react";
 import { applicationSchema, type ApplicationFormData } from "@/data/schema";
 import { useCreateApplication } from "@/hooks/use-admissions";
 import { GRADES } from "@/lib/academy";
@@ -37,6 +37,9 @@ export function ApplicationWizard() {
     resolver: zodResolver(applicationSchema),
     defaultValues: {
       full_name: "",
+      email: "",
+      password: "",
+      confirm_password: "",
       father_name: "",
       phone: "",
       id_number: "",
@@ -48,7 +51,6 @@ export function ApplicationWizard() {
       guardian_occupation: "",
       message: "",
       student_name: "",
-      email: "",
       class_level: 9,
       program: "matric",
       campus: "main",
@@ -63,7 +65,7 @@ export function ApplicationWizard() {
   const values = watch();
 
   const stepFields: (keyof ApplicationFormData)[][] = [
-    ["full_name", "phone", "id_number", "date_of_birth", "address"],
+    ["full_name", "email", "password", "confirm_password", "phone", "id_number", "date_of_birth", "address"],
     ["grade", "gender"],
     ["parent_name", "parent_phone"],
     [],
@@ -105,16 +107,39 @@ export function ApplicationWizard() {
             Application Submitted!
           </h2>
           <p className="mt-3 max-w-md text-sm text-muted-foreground sm:text-base">
-            Your application has been received. Please note your application number for tracking purposes.
+            Your application has been received. Please save your application number below.
           </p>
           <div className="mt-6 rounded-2xl border border-gold/20 bg-gold/5 px-8 py-5">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Application Number</p>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">
+              Application Number / Portal Password
+            </p>
             <p className="mt-1 font-display text-2xl font-black tracking-wider text-navy-deep sm:text-3xl">
               {applicationNumber}
             </p>
           </div>
-          <p className="mt-6 max-w-sm text-xs text-muted-foreground">
-            You can track your application status anytime using this number on the{" "}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(applicationNumber);
+                alert("Copied to clipboard!");
+              }}
+            >
+              <Copy className="mr-2 h-4 w-4" /> Copy to Clipboard
+            </Button>
+          </div>
+          <div className="mt-6 max-w-sm rounded-xl border border-blue-200 bg-blue-50 p-4 text-left">
+            <p className="text-xs font-semibold text-blue-800">Important:</p>
+            <ul className="mt-1 space-y-1 text-xs text-blue-700">
+              <li>• Please screenshot or copy this number</li>
+              <li>• This is your application tracking code</li>
+              <li>• After admission is approved, use this as your portal password</li>
+              <li>• Login with your email + this number</li>
+            </ul>
+          </div>
+          <p className="mt-4 max-w-sm text-xs text-muted-foreground">
+            Track your application status anytime on the{" "}
             <a href="/track" className="font-semibold text-navy underline underline-offset-2">Track Application</a> page.
           </p>
         </CardContent>
@@ -192,25 +217,43 @@ export function ApplicationWizard() {
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input id="email" type="email" placeholder="e.g. student@email.com" {...register("email")} />
+                    {formState.errors.email && <p className="text-xs text-destructive">{formState.errors.email.message}</p>}
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="phone">Phone / WhatsApp *</Label>
                     <Input id="phone" type="tel" inputMode="tel" placeholder="03XX XXXXXXX" {...register("phone")} />
                     {formState.errors.phone && <p className="text-xs text-destructive">{formState.errors.phone.message}</p>}
                   </div>
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password *</Label>
+                    <Input id="password" type="password" placeholder="Min 8 characters" {...register("password")} />
+                    {formState.errors.password && <p className="text-xs text-destructive">{formState.errors.password.message}</p>}
+                    <p className="text-[11px] text-muted-foreground">This will be your portal password after admission.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm_password">Confirm Password *</Label>
+                    <Input id="confirm_password" type="password" placeholder="Repeat password" {...register("confirm_password")} />
+                    {formState.errors.confirm_password && <p className="text-xs text-destructive">{formState.errors.confirm_password.message}</p>}
+                  </div>
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="id_number">B-Form / ID Number *</Label>
                     <Input id="id_number" placeholder="Child registration / CNIC number" {...register("id_number")} />
                     {formState.errors.id_number && <p className="text-xs text-destructive">{formState.errors.id_number.message}</p>}
                   </div>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="date_of_birth">Date of Birth</Label>
                     <Input id="date_of_birth" type="date" {...register("date_of_birth")} />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Home Address</Label>
-                    <Textarea id="address" placeholder="House#, Street, Area, City" rows={2} {...register("address")} />
-                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address">Home Address</Label>
+                  <Textarea id="address" placeholder="House#, Street, Area, City" rows={2} {...register("address")} />
                 </div>
               </div>
             )}

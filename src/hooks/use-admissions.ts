@@ -321,8 +321,8 @@ export function useApproveAndAdmit() {
         return { studentId, application: app };
       }
 
-      // Call the approve_application RPC function
-      const { data, error } = await supabase!.rpc("approve_application", {
+      // Call the approve_and_create_account RPC function
+      const { data, error } = await supabase!.rpc("approve_and_create_account", {
         app_id: applicationId,
         reviewer_id: reviewerId,
       });
@@ -331,7 +331,7 @@ export function useApproveAndAdmit() {
         throw new Error(error.message);
       }
 
-      return { studentId: data, applicationId };
+      return data;
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["applications"] });
