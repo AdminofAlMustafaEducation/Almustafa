@@ -262,7 +262,7 @@ function AdminAdmissions() {
                   </Button>
                 )}
               </>
-            )}}
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
