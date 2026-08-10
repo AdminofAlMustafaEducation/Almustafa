@@ -34,7 +34,7 @@ CREATE POLICY "Admin can read all profiles" ON profiles FOR SELECT USING (auth.j
 DROP POLICY IF EXISTS "Admin can manage all profiles" ON profiles;
 CREATE POLICY "Admin can manage all profiles" ON profiles FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION handle_new_user()
+CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO profiles (auth_user_id, full_name, role)
@@ -158,7 +158,7 @@ CREATE INDEX IF NOT EXISTS idx_applications_tracking_code ON applications(tracki
 CREATE SEQUENCE IF NOT EXISTS application_number_seq START 1001;
 
 -- Function to auto-generate application number
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_application_number()
+CREATE OR REPLACE FUNCTION generate_application_number()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.application_number IS NULL OR NEW.application_number = '' THEN
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS application_status_history (
 );
 
 -- Approve & Create Account RPC
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION approve_and_create_account(
+CREATE OR REPLACE FUNCTION approve_and_create_account(
   app_id UUID,
   reviewer_id UUID
 )
@@ -262,7 +262,7 @@ CREATE POLICY "Public can insert applications" ON applications FOR INSERT WITH C
 DROP POLICY IF EXISTS "Admin can manage application_history" ON application_status_history;
 CREATE POLICY "Admin can manage application_history" ON application_status_history FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_student_number()
+CREATE OR REPLACE FUNCTION generate_student_number()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.student_number IS NULL THEN
@@ -504,7 +504,7 @@ CREATE INDEX IF NOT EXISTS idx_exams_teacher ON exams(teacher_id);
 CREATE INDEX IF NOT EXISTS idx_exam_results_exam ON exam_results(exam_id);
 CREATE INDEX IF NOT EXISTS idx_exam_results_student ON exam_results(student_id);
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION calculate_grade(marks NUMERIC, total_marks NUMERIC)
+CREATE OR REPLACE FUNCTION calculate_grade(marks NUMERIC, total_marks NUMERIC)
 RETURNS TEXT AS $$
 BEGIN
   IF total_marks <= 0 THEN RETURN '-'; END IF;
@@ -520,7 +520,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION auto_calculate_grade()
+CREATE OR REPLACE FUNCTION auto_calculate_grade()
 RETURNS TRIGGER AS $$
 DECLARE
   exam_total INT;
@@ -586,7 +586,7 @@ CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id);
 
 CREATE SEQUENCE IF NOT EXISTS invoice_number_seq START 1001;
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_invoice_number()
+CREATE OR REPLACE FUNCTION generate_invoice_number()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.invoice_number IS NULL THEN
@@ -601,7 +601,7 @@ CREATE TRIGGER on_invoice_created
   BEFORE INSERT ON fee_invoices
   FOR EACH ROW EXECUTE FUNCTION generate_invoice_number();
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION update_invoice_status()
+CREATE OR REPLACE FUNCTION update_invoice_status()
 RETURNS TRIGGER AS $$
 DECLARE
   total_paid NUMERIC;
@@ -813,7 +813,7 @@ CREATE POLICY "Admin can read audit_logs" ON audit_logs FOR SELECT USING (auth.j
 DROP POLICY IF EXISTS "System can insert audit_logs" ON audit_logs;
 CREATE POLICY "System can insert audit_logs" ON audit_logs FOR INSERT WITH CHECK (true);
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION log_audit_event(
+CREATE OR REPLACE FUNCTION log_audit_event(
   p_actor_id UUID,
   p_action TEXT,
   p_entity_type TEXT,
@@ -854,7 +854,7 @@ CREATE POLICY "Students can read own enrollments" ON class_students FOR SELECT U
 -- 017: Create RPC Functions
 -- ============================================================
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION approve_application(app_id UUID, reviewer_id UUID)
+CREATE OR REPLACE FUNCTION approve_application(app_id UUID, reviewer_id UUID)
 RETURNS UUID AS $$
 DECLARE
   app RECORD;
@@ -906,7 +906,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_monthly_fees(billing_month TEXT, fee_amount NUMERIC)
+CREATE OR REPLACE FUNCTION generate_monthly_fees(billing_month TEXT, fee_amount NUMERIC)
 RETURNS INT AS $$
 DECLARE
   count INT := 0;
