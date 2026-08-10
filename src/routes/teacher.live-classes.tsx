@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Video, Plus, Pencil, Trash2, ExternalLink, Clock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +22,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useLiveClasses, useCreateLiveClass, useUpdateLiveClass, useDeleteLiveClass } from "@/hooks/use-live-classes";
+import { useAuth } from "@/hooks/use-auth";
+import { useTeacherProfile } from "@/hooks/use-portal";
 import { GRADES, SUBJECTS } from "@/lib/academy";
 import { cn } from "@/lib/utils";
 import type { LiveClass } from "@/types/database";
@@ -37,6 +40,8 @@ const statusConfig: Record<string, { label: string; color: string }> = {
 };
 
 function TeacherLiveClasses() {
+  const { user } = useAuth();
+  const { data: teacherProfile } = useTeacherProfile(user?.id);
   const { data: liveClasses = [], isLoading } = useLiveClasses();
   const createLiveClass = useCreateLiveClass();
   const updateLiveClass = useUpdateLiveClass();
@@ -78,13 +83,16 @@ function TeacherLiveClasses() {
     if (!formData.title || !formData.class_id || !formData.meeting_url) return;
 
     const callbacks = {
-      onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+      onSuccess: () => {
+        setDialogOpen(false);
+        toast.success(editingClass ? "Live class updated" : "Live class scheduled");
+      },
+      onError: (err: Error) => toast.error(`Failed to save: ${err.message}`),
     };
 
     const data = {
       ...formData,
-      teacher_id: "teacher-1", // In real implementation, get from auth
+      teacher_id: teacherProfile?.id || "",
       start_time: new Date(formData.start_time).toISOString(),
       end_time: new Date(formData.end_time).toISOString(),
       subject_id: formData.subject_id || undefined,
@@ -99,7 +107,10 @@ function TeacherLiveClasses() {
 
   function handleDelete(id: string) {
     if (confirm("Delete this live class?")) {
-      deleteLiveClass.mutate(id, { onError: (err) => alert(`Failed: ${err.message}`) });
+      deleteLiveClass.mutate(id, { 
+        onSuccess: () => toast.success("Live class deleted"),
+        onError: (err) => toast.error(`Failed: ${err.message}`) 
+      });
     }
   }
 

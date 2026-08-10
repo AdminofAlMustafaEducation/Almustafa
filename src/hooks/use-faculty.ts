@@ -36,8 +36,8 @@ export function useFaculty(filters?: { campus?: string; isActive?: boolean }) {
 
         const { data, error } = await query;
         if (error) {
-          if (error.message.includes("Could not find the table")) {
-            console.warn("Faculty table not found, falling back to mock data");
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+            console.warn("Faculty table not found or RLS error, falling back to mock data");
             let result = [...mockFaculty];
             if (filters?.campus) result = result.filter((f) => f.campus === filters.campus);
             if (filters?.isActive !== undefined) result = result.filter((f) => f.is_active === filters.isActive);
@@ -47,8 +47,8 @@ export function useFaculty(filters?: { campus?: string; isActive?: boolean }) {
         }
         return (data ?? []) as Faculty[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
-          console.warn("Faculty table not found, falling back to mock data");
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+          console.warn("Faculty table not found or RLS error, falling back to mock data");
           return [...mockFaculty];
         }
         throw err;

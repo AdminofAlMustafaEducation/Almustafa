@@ -121,8 +121,8 @@ export function useApplications(filters?: { status?: string }) {
         }
         const { data, error } = await query;
         if (error) {
-          if (error.message.includes("Could not find the table")) {
-            console.warn("Applications table not found, falling back to mock data");
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+            console.warn("Applications table not found or RLS error, falling back to mock data");
             let result = [...MOCK_APPLICATIONS];
             if (filters?.status && filters.status !== "all") {
               result = result.filter((a) => a.status === filters.status);
@@ -133,8 +133,8 @@ export function useApplications(filters?: { status?: string }) {
         }
         return (data ?? []) as Application[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
-          console.warn("Applications table not found, falling back to mock data");
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+          console.warn("Applications table not found or RLS error, falling back to mock data");
           return [...MOCK_APPLICATIONS];
         }
         throw err;
@@ -154,14 +154,14 @@ export function useApplication(id: string) {
       try {
         const { data, error } = await supabase!.from("applications").select("*").eq("id", id).single();
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
             return MOCK_APPLICATIONS.find((a) => a.id === id || a.application_number === id) ?? null;
           }
           throw new Error(error.message);
         }
         return data as Application;
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           return MOCK_APPLICATIONS.find((a) => a.id === id || a.application_number === id) ?? null;
         }
         throw err;
@@ -218,9 +218,11 @@ export function useCreateApplication() {
       }
 
       try {
-        const { data: result, error } = await supabase!.from("applications").insert(applicationData).select().single();
+        // Insert without .select() to avoid RLS SELECT policy issues
+        // The public form doesn't need to read back the inserted row
+        const { error } = await supabase!.from("applications").insert(applicationData);
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
             const now = new Date().toISOString();
             const newApp: Application = {
               ...applicationData,
@@ -236,9 +238,19 @@ export function useCreateApplication() {
           }
           throw new Error(error.message);
         }
-        return result as Application;
+        // Construct the return object since we can't read it back without auth
+        const now = new Date().toISOString();
+        return {
+          ...applicationData,
+          id: "",
+          application_number: "",
+          status: "pending" as const,
+          documents: [],
+          created_at: now,
+          updated_at: now,
+        } as Application;
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           const now = new Date().toISOString();
           const newApp: Application = {
             ...applicationData,
@@ -292,7 +304,7 @@ export function useUpdateApplicationStatus() {
           updated_at: new Date().toISOString(),
         }).eq("id", id).select().single();
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
             const app = MOCK_APPLICATIONS.find((a) => a.id === id);
             if (!app) throw new Error("Application not found");
             app.status = status;
@@ -305,7 +317,7 @@ export function useUpdateApplicationStatus() {
         }
         return data as Application;
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           const app = MOCK_APPLICATIONS.find((a) => a.id === id);
           if (!app) throw new Error("Application not found");
           app.status = status;

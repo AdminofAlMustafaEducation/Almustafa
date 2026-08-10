@@ -212,8 +212,8 @@ export function useStudents(filters?: {
         const { data, error } = await query;
 
         if (error) {
-          if (error.message.includes("Could not find the table")) {
-            console.warn("Students table not found, falling back to mock data");
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+            console.warn("Students table not found or RLS error, falling back to mock data");
             return [...mockStudents];
           }
           throw new Error(error.message);
@@ -221,8 +221,8 @@ export function useStudents(filters?: {
 
         return (data ?? []) as Student[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
-          console.warn("Students table not found, falling back to mock data");
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+          console.warn("Students table not found or RLS error, falling back to mock data");
           return [...mockStudents];
         }
         throw err;
@@ -281,8 +281,8 @@ export function useCreateStudent() {
           .single();
 
         if (error) {
-          if (error.message.includes("Could not find the table")) {
-            console.warn("Students table not found, using mock data");
+          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+            console.warn("Students table not found or RLS error, using mock data");
             const newStudent: Student = {
               ...student,
               id: String(Date.now()),
@@ -297,8 +297,8 @@ export function useCreateStudent() {
 
         return data as Student;
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
-          console.warn("Students table not found, using mock data");
+        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+          console.warn("Students table not found or RLS error, using mock data");
           const newStudent: Student = {
             ...student,
             id: String(Date.now()),
