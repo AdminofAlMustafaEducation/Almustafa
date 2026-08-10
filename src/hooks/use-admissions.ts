@@ -175,24 +175,37 @@ export function useCreateApplication() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData: Omit<Application, "id" | "application_number" | "status" | "documents" | "reviewer_notes" | "reviewed_by" | "reviewed_at" | "created_at" | "updated_at">) => {
+    mutationFn: async (formData: Record<string, any>) => {
       // Filter out fields that don't exist in the database
-      const { confirm_password, password, ...data } = formData as any;
+      const { confirm_password, ...data } = formData;
       
-      // Map father_name to parent_name if parent_name is empty
-      if (!data.parent_name && data.father_name) {
-        data.parent_name = data.father_name;
-      }
-      
-      // Store password separately if provided (for account creation after approval)
-      if (password) {
-        data.password = password;
-      }
+      // Ensure required fields have values
+      const applicationData = {
+        full_name: data.full_name || data.student_name || "",
+        email: data.email || "",
+        phone: data.phone || "",
+        id_number: data.id_number || "",
+        gender: data.gender || "male",
+        grade: data.grade || "9th",
+        father_name: data.father_name || "",
+        date_of_birth: data.date_of_birth || "",
+        address: data.address || "",
+        previous_school: data.previous_school || "",
+        guardian_occupation: data.guardian_occupation || "",
+        message: data.message || "",
+        parent_name: data.parent_name || data.father_name || "",
+        parent_phone: data.parent_phone || data.phone || "",
+        parent_cnic: data.parent_cnic || "",
+        password: data.password || "",
+        class_level: data.class_level || 9,
+        program: data.program || "matric",
+        campus: data.campus || "main",
+      };
 
       if (USE_MOCK) {
         const now = new Date().toISOString();
         const newApp: Application = {
-          ...data,
+          ...applicationData,
           id: String(MOCK_APPLICATIONS.length + 1),
           application_number: generateApplicationNumber(),
           status: "pending",
@@ -205,12 +218,12 @@ export function useCreateApplication() {
       }
 
       try {
-        const { data: result, error } = await supabase!.from("applications").insert(data).select().single();
+        const { data: result, error } = await supabase!.from("applications").insert(applicationData).select().single();
         if (error) {
           if (error.message.includes("Could not find the table")) {
             const now = new Date().toISOString();
             const newApp: Application = {
-              ...data,
+              ...applicationData,
               id: String(Date.now()),
               application_number: generateApplicationNumber(),
               status: "pending",
@@ -228,7 +241,7 @@ export function useCreateApplication() {
         if (err instanceof Error && err.message.includes("Could not find the table")) {
           const now = new Date().toISOString();
           const newApp: Application = {
-            ...data,
+            ...applicationData,
             id: String(Date.now()),
             application_number: generateApplicationNumber(),
             status: "pending",

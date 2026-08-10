@@ -62,7 +62,7 @@ export async function validateLogin(
         role = profile.role as UserRole;
         name = profile.full_name;
       } else {
-        // Fallback to user metadata
+        // No profile found - check user metadata
         role = (data.user.user_metadata?.role as UserRole) || "student";
         name =
           data.user.user_metadata?.name ||
@@ -75,7 +75,12 @@ export async function validateLogin(
       name =
         data.user.user_metadata?.name ||
         data.user.email?.split("@")[0] ||
-        "Admin";
+        "User";
+    }
+
+    // Ensure role is valid
+    if (!["admin", "teacher", "student", "guardian"].includes(role)) {
+      role = "student";
     }
 
     const user: User = {
@@ -148,7 +153,12 @@ export async function getCurrentSession(): Promise<User | null> {
       name =
         session.user.user_metadata?.name ||
         session.user.email?.split("@")[0] ||
-        "Admin";
+        "User";
+    }
+
+    // Ensure role is valid
+    if (!["admin", "teacher", "student", "guardian"].includes(role)) {
+      role = "student";
     }
 
     const user: User = {
