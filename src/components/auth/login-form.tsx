@@ -33,9 +33,15 @@ export function LoginForm() {
     setIsLoading(true);
     setError(null);
     try {
-      await login(data.email, data.password);
-      // Always redirect to admin panel after login
-      navigate({ to: "/admin" });
+      const user = await login(data.email, data.password);
+      // Redirect based on user role
+      const redirectMap: Record<string, string> = {
+        admin: "/admin",
+        teacher: "/teacher",
+        student: "/portal",
+        guardian: "/portal",
+      };
+      navigate({ to: redirectMap[user.role] || "/" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

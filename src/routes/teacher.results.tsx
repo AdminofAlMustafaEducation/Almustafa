@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -55,7 +55,7 @@ function ResultsEntry() {
   const { tests } = useTeacherTests(user?.id || "");
   const { saveResults, isLoading: isSaving } = useSaveResults();
 
-  const searchParams = Route.useSearch();
+  const searchParams = useSearch({ from: "/teacher/results" });
   const [selectedTestId, setSelectedTestId] = useState<string>(
     searchParams?.testId || "",
   );
@@ -63,7 +63,7 @@ function ResultsEntry() {
 
   const selectedTest = tests.find((t) => t.id === selectedTestId);
   const { students, isLoading: isLoadingStudents } = useBatchStudents(
-    selectedTest?.batch_id || "",
+    selectedTest?.class_id || selectedTest?.batch_id || "",
   );
   const { results: existingResults } = useTestResults(selectedTestId);
 

@@ -157,11 +157,13 @@ function FeesPage() {
                           Rs. {fee.amount.toLocaleString()}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-gray-500">
-                          {new Date(fee.due_date).toLocaleDateString("en-PK", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
+                          {fee.due_date
+                            ? new Date(fee.due_date).toLocaleDateString("en-PK", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })
+                            : "-"}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className={cn("text-xs", config.className)}>
@@ -169,13 +171,7 @@ function FeesPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-gray-500">
-                          {fee.paid_date
-                            ? new Date(fee.paid_date).toLocaleDateString("en-PK", {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              })
-                            : "-"}
+                          -
                         </TableCell>
                       </TableRow>
                     );

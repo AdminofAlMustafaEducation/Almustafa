@@ -1,198 +1,459 @@
 import { useState, useCallback } from "react";
-import type { Batch, Test, TestResult, Student, Attendance } from "@/types/database";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
-// Mock data for teacher's batches
-const mockBatches: Batch[] = [
-  {
-    id: "batch-1",
-    name: "Class 9 - Morning",
-    class_level: 9,
-    program: "matric",
-    campus: "main",
-    teacher_id: "teacher-1",
-    schedule: "Mon-Fri 8:00-11:00",
-    capacity: 30,
-    session: "2024-2025",
-    is_active: true,
-    created_at: "2024-01-15",
-    updated_at: "2024-01-15",
-  },
-  {
-    id: "batch-2",
-    name: "Class 10 - Morning",
-    class_level: 10,
-    program: "matric",
-    campus: "main",
-    teacher_id: "teacher-1",
-    schedule: "Mon-Fri 8:00-11:00",
-    capacity: 25,
-    session: "2024-2025",
-    is_active: true,
-    created_at: "2024-01-15",
-    updated_at: "2024-01-15",
-  },
-  {
-    id: "batch-3",
-    name: "Class 11 - FSc Pre-Medical",
-    class_level: 11,
-    program: "fsc_pre_medical",
-    campus: "main",
-    teacher_id: "teacher-1",
-    schedule: "Mon-Fri 12:00-3:00",
-    capacity: 20,
-    session: "2024-2025",
-    is_active: true,
-    created_at: "2024-01-15",
-    updated_at: "2024-01-15",
-  },
-];
+// Types matching what the UI pages expect
+export interface TeacherBatch {
+  id: string;
+  name: string;
+  schedule: string;
+  program: string;
+  grade: string;
+  section?: string;
+  student_count: number;
+}
 
-// Mock students for batches
-const mockStudents: Record<string, Student[]> = {
-  "batch-1": [
-    { id: "s1", name: "Ahmed Ali", roll_number: "2024-001", class_level: 9, program: "matric", campus: "main", parent_name: "Ali Hassan", parent_phone: "0300-1234567", admission_date: "2024-01-10", status: "active", created_at: "2024-01-10", updated_at: "2024-01-10" },
-    { id: "s2", name: "Fatima Khan", roll_number: "2024-002", class_level: 9, program: "matric", campus: "main", parent_name: "Khan Muhammad", parent_phone: "0301-2345678", admission_date: "2024-01-10", status: "active", created_at: "2024-01-10", updated_at: "2024-01-10" },
-    { id: "s3", name: "Usman Ahmed", roll_number: "2024-003", class_level: 9, program: "matric", campus: "main", parent_name: "Ahmed Raza", parent_phone: "0302-3456789", admission_date: "2024-01-11", status: "active", created_at: "2024-01-11", updated_at: "2024-01-11" },
-    { id: "s4", name: "Ayesha Malik", roll_number: "2024-004", class_level: 9, program: "matric", campus: "main", parent_name: "Malik Tariq", parent_phone: "0303-4567890", admission_date: "2024-01-12", status: "active", created_at: "2024-01-12", updated_at: "2024-01-12" },
-    { id: "s5", name: "Bilal Hussain", roll_number: "2024-005", class_level: 9, program: "matric", campus: "main", parent_name: "Hussain Ali", parent_phone: "0304-5678901", admission_date: "2024-01-12", status: "active", created_at: "2024-01-12", updated_at: "2024-01-12" },
-  ],
-  "batch-2": [
-    { id: "s6", name: "Zainab Bibi", roll_number: "2024-006", class_level: 10, program: "matric", campus: "main", parent_name: "Bibi Aisha", parent_phone: "0305-6789012", admission_date: "2024-01-10", status: "active", created_at: "2024-01-10", updated_at: "2024-01-10" },
-    { id: "s7", name: "Hamza Shah", roll_number: "2024-007", class_level: 10, program: "matric", campus: "main", parent_name: "Shahbaz Khan", parent_phone: "0306-7890123", admission_date: "2024-01-11", status: "active", created_at: "2024-01-11", updated_at: "2024-01-11" },
-    { id: "s8", name: "Sara Iqbal", roll_number: "2024-008", class_level: 10, program: "matric", campus: "main", parent_name: "Iqbal Ahmad", parent_phone: "0307-8901234", admission_date: "2024-01-12", status: "active", created_at: "2024-01-12", updated_at: "2024-01-12" },
-  ],
-  "batch-3": [
-    { id: "s9", name: "Omar Farooq", roll_number: "2024-009", class_level: 11, program: "fsc_pre_medical", campus: "main", parent_name: "Farooq Khan", parent_phone: "0308-9012345", admission_date: "2024-01-10", status: "active", created_at: "2024-01-10", updated_at: "2024-01-10" },
-    { id: "s10", name: "Hafsa Noor", roll_number: "2024-010", class_level: 11, program: "fsc_pre_medical", campus: "main", parent_name: "Noor Muhammad", parent_phone: "0309-0123456", admission_date: "2024-01-11", status: "active", created_at: "2024-01-11", updated_at: "2024-01-11" },
-  ],
-};
+export interface TeacherTest {
+  id: string;
+  name: string;
+  subject: string;
+  subject_id?: string;
+  class_id: string;
+  batch_id: string; // alias for class_id for UI compatibility
+  class_name: string;
+  total_marks: number;
+  test_date: string;
+  test_name: string; // alias for name
+  status: string;
+}
 
-// Mock tests
-const mockTests: Test[] = [
-  { id: "test-1", batch_id: "batch-1", name: "Mathematics Mid-Term", subject: "Mathematics", total_marks: 100, test_date: "2024-03-15", created_at: "2024-03-01" },
-  { id: "test-2", batch_id: "batch-1", name: "English Unit Test", subject: "English", total_marks: 50, test_date: "2024-03-20", created_at: "2024-03-05" },
-  { id: "test-3", batch_id: "batch-2", name: "Physics Chapter 1", subject: "Physics", total_marks: 40, test_date: "2024-03-18", created_at: "2024-03-02" },
-  { id: "test-4", batch_id: "batch-3", name: "Biology Quiz", subject: "Biology", total_marks: 25, test_date: "2024-03-22", created_at: "2024-03-08" },
-];
+export interface TeacherStudent {
+  id: string;
+  full_name: string;
+  name: string; // alias for full_name
+  roll_number?: string;
+  grade?: string;
+  class_level?: number;
+  program?: string;
+  campus?: string;
+  status: string;
+  admission_date: string;
+  created_at: string;
+  updated_at: string;
+}
 
-// Mock test results
-const mockResults: TestResult[] = [
-  { id: "r1", test_id: "test-1", student_id: "s1", marks_obtained: 85, created_at: "2024-03-16" },
-  { id: "r2", test_id: "test-1", student_id: "s2", marks_obtained: 92, created_at: "2024-03-16" },
-  { id: "r3", test_id: "test-1", student_id: "s3", marks_obtained: 78, created_at: "2024-03-16" },
-  { id: "r4", test_id: "test-1", student_id: "s4", marks_obtained: 95, created_at: "2024-03-16" },
-  { id: "r5", test_id: "test-1", student_id: "s5", marks_obtained: 88, created_at: "2024-03-16" },
-];
+export interface TeacherTestResult {
+  id: string;
+  exam_id: string;
+  test_id: string; // alias for exam_id
+  student_id: string;
+  student_name: string;
+  marks_obtained: number;
+  grade?: string;
+  remarks?: string;
+  created_at: string;
+}
 
-// Mock attendance records
-const mockAttendance: Record<string, Attendance[]> = {};
+// Get teacher's profile (teacher record) by auth_user_id
+export function useTeacherProfile(userId?: string) {
+  return useQuery({
+    queryKey: ["teacher-profile", userId],
+    queryFn: async () => {
+      if (!supabase || !userId) return null;
 
-export function useTeacherBatches(teacherId: string) {
-  const [batches] = useState<Batch[]>(mockBatches);
-  const [isLoading] = useState(false);
+      const { data, error } = await supabase
+        .from("teachers")
+        .select("*")
+        .eq("auth_user_id", userId)
+        .single();
+
+      if (error) {
+        console.error("Failed to load teacher profile:", error);
+        return null;
+      }
+
+      return data;
+    },
+    enabled: !!userId,
+  });
+}
+
+// Get teacher's assigned batches/classes
+export function useTeacherBatches(userId: string) {
+  const { data: teacherProfile } = useTeacherProfile(userId);
+
+  const { data: batches = [], isLoading } = useQuery({
+    queryKey: ["teacher-batches", teacherProfile?.id],
+    queryFn: async (): Promise<TeacherBatch[]> => {
+      if (!supabase || !teacherProfile?.id) return [];
+
+      const { data, error } = await supabase
+        .from("teacher_subjects")
+        .select(`
+          id,
+          class_id,
+          subject_id,
+          classes (id, name, grade, section),
+          subjects (id, name, code)
+        `)
+        .eq("teacher_id", teacherProfile.id);
+
+      if (error) {
+        console.error("Failed to load teacher batches:", error);
+        return [];
+      }
+
+      // Deduplicate classes
+      const classMap = new Map<string, TeacherBatch>();
+      for (const row of data || []) {
+        const cls = row.classes as any;
+        if (cls && !classMap.has(cls.id)) {
+          classMap.set(cls.id, {
+            id: cls.id,
+            name: cls.name,
+            schedule: `${cls.grade} ${cls.section || ""}`.trim(),
+            program: (cls.grade || "").toLowerCase().replace(/\s+/g, "_"),
+            grade: cls.grade || "",
+            section: cls.section,
+            student_count: 0,
+          });
+        }
+      }
+
+      // Get student counts
+      const classIds = Array.from(classMap.keys());
+      if (classIds.length > 0) {
+        const { data: enrollments } = await supabase
+          .from("class_students")
+          .select("class_id")
+          .in("class_id", classIds);
+
+        for (const enrollment of enrollments || []) {
+          const batch = classMap.get(enrollment.class_id);
+          if (batch) batch.student_count++;
+        }
+      }
+
+      return Array.from(classMap.values());
+    },
+    enabled: !!teacherProfile?.id,
+  });
 
   return { batches, isLoading };
 }
 
-export function useTeacherTests(teacherId: string) {
-  const [tests, setTests] = useState<Test[]>(mockTests);
-  const [isLoading] = useState(false);
+// Get teacher's tests/exams
+export function useTeacherTests(userId: string) {
+  const { data: teacherProfile } = useTeacherProfile(userId);
+  const queryClient = useQueryClient();
 
-  const addTest = useCallback((test: Omit<Test, "id" | "created_at">) => {
-    const newTest: Test = {
-      ...test,
-      id: `test-${Date.now()}`,
-      created_at: new Date().toISOString().split("T")[0],
-    };
-    setTests((prev) => [...prev, newTest]);
-    return newTest;
-  }, []);
+  const { data: tests = [], isLoading } = useQuery({
+    queryKey: ["teacher-tests", teacherProfile?.id],
+    queryFn: async (): Promise<TeacherTest[]> => {
+      if (!supabase || !teacherProfile?.id) return [];
 
-  const updateTest = useCallback((id: string, updates: Partial<Test>) => {
-    setTests((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
-  }, []);
+      const { data, error } = await supabase
+        .from("exams")
+        .select(`
+          id,
+          name,
+          subject_id,
+          class_id,
+          total_marks,
+          exam_date,
+          status,
+          subjects (name, code),
+          classes (name)
+        `)
+        .eq("teacher_id", teacherProfile.id)
+        .order("exam_date", { ascending: false });
 
-  const deleteTest = useCallback((id: string) => {
-    setTests((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+      if (error) {
+        console.error("Failed to load teacher tests:", error);
+        return [];
+      }
+
+      return (data || []).map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        test_name: row.name,
+        subject: row.subjects?.name || "Unknown",
+        subject_id: row.subject_id,
+        class_id: row.class_id,
+        batch_id: row.class_id, // alias
+        class_name: row.classes?.name || "Unknown",
+        total_marks: row.total_marks,
+        test_date: row.exam_date,
+        status: row.status,
+      }));
+    },
+    enabled: !!teacherProfile?.id,
+  });
+
+  const addTest = useCallback(async (test: any) => {
+    if (!supabase || !teacherProfile?.id) return;
+    
+    const { data, error } = await supabase
+      .from("exams")
+      .insert({
+        name: test.name,
+        subject_id: test.subject_id || null,
+        class_id: test.batch_id || test.class_id,
+        teacher_id: teacherProfile.id,
+        total_marks: test.total_marks,
+        exam_date: test.test_date,
+        status: "open",
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
+    return data;
+  }, [teacherProfile?.id, queryClient]);
+
+  const updateTest = useCallback(async (id: string, updates: any) => {
+    if (!supabase) return;
+
+    const { error } = await supabase
+      .from("exams")
+      .update({
+        name: updates.name,
+        total_marks: updates.total_marks,
+        exam_date: updates.test_date,
+      })
+      .eq("id", id);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
+  }, [queryClient]);
+
+  const deleteTest = useCallback(async (id: string) => {
+    if (!supabase) return;
+
+    const { error } = await supabase
+      .from("exams")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
+  }, [queryClient]);
 
   return { tests, isLoading, addTest, updateTest, deleteTest };
 }
 
-export function useBatchStudents(batchId: string) {
-  const [students] = useState<Student[]>(mockStudents[batchId] || []);
-  const [isLoading] = useState(false);
+// Get students in a specific class
+export function useBatchStudents(classId: string) {
+  const { data: students = [], isLoading } = useQuery({
+    queryKey: ["batch-students", classId],
+    queryFn: async (): Promise<TeacherStudent[]> => {
+      if (!supabase || !classId) return [];
+
+      const { data, error } = await supabase
+        .from("class_students")
+        .select(`
+          student_id,
+          students (id, full_name, roll_number, grade, status, admission_date, created_at, updated_at)
+        `)
+        .eq("class_id", classId);
+
+      if (error) {
+        console.error("Failed to load batch students:", error);
+        return [];
+      }
+
+      return (data || []).map((row: any) => {
+        const s = row.students || {};
+        return {
+          id: s.id || row.student_id,
+          full_name: s.full_name || "Unknown",
+          name: s.full_name || "Unknown", // alias
+          roll_number: s.roll_number,
+          grade: s.grade,
+          status: s.status || "active",
+          admission_date: s.admission_date || "",
+          created_at: s.created_at || "",
+          updated_at: s.updated_at || "",
+        };
+      });
+    },
+    enabled: !!classId,
+  });
 
   return { students, isLoading };
 }
 
-export function useTestResults(testId: string) {
-  const [results, setResults] = useState<TestResult[]>(mockResults.filter((r) => r.test_id === testId));
-  const [isLoading] = useState(false);
+// Get test results for a specific exam
+export function useTestResults(examId: string) {
+  const { data: results = [], isLoading } = useQuery({
+    queryKey: ["test-results", examId],
+    queryFn: async (): Promise<TeacherTestResult[]> => {
+      if (!supabase || !examId) return [];
 
-  const saveResults = useCallback((newResults: Omit<TestResult, "id" | "created_at">[]) => {
-    const savedResults: TestResult[] = newResults.map((r, i) => ({
-      ...r,
-      id: `r-${Date.now()}-${i}`,
-      created_at: new Date().toISOString().split("T")[0],
-    }));
-    setResults(savedResults);
-    return savedResults;
+      const { data, error } = await supabase
+        .from("exam_results")
+        .select(`
+          id,
+          exam_id,
+          student_id,
+          marks_obtained,
+          grade,
+          remarks,
+          created_at,
+          students (full_name)
+        `)
+        .eq("exam_id", examId);
+
+      if (error) {
+        console.error("Failed to load test results:", error);
+        return [];
+      }
+
+      return (data || []).map((row: any) => ({
+        id: row.id,
+        exam_id: row.exam_id,
+        test_id: row.exam_id, // alias
+        student_id: row.student_id,
+        student_name: row.students?.full_name || "Unknown",
+        marks_obtained: Number(row.marks_obtained),
+        grade: row.grade,
+        remarks: row.remarks,
+        created_at: row.created_at,
+      }));
+    },
+    enabled: !!examId,
+  });
+
+  const saveResults = useCallback(async (newResults: any[]) => {
+    return newResults;
   }, []);
 
   return { results, isLoading, saveResults };
 }
 
+// Create a new test/exam
 export function useCreateTest() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const createTest = useCallback(async (test: Omit<Test, "id" | "created_at">) => {
+  const createTest = useCallback(async (test: {
+    name: string;
+    subject_id?: string;
+    class_id: string;
+    teacher_id: string;
+    total_marks: number;
+    exam_date: string;
+  }) => {
+    if (!supabase) throw new Error("Supabase not configured");
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsLoading(false);
-    return {
-      ...test,
-      id: `test-${Date.now()}`,
-      created_at: new Date().toISOString().split("T")[0],
-    };
+
+    try {
+      const { data, error } = await supabase
+        .from("exams")
+        .insert({
+          name: test.name,
+          subject_id: test.subject_id,
+          class_id: test.class_id,
+          teacher_id: test.teacher_id,
+          total_marks: test.total_marks,
+          exam_date: test.exam_date,
+          status: "open",
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   return { createTest, isLoading };
 }
 
+// Save test results
 export function useSaveResults() {
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const saveResults = useCallback(async (results: Omit<TestResult, "id" | "created_at">[]) => {
+  const saveResults = useCallback(async (results: {
+    exam_id?: string;
+    test_id?: string;
+    student_id: string;
+    marks_obtained: number;
+    remarks?: string;
+  }[]) => {
+    if (!supabase) throw new Error("Supabase not configured");
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsLoading(false);
-    return results.map((r, i) => ({
-      ...r,
-      id: `r-${Date.now()}-${i}`,
-      created_at: new Date().toISOString().split("T")[0],
-    }));
-  }, []);
+
+    try {
+      const rows = results.map((r) => ({
+        exam_id: r.exam_id || r.test_id,
+        student_id: r.student_id,
+        marks_obtained: r.marks_obtained,
+        remarks: r.remarks,
+      }));
+
+      const { data, error } = await supabase
+        .from("exam_results")
+        .upsert(rows, { onConflict: "exam_id,student_id" })
+        .select();
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["test-results"] });
+      return data;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [queryClient]);
 
   return { saveResults, isLoading };
 }
 
+// Save attendance records
 export function useSaveAttendance() {
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const saveAttendance = useCallback(async (records: Omit<Attendance, "id" | "created_at">[]) => {
+  const saveAttendance = useCallback(async (records: {
+    student_id: string;
+    class_id?: string;
+    batch_id?: string;
+    subject_id?: string;
+    teacher_id?: string;
+    attendance_date?: string;
+    date?: string;
+    status: string;
+    notes?: string;
+  }[]) => {
+    if (!supabase) throw new Error("Supabase not configured");
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setIsLoading(false);
-    return records.map((r, i) => ({
-      ...r,
-      id: `att-${Date.now()}-${i}`,
-      created_at: new Date().toISOString().split("T")[0],
-    }));
-  }, []);
+
+    try {
+      // Get teacher_id from the first record or look it up
+      // For now, we need the teacher's DB id
+      // The records may have batch_id instead of class_id
+      const rows = records.map((r) => ({
+        student_id: r.student_id,
+        class_id: r.class_id || r.batch_id,
+        attendance_date: r.attendance_date || r.date,
+        status: r.status,
+        notes: r.notes,
+      }));
+
+      const { data, error } = await supabase
+        .from("attendance")
+        .upsert(rows, { onConflict: "student_id,class_id,subject_id,attendance_date" })
+        .select();
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["student-attendance"] });
+      return data;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [queryClient]);
 
   return { saveAttendance, isLoading };
 }

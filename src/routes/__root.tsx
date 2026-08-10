@@ -1,4 +1,4 @@
-import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import { HeadContent, Link, Outlet, Scripts, createRootRoute, useRouterState } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { GraduationCap } from "lucide-react";
@@ -171,22 +171,13 @@ function RootComponent() {
 }
 
 function AdminLayoutWrapper() {
-  const [isPortal, setIsPortal] = useState(false);
-
-  useEffect(() => {
-    const checkPortal = () => {
-      const path = window.location.pathname;
-      setIsPortal(
-        path.startsWith("/admin") ||
-        path.startsWith("/portal") ||
-        path.startsWith("/teacher")
-      );
-    };
-    
-    checkPortal();
-    window.addEventListener("popstate", checkPortal);
-    return () => window.removeEventListener("popstate", checkPortal);
-  }, []);
+  const routerState = useRouterState();
+  const pathname = routerState.location.pathname;
+  const isPortal =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/portal") ||
+    pathname.startsWith("/teacher") ||
+    pathname === "/login";
 
   return (
     <>

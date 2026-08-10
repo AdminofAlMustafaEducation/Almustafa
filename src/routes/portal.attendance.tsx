@@ -35,7 +35,7 @@ function AttendancePage() {
   // Build attendance lookup by date string
   const attendanceMap = new Map<string, (typeof attendance)[0]["status"]>();
   for (const record of attendance) {
-    attendanceMap.set(record.date, record.status);
+    attendanceMap.set(record.attendance_date, record.status);
   }
 
   // Calendar grid calculation
