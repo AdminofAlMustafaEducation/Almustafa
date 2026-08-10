@@ -178,7 +178,6 @@ CREATE TABLE IF NOT EXISTS batches (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_batches_grade ON batches(grade);
 CREATE INDEX IF NOT EXISTS idx_batches_is_active ON batches(is_active);
 
 ALTER TABLE batches ENABLE ROW LEVEL SECURITY;
