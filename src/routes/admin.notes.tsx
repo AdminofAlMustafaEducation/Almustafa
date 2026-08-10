@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { FileText, Plus, Pencil, Trash2, Eye, EyeOff, Upload, ExternalLink, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -87,7 +88,7 @@ function AdminNotes() {
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
     };
 
     if (editingNote) {
@@ -100,7 +101,7 @@ function AdminNotes() {
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this note?")) {
       deleteNote.mutate(id, {
-        onError: (err) => alert(`Failed to delete: ${err.message}`),
+        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }

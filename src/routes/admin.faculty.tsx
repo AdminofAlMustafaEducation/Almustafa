@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { GraduationCap, Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { GraduationCap, Plus, Pencil, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -79,7 +80,7 @@ function AdminFaculty() {
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
     };
 
     if (editingFaculty) {
@@ -92,7 +93,7 @@ function AdminFaculty() {
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this faculty member?")) {
       deleteFaculty.mutate(id, {
-        onError: (err) => alert(`Failed to delete: ${err.message}`),
+        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }
@@ -100,7 +101,7 @@ function AdminFaculty() {
   function handleToggleActive(member: Faculty) {
     updateFaculty.mutate(
       { id: member.id, is_active: !member.is_active },
-      { onError: (err) => alert(`Failed to update: ${err.message}`) }
+      { onError: (err) => toast.error(`Failed to update: ${err.message}`) }
     );
   }
 

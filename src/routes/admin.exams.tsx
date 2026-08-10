@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ClipboardList, Plus, Save, Eye, Trash2, Users } from "lucide-react";
+import { Video, Plus, Pencil, Trash2, ExternalLink, Clock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -74,14 +75,14 @@ function AdminExams() {
         setDialogOpen(false);
         setFormData({ name: "", subject_id: "", grade: "9th", total_marks: 100, exam_date: new Date().toISOString().split("T")[0] });
       },
-      onError: (err) => alert(`Failed to create exam: ${err.message}`),
+      onError: (err) =>       toast.error(`Failed to create exam: ${err.message}`),
     });
   }
 
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this exam?")) {
       deleteExam.mutate(id, {
-        onError: (err) => alert(`Failed to delete: ${err.message}`),
+        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }
@@ -285,10 +286,10 @@ function ExamResultsPanel({
 
     saveResults.mutate(resultsToSave, {
       onSuccess: () => {
-        alert("Results saved successfully!");
+        toast.success("Results saved successfully!");
         setMarks({});
       },
-      onError: (err) => alert(`Failed to save: ${err.message}`),
+      onError: (err) =>       toast.error(`Failed to save: ${err.message}`),
     });
   }
 

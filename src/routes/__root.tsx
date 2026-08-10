@@ -2,6 +2,7 @@ import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/r
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { GraduationCap } from "lucide-react";
+import { Toaster } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppChat } from "@/components/whatsapp-chat";
@@ -207,6 +208,9 @@ function AdminLayoutWrapper() {
           <GraduationCap className="h-6 w-6" />
         </Link>
       )}
+
+      {/* Toast notifications */}
+      <Toaster position="top-right" richColors />
     </>
   );
 }

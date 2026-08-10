@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Calendar, Plus, Pencil, Trash2, Users, GraduationCap } from "lucide-react";
+import { Calendar, Plus, Pencil, Trash2, Users, GraduationCap, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
@@ -89,7 +90,7 @@ function BatchesPage() {
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
     };
 
     if (editingBatch) {
@@ -102,7 +103,7 @@ function BatchesPage() {
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this batch?")) {
       deleteBatch.mutate(id, {
-        onError: (err) => alert(`Failed to delete: ${err.message}`),
+        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { FileText, Eye, Check, X, Clock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/admin/stats-card";
@@ -69,7 +70,7 @@ function AdminAdmissions() {
           setReviewerNotes("");
         },
         onError: (err) => {
-          alert(`Failed to update: ${err.message}`);
+          toast.error(`Failed to update: ${err.message}`);
         },
       }
     );
@@ -243,7 +244,7 @@ function AdminAdmissions() {
                             setSelectedApp(null);
                             setReviewerNotes("");
                           },
-                          onError: (err) => alert(`Failed to approve: ${err.message}`),
+                          onError: (err) => toast.error(`Failed to approve: ${err.message}`),
                         }
                       );
                     }}

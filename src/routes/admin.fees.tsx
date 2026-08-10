@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { CreditCard, Eye, Check, Filter } from "lucide-react";
+import { CreditCard, Eye, Check, Filter, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
@@ -58,7 +59,7 @@ function FeesPage() {
       },
       {
         onSuccess: () => setDialogOpen(false),
-        onError: (err) => alert(`Failed to update: ${err.message}`),
+        onError: (err) =>         toast.error(`Failed to update: ${err.message}`),
       }
     );
   }

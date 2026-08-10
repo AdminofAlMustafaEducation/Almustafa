@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Eye, EyeOff, MessageCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, EyeOff, MessageCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -50,7 +51,7 @@ function AdminChatAgents() {
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
     };
 
     if (editingAgent) {
@@ -63,7 +64,7 @@ function AdminChatAgents() {
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this agent?")) {
       deleteAgent.mutate(id, {
-        onError: (err) => alert(`Failed to delete: ${err.message}`),
+        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }
@@ -72,7 +73,7 @@ function AdminChatAgents() {
     if (!agent) return;
     updateAgent.mutate(
       { id: agent.id, is_active: !agent.is_active },
-      { onError: (err) => alert(`Failed to update: ${err.message}`) }
+      { onError: (err) => toast.error(`Failed to update: ${err.message}`) }
     );
   }
 

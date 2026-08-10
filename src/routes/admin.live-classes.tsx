@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Video, Plus, Pencil, Trash2, ExternalLink, Clock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -83,7 +84,7 @@ function AdminLiveClasses() {
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
+      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
     };
 
     const data = {
@@ -102,7 +103,7 @@ function AdminLiveClasses() {
 
   function handleDelete(id: string) {
     if (confirm("Delete this live class?")) {
-      deleteLiveClass.mutate(id, { onError: (err) => alert(`Failed: ${err.message}`) });
+      deleteLiveClass.mutate(id, { onError: (err) => toast.error(`Failed: ${err.message}`) });
     }
   }
 
