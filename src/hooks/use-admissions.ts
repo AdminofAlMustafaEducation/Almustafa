@@ -175,7 +175,20 @@ export function useCreateApplication() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: Omit<Application, "id" | "application_number" | "status" | "documents" | "reviewer_notes" | "reviewed_by" | "reviewed_at" | "created_at" | "updated_at">) => {
+    mutationFn: async (formData: Omit<Application, "id" | "application_number" | "status" | "documents" | "reviewer_notes" | "reviewed_by" | "reviewed_at" | "created_at" | "updated_at">) => {
+      // Filter out fields that don't exist in the database
+      const { confirm_password, password, ...data } = formData as any;
+      
+      // Map father_name to parent_name if parent_name is empty
+      if (!data.parent_name && data.father_name) {
+        data.parent_name = data.father_name;
+      }
+      
+      // Store password separately if provided (for account creation after approval)
+      if (password) {
+        data.password = password;
+      }
+
       if (USE_MOCK) {
         const now = new Date().toISOString();
         const newApp: Application = {

@@ -48,8 +48,8 @@ export async function validateLogin(
     }
 
     // Try to load profile from profiles table
-    let role: UserRole = "admin";
-    let name = data.user.email?.split("@")[0] || "Admin";
+    let role: UserRole = "student";
+    let name = data.user.email?.split("@")[0] || "User";
 
     try {
       const { data: profile } = await supabase
@@ -63,15 +63,15 @@ export async function validateLogin(
         name = profile.full_name;
       } else {
         // Fallback to user metadata
-        role = (data.user.user_metadata?.role as UserRole) || "admin";
+        role = (data.user.user_metadata?.role as UserRole) || "student";
         name =
           data.user.user_metadata?.name ||
           data.user.email?.split("@")[0] ||
-          "Admin";
+          "User";
       }
     } catch {
       // Profile table might not exist yet, use metadata
-      role = (data.user.user_metadata?.role as UserRole) || "admin";
+      role = (data.user.user_metadata?.role as UserRole) || "student";
       name =
         data.user.user_metadata?.name ||
         data.user.email?.split("@")[0] ||
@@ -123,8 +123,8 @@ export async function getCurrentSession(): Promise<User | null> {
     if (!session?.user) return null;
 
     // Try to load profile
-    let role: UserRole = "admin";
-    let name = session.user.email?.split("@")[0] || "Admin";
+    let role: UserRole = "student";
+    let name = session.user.email?.split("@")[0] || "User";
 
     try {
       const { data: profile } = await supabase
@@ -137,14 +137,14 @@ export async function getCurrentSession(): Promise<User | null> {
         role = profile.role as UserRole;
         name = profile.full_name;
       } else {
-        role = (session.user.user_metadata?.role as UserRole) || "admin";
+        role = (session.user.user_metadata?.role as UserRole) || "student";
         name =
           session.user.user_metadata?.name ||
           session.user.email?.split("@")[0] ||
-          "Admin";
+          "User";
       }
     } catch {
-      role = (session.user.user_metadata?.role as UserRole) || "admin";
+      role = (session.user.user_metadata?.role as UserRole) || "student";
       name =
         session.user.user_metadata?.name ||
         session.user.email?.split("@")[0] ||

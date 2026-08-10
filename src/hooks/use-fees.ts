@@ -23,7 +23,7 @@ export function useFees(filters?: { status?: string; studentId?: string }) {
         return result;
       }
       try {
-        let query = supabase!.from("fees").select("*").order("created_at", { ascending: false });
+        let query = supabase!.from("fee_invoices").select("*").order("created_at", { ascending: false });
         if (filters?.status) query = query.eq("status", filters.status);
         if (filters?.studentId) query = query.eq("student_id", filters.studentId);
         const { data, error } = await query;

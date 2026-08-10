@@ -31,7 +31,7 @@ export function useSettings() {
       if (USE_MOCK) {
         return { ...defaultSettings };
       }
-      const { data, error } = await supabase!.from("site_content").select("*").eq("key", "site_settings").single();
+      const { data, error } = await supabase!.from("website_content").select("*").eq("key", "site_settings").single();
       if (error && error.code !== "PGRST116") throw new Error(error.message);
       return data?.value || { ...defaultSettings };
     },
@@ -46,7 +46,7 @@ export function useUpdateSettings() {
         Object.assign(defaultSettings, settings);
         return;
       }
-      const { error } = await supabase!.from("site_content").upsert({
+      const { error } = await supabase!.from("website_content").upsert({
         key: "site_settings",
         value: settings,
         updated_at: new Date().toISOString(),

@@ -30,7 +30,7 @@ export function useFaculty(filters?: { campus?: string; isActive?: boolean }) {
       }
 
       try {
-        let query = supabase!.from("faculty").select("*").order("sort_order");
+        let query = supabase!.from("teachers").select("*").order("sort_order");
         if (filters?.campus) query = query.eq("campus", filters.campus);
         if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
 
