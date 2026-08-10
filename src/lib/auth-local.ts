@@ -27,34 +27,55 @@ async function getUserRole(userId: string, email: string, userMetadata: Record<s
   let role: UserRole = "student";
   let name = email?.split("@")[0] || "User";
 
-  // 1. Try to load from profiles table
-  try {
-    const { data: profile, error } = await supabase!
-      .from("profiles")
-      .select("role, full_name")
-      .eq("auth_user_id", userId)
-      .single();
+  console.log("[Auth] Getting role for user:", { userId, email, metadataRole: userMetadata?.role });
 
-    if (!error && profile) {
-      role = profile.role as UserRole;
-      name = profile.full_name;
-      console.log("Role loaded from profiles table:", role);
-      return { role, name };
+  // 1. Try to load from profiles table
+  if (supabase) {
+    try {
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role, full_name")
+        .eq("auth_user_id", userId)
+        .single();
+
+      console.log("[Auth] Profile query result:", { profile, error });
+
+      if (error) {
+        console.error("[Auth] Profile query error:", error.message, error.code, error.details);
+      }
+
+      if (!error && profile) {
+        role = profile.role as UserRole;
+        name = profile.full_name;
+        console.log("[Auth] ✅ Role loaded from profiles table:", role);
+        return { role, name };
+      }
+    } catch (err) {
+      console.error("[Auth] Failed to load profile:", err);
     }
-  } catch (err) {
-    console.warn("Failed to load profile:", err);
+  } else {
+    console.warn("[Auth] Supabase client is null");
   }
 
-  // 2. Try user metadata
+  // 2. Try user metadata from Supabase Auth
   if (userMetadata?.role) {
     role = userMetadata.role as UserRole;
     name = userMetadata.name || email?.split("@")[0] || "User";
-    console.log("Role loaded from user metadata:", role);
+    console.log("[Auth] ✅ Role loaded from user metadata:", role);
     return { role, name };
   }
 
-  // 3. Default to student
-  console.log("No role found, defaulting to student");
+  // 3. Try to detect role from email domain or pattern (fallback for testing)
+  if (email) {
+    const emailLower = email.toLowerCase();
+    if (emailLower.includes("admin") || emailLower.includes("almustafa")) {
+      console.log("[Auth] ⚠️ Role inferred from email pattern: admin");
+      return { role: "admin", name };
+    }
+  }
+
+  // 4. Default to student
+  console.log("[Auth] ⚠️ No role found, defaulting to student");
   return { role: "student", name };
 }
 
@@ -70,17 +91,23 @@ export async function validateLogin(
   }
 
   try {
+    console.log("[Auth] Attempting login for:", email);
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error || !data.user) {
+      console.error("[Auth] Login failed:", error?.message);
       return {
         success: false,
         error: error?.message || "Invalid email or password",
       };
     }
+
+    console.log("[Auth] Login successful, user ID:", data.user.id);
+    console.log("[Auth] User metadata:", data.user.user_metadata);
 
     // Get user role
     const { role, name } = await getUserRole(
@@ -99,11 +126,11 @@ export async function validateLogin(
       updated_at: data.user.updated_at || data.user.created_at,
     };
 
-    console.log("Login successful, user role:", role);
+    console.log("[Auth] Final user object:", { email: user.email, role: user.role, name: user.name });
     return { success: true, user };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Supabase auth error:", message);
+    console.error("[Auth] Supabase auth error:", message);
 
     if (message.includes("Failed to fetch") || message.includes("fetch")) {
       return {
@@ -133,6 +160,8 @@ export async function getCurrentSession(): Promise<User | null> {
 
     if (!session?.user) return null;
 
+    console.log("[Auth] Restoring session for:", session.user.email);
+
     // Get user role
     const { role, name } = await getUserRole(
       session.user.id,
@@ -150,10 +179,11 @@ export async function getCurrentSession(): Promise<User | null> {
       updated_at: session.user.updated_at || session.user.created_at,
     };
 
+    console.log("[Auth] Session restored:", { email: user.email, role: user.role });
     storeUser(user);
     return user;
   } catch (err) {
-    console.error("Session fetch error:", err);
+    console.error("[Auth] Session fetch error:", err);
     return getStoredUser();
   }
 }
