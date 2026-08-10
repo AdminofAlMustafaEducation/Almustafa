@@ -57,24 +57,25 @@ function AdminExams() {
   function handleCreate() {
     if (!formData.name || !formData.grade) return;
 
-    createExam.mutate(
-      {
-        name: formData.name,
-        subject_id: formData.subject_id || undefined,
-        class_id: formData.grade,
-        teacher_id: "admin",
-        exam_date: formData.exam_date,
-        total_marks: Number(formData.total_marks),
-        status: "draft",
+    // For mock mode, use grade as class_id
+    // For Supabase, we'd need to look up the class UUID
+    const examData = {
+      name: formData.name,
+      subject_id: formData.subject_id || undefined,
+      class_id: formData.grade, // Will be resolved to UUID in hook
+      teacher_id: "current-user", // Will be resolved to UUID in hook
+      exam_date: formData.exam_date,
+      total_marks: Number(formData.total_marks),
+      status: "draft" as const,
+    };
+
+    createExam.mutate(examData, {
+      onSuccess: () => {
+        setDialogOpen(false);
+        setFormData({ name: "", subject_id: "", grade: "9th", total_marks: 100, exam_date: new Date().toISOString().split("T")[0] });
       },
-      {
-        onSuccess: () => {
-          setDialogOpen(false);
-          setFormData({ name: "", subject_id: "", grade: "9th", total_marks: 100, exam_date: new Date().toISOString().split("T")[0] });
-        },
-        onError: (err) => alert(`Failed to create exam: ${err.message}`),
-      }
-    );
+      onError: (err) => alert(`Failed to create exam: ${err.message}`),
+    });
   }
 
   function handleDelete(id: string) {

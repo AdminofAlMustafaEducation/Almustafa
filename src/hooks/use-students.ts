@@ -184,7 +184,7 @@ export function useStudents(filters?: {
           const searchLower = filters.search.toLowerCase();
           result = result.filter(
             (s) =>
-              s.name.toLowerCase().includes(searchLower) ||
+              s.full_name.toLowerCase().includes(searchLower) ||
               s.roll_number?.toLowerCase().includes(searchLower),
           );
         }
@@ -205,7 +205,7 @@ export function useStudents(filters?: {
 
         if (filters?.search) {
           query = query.or(
-            `name.ilike.%${filters.search}%,roll_number.ilike.%${filters.search}%`,
+            `full_name.ilike.%${filters.search}%,roll_number.ilike.%${filters.search}%`,
           );
         }
 
