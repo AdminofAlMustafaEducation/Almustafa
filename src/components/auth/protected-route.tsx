@@ -26,7 +26,12 @@ export function ProtectedRoute({
   }
 
   // Admin can access all portals
-  if (!allowedRoles.includes(user.role) && user.role !== "admin") {
+  if (user.role === "admin") {
+    return <>{children}</>;
+  }
+
+  // Check if user's role is in allowed roles
+  if (!allowedRoles.includes(user.role)) {
     return <Navigate to="/" />;
   }
 

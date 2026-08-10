@@ -22,6 +22,42 @@ export function storeUser(user: User | null) {
   }
 }
 
+// Helper to get user role from various sources
+async function getUserRole(userId: string, email: string, userMetadata: Record<string, any>): Promise<{ role: UserRole; name: string }> {
+  let role: UserRole = "student";
+  let name = email?.split("@")[0] || "User";
+
+  // 1. Try to load from profiles table
+  try {
+    const { data: profile, error } = await supabase!
+      .from("profiles")
+      .select("role, full_name")
+      .eq("auth_user_id", userId)
+      .single();
+
+    if (!error && profile) {
+      role = profile.role as UserRole;
+      name = profile.full_name;
+      console.log("Role loaded from profiles table:", role);
+      return { role, name };
+    }
+  } catch (err) {
+    console.warn("Failed to load profile:", err);
+  }
+
+  // 2. Try user metadata
+  if (userMetadata?.role) {
+    role = userMetadata.role as UserRole;
+    name = userMetadata.name || email?.split("@")[0] || "User";
+    console.log("Role loaded from user metadata:", role);
+    return { role, name };
+  }
+
+  // 3. Default to student
+  console.log("No role found, defaulting to student");
+  return { role: "student", name };
+}
+
 export async function validateLogin(
   email: string,
   password: string
@@ -29,8 +65,7 @@ export async function validateLogin(
   if (!supabaseConfigured || !supabase) {
     return {
       success: false,
-      error:
-        "Authentication service not configured. Please check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
+      error: "Authentication service not configured.",
     };
   }
 
@@ -47,41 +82,12 @@ export async function validateLogin(
       };
     }
 
-    // Try to load profile from profiles table
-    let role: UserRole = "student";
-    let name = data.user.email?.split("@")[0] || "User";
-
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, full_name")
-        .eq("auth_user_id", data.user.id)
-        .single();
-
-      if (profile) {
-        role = profile.role as UserRole;
-        name = profile.full_name;
-      } else {
-        // No profile found - check user metadata
-        role = (data.user.user_metadata?.role as UserRole) || "student";
-        name =
-          data.user.user_metadata?.name ||
-          data.user.email?.split("@")[0] ||
-          "User";
-      }
-    } catch {
-      // Profile table might not exist yet, use metadata
-      role = (data.user.user_metadata?.role as UserRole) || "student";
-      name =
-        data.user.user_metadata?.name ||
-        data.user.email?.split("@")[0] ||
-        "User";
-    }
-
-    // Ensure role is valid
-    if (!["admin", "teacher", "student", "guardian"].includes(role)) {
-      role = "student";
-    }
+    // Get user role
+    const { role, name } = await getUserRole(
+      data.user.id,
+      data.user.email || email,
+      data.user.user_metadata || {}
+    );
 
     const user: User = {
       id: data.user.id,
@@ -93,6 +99,7 @@ export async function validateLogin(
       updated_at: data.user.updated_at || data.user.created_at,
     };
 
+    console.log("Login successful, user role:", role);
     return { success: true, user };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
@@ -101,8 +108,7 @@ export async function validateLogin(
     if (message.includes("Failed to fetch") || message.includes("fetch")) {
       return {
         success: false,
-        error:
-          "Cannot connect to authentication server. Please verify your Supabase URL is correct and the project is active.",
+        error: "Cannot connect to authentication server.",
       };
     }
 
@@ -127,39 +133,12 @@ export async function getCurrentSession(): Promise<User | null> {
 
     if (!session?.user) return null;
 
-    // Try to load profile
-    let role: UserRole = "student";
-    let name = session.user.email?.split("@")[0] || "User";
-
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, full_name")
-        .eq("auth_user_id", session.user.id)
-        .single();
-
-      if (profile) {
-        role = profile.role as UserRole;
-        name = profile.full_name;
-      } else {
-        role = (session.user.user_metadata?.role as UserRole) || "student";
-        name =
-          session.user.user_metadata?.name ||
-          session.user.email?.split("@")[0] ||
-          "User";
-      }
-    } catch {
-      role = (session.user.user_metadata?.role as UserRole) || "student";
-      name =
-        session.user.user_metadata?.name ||
-        session.user.email?.split("@")[0] ||
-        "User";
-    }
-
-    // Ensure role is valid
-    if (!["admin", "teacher", "student", "guardian"].includes(role)) {
-      role = "student";
-    }
+    // Get user role
+    const { role, name } = await getUserRole(
+      session.user.id,
+      session.user.email || "",
+      session.user.user_metadata || {}
+    );
 
     const user: User = {
       id: session.user.id,
