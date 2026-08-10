@@ -25,12 +25,12 @@ CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can read own profile" ON profiles FOR SELECT USING (auth_user_id = auth.uid());
-CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth_user_id = auth.uid());
-CREATE POLICY "Admin can read all profiles" ON profiles FOR SELECT USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Admin can manage all profiles" ON profiles FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Users can read own profile" ON profiles;`nCREATE POLICY "Users can read own profile" ON profiles FOR SELECT USING (auth_user_id = auth.uid());
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;`nCREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth_user_id = auth.uid());
+DROP POLICY IF EXISTS "Admin can read all profiles" ON profiles;`nCREATE POLICY "Admin can read all profiles" ON profiles FOR SELECT USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admin can manage all profiles" ON profiles;`nCREATE POLICY "Admin can manage all profiles" ON profiles FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
 
-CREATE OR REPLACE FUNCTION handle_new_user()
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO profiles (auth_user_id, full_name, role)
@@ -154,7 +154,7 @@ CREATE INDEX IF NOT EXISTS idx_applications_tracking_code ON applications(tracki
 CREATE SEQUENCE IF NOT EXISTS application_number_seq START 1001;
 
 -- Function to auto-generate application number
-CREATE OR REPLACE FUNCTION generate_application_number()
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_application_number()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.application_number IS NULL OR NEW.application_number = '' THEN
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS application_status_history (
 );
 
 -- Approve & Create Account RPC
-CREATE OR REPLACE FUNCTION approve_and_create_account(
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION approve_and_create_account(
   app_id UUID,
   reviewer_id UUID
 )
@@ -251,11 +251,11 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE application_status_history ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage applications" ON applications FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Public can insert applications" ON applications FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admin can manage application_history" ON application_status_history FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admin can manage applications" ON applications;`nCREATE POLICY "Admin can manage applications" ON applications FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Public can insert applications" ON applications;`nCREATE POLICY "Public can insert applications" ON applications FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admin can manage application_history" ON application_status_history;`nCREATE POLICY "Admin can manage application_history" ON application_status_history FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
 
-CREATE OR REPLACE FUNCTION generate_student_number()
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_student_number()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.student_number IS NULL THEN
@@ -314,11 +314,11 @@ CREATE INDEX IF NOT EXISTS idx_student_guardians_guardian ON student_guardians(g
 ALTER TABLE guardians ENABLE ROW LEVEL SECURITY;
 ALTER TABLE student_guardians ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage guardians" ON guardians FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Admin can manage student_guardians" ON student_guardians FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Guardians can read own profile" ON guardians FOR SELECT USING (auth_user_id = auth.uid());
-CREATE POLICY "Guardians can read linked students" ON student_guardians FOR SELECT USING (guardian_id IN (SELECT id FROM guardians WHERE auth_user_id = auth.uid()));
-CREATE POLICY "Students can read linked guardians" ON student_guardians FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage guardians" ON guardians;`nCREATE POLICY "Admin can manage guardians" ON guardians FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admin can manage student_guardians" ON student_guardians;`nCREATE POLICY "Admin can manage student_guardians" ON student_guardians FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Guardians can read own profile" ON guardians;`nCREATE POLICY "Guardians can read own profile" ON guardians FOR SELECT USING (auth_user_id = auth.uid());
+DROP POLICY IF EXISTS "Guardians can read linked students" ON student_guardians;`nCREATE POLICY "Guardians can read linked students" ON student_guardians FOR SELECT USING (guardian_id IN (SELECT id FROM guardians WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Students can read linked guardians" ON student_guardians;`nCREATE POLICY "Students can read linked guardians" ON student_guardians FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 004: Create Teachers Table
@@ -346,10 +346,10 @@ CREATE INDEX IF NOT EXISTS idx_teachers_is_active ON teachers(is_active);
 
 ALTER TABLE teachers ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage teachers" ON teachers FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Teachers can read own profile" ON teachers FOR SELECT USING (auth_user_id = auth.uid());
-CREATE POLICY "Teachers can update own profile" ON teachers FOR UPDATE USING (auth_user_id = auth.uid());
-CREATE POLICY "Public can read active teachers" ON teachers FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "Admin can manage teachers" ON teachers;`nCREATE POLICY "Admin can manage teachers" ON teachers FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Teachers can read own profile" ON teachers;`nCREATE POLICY "Teachers can read own profile" ON teachers FOR SELECT USING (auth_user_id = auth.uid());
+DROP POLICY IF EXISTS "Teachers can update own profile" ON teachers;`nCREATE POLICY "Teachers can update own profile" ON teachers FOR UPDATE USING (auth_user_id = auth.uid());
+DROP POLICY IF EXISTS "Public can read active teachers" ON teachers;`nCREATE POLICY "Public can read active teachers" ON teachers FOR SELECT USING (is_active = true);
 
 -- ============================================================
 -- 005: Create Classes and Subjects Tables
@@ -383,12 +383,12 @@ CREATE INDEX IF NOT EXISTS idx_classes_is_active ON classes(is_active);
 ALTER TABLE classes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subjects ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage classes" ON classes FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Admin can manage subjects" ON subjects FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Authenticated can read classes" ON classes FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "Authenticated can read subjects" ON subjects FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "Public can read active classes" ON classes FOR SELECT USING (is_active = true);
-CREATE POLICY "Public can read active subjects" ON subjects FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "Admin can manage classes" ON classes;`nCREATE POLICY "Admin can manage classes" ON classes FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admin can manage subjects" ON subjects;`nCREATE POLICY "Admin can manage subjects" ON subjects FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Authenticated can read classes" ON classes;`nCREATE POLICY "Authenticated can read classes" ON classes FOR SELECT USING (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "Authenticated can read subjects" ON subjects;`nCREATE POLICY "Authenticated can read subjects" ON subjects FOR SELECT USING (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "Public can read active classes" ON classes;`nCREATE POLICY "Public can read active classes" ON classes FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "Public can read active subjects" ON subjects;`nCREATE POLICY "Public can read active subjects" ON subjects FOR SELECT USING (is_active = true);
 
 -- ============================================================
 -- 006: Create Teacher Assignments Table
@@ -410,8 +410,8 @@ CREATE INDEX IF NOT EXISTS idx_teacher_subjects_class ON teacher_subjects(class_
 
 ALTER TABLE teacher_subjects ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage teacher_subjects" ON teacher_subjects FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Teachers can read own assignments" ON teacher_subjects FOR SELECT USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage teacher_subjects" ON teacher_subjects;`nCREATE POLICY "Admin can manage teacher_subjects" ON teacher_subjects FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Teachers can read own assignments" ON teacher_subjects;`nCREATE POLICY "Teachers can read own assignments" ON teacher_subjects FOR SELECT USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 007: Create Attendance Table
@@ -438,9 +438,9 @@ CREATE INDEX IF NOT EXISTS idx_attendance_teacher ON attendance(teacher_id);
 
 ALTER TABLE attendance ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage attendance" ON attendance FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Teachers can manage assigned attendance" ON attendance FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
-CREATE POLICY "Students can read own attendance" ON attendance FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage attendance" ON attendance;`nCREATE POLICY "Admin can manage attendance" ON attendance FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Teachers can manage assigned attendance" ON attendance;`nCREATE POLICY "Teachers can manage assigned attendance" ON attendance FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Students can read own attendance" ON attendance;`nCREATE POLICY "Students can read own attendance" ON attendance FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 008: Create Exams and Results Tables
@@ -477,7 +477,7 @@ CREATE INDEX IF NOT EXISTS idx_exams_teacher ON exams(teacher_id);
 CREATE INDEX IF NOT EXISTS idx_exam_results_exam ON exam_results(exam_id);
 CREATE INDEX IF NOT EXISTS idx_exam_results_student ON exam_results(student_id);
 
-CREATE OR REPLACE FUNCTION calculate_grade(marks NUMERIC, total_marks NUMERIC)
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION calculate_grade(marks NUMERIC, total_marks NUMERIC)
 RETURNS TEXT AS $$
 BEGIN
   IF total_marks <= 0 THEN RETURN '-'; END IF;
@@ -493,7 +493,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION auto_calculate_grade()
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION auto_calculate_grade()
 RETURNS TRIGGER AS $$
 DECLARE
   exam_total INT;
@@ -512,10 +512,10 @@ CREATE TRIGGER on_exam_result_created
 ALTER TABLE exams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE exam_results ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage exams" ON exams FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Admin can manage exam_results" ON exam_results FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Teachers can manage assigned exams" ON exams FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
-CREATE POLICY "Students can read own results" ON exam_results FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage exams" ON exams;`nCREATE POLICY "Admin can manage exams" ON exams FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admin can manage exam_results" ON exam_results;`nCREATE POLICY "Admin can manage exam_results" ON exam_results FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Teachers can manage assigned exams" ON exams;`nCREATE POLICY "Teachers can manage assigned exams" ON exams FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Students can read own results" ON exam_results;`nCREATE POLICY "Students can read own results" ON exam_results FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 009: Create Fee Invoices and Payments Tables
@@ -555,7 +555,7 @@ CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id);
 
 CREATE SEQUENCE IF NOT EXISTS invoice_number_seq START 1001;
 
-CREATE OR REPLACE FUNCTION generate_invoice_number()
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_invoice_number()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.invoice_number IS NULL THEN
@@ -570,7 +570,7 @@ CREATE TRIGGER on_invoice_created
   BEFORE INSERT ON fee_invoices
   FOR EACH ROW EXECUTE FUNCTION generate_invoice_number();
 
-CREATE OR REPLACE FUNCTION update_invoice_status()
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION update_invoice_status()
 RETURNS TRIGGER AS $$
 DECLARE
   total_paid NUMERIC;
@@ -595,9 +595,9 @@ CREATE TRIGGER on_payment_created
 ALTER TABLE fee_invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage fee_invoices" ON fee_invoices FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Admin can manage payments" ON payments FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Students can read own invoices" ON fee_invoices FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage fee_invoices" ON fee_invoices;`nCREATE POLICY "Admin can manage fee_invoices" ON fee_invoices FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Admin can manage payments" ON payments;`nCREATE POLICY "Admin can manage payments" ON payments FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Students can read own invoices" ON fee_invoices;`nCREATE POLICY "Students can read own invoices" ON fee_invoices FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 010: Create Notes Table
@@ -623,9 +623,9 @@ CREATE INDEX IF NOT EXISTS idx_notes_class ON notes(class_id);
 
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage notes" ON notes FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Teachers can manage own notes" ON notes FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
-CREATE POLICY "Students can read class notes" ON notes FOR SELECT USING (is_published = true AND class_id IN (SELECT id FROM classes));
+DROP POLICY IF EXISTS "Admin can manage notes" ON notes;`nCREATE POLICY "Admin can manage notes" ON notes FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Teachers can manage own notes" ON notes;`nCREATE POLICY "Teachers can manage own notes" ON notes FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Students can read class notes" ON notes;`nCREATE POLICY "Students can read class notes" ON notes FOR SELECT USING (is_published = true AND class_id IN (SELECT id FROM classes));
 
 -- ============================================================
 -- 011: Extend Notifications Table
@@ -694,8 +694,8 @@ CREATE INDEX IF NOT EXISTS idx_live_classes_start_time ON live_classes(start_tim
 
 ALTER TABLE live_classes ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage live_classes" ON live_classes FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Teachers can manage own live_classes" ON live_classes FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage live_classes" ON live_classes;`nCREATE POLICY "Admin can manage live_classes" ON live_classes FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Teachers can manage own live_classes" ON live_classes;`nCREATE POLICY "Teachers can manage own live_classes" ON live_classes FOR ALL USING (teacher_id IN (SELECT id FROM teachers WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 013: Create Gallery Table
@@ -719,8 +719,8 @@ CREATE INDEX IF NOT EXISTS idx_gallery_items_is_published ON gallery_items(is_pu
 
 ALTER TABLE gallery_items ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage gallery_items" ON gallery_items FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Public can read published gallery" ON gallery_items FOR SELECT USING (is_published = true);
+DROP POLICY IF EXISTS "Admin can manage gallery_items" ON gallery_items;`nCREATE POLICY "Admin can manage gallery_items" ON gallery_items FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Public can read published gallery" ON gallery_items;`nCREATE POLICY "Public can read published gallery" ON gallery_items FOR SELECT USING (is_published = true);
 
 -- ============================================================
 -- 014: Create Website Content Table
@@ -739,8 +739,8 @@ CREATE INDEX IF NOT EXISTS idx_website_content_key ON website_content(key);
 
 ALTER TABLE website_content ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage website_content" ON website_content FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Public can read published website_content" ON website_content FOR SELECT USING (published = true);
+DROP POLICY IF EXISTS "Admin can manage website_content" ON website_content;`nCREATE POLICY "Admin can manage website_content" ON website_content FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Public can read published website_content" ON website_content;`nCREATE POLICY "Public can read published website_content" ON website_content FOR SELECT USING (published = true);
 
 -- ============================================================
 -- 015: Create Audit Logs Table
@@ -765,10 +765,10 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
 
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can read audit_logs" ON audit_logs FOR SELECT USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "System can insert audit_logs" ON audit_logs FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Admin can read audit_logs" ON audit_logs;`nCREATE POLICY "Admin can read audit_logs" ON audit_logs FOR SELECT USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "System can insert audit_logs" ON audit_logs;`nCREATE POLICY "System can insert audit_logs" ON audit_logs FOR INSERT WITH CHECK (true);
 
-CREATE OR REPLACE FUNCTION log_audit_event(
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION log_audit_event(
   p_actor_id UUID,
   p_action TEXT,
   p_entity_type TEXT,
@@ -800,14 +800,14 @@ CREATE INDEX IF NOT EXISTS idx_class_students_student ON class_students(student_
 
 ALTER TABLE class_students ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can manage class_students" ON class_students FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "Students can read own enrollments" ON class_students FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
+DROP POLICY IF EXISTS "Admin can manage class_students" ON class_students;`nCREATE POLICY "Admin can manage class_students" ON class_students FOR ALL USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "Students can read own enrollments" ON class_students;`nCREATE POLICY "Students can read own enrollments" ON class_students FOR SELECT USING (student_id IN (SELECT id FROM students WHERE auth_user_id = auth.uid()));
 
 -- ============================================================
 -- 017: Create RPC Functions
 -- ============================================================
 
-CREATE OR REPLACE FUNCTION approve_application(app_id UUID, reviewer_id UUID)
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION approve_application(app_id UUID, reviewer_id UUID)
 RETURNS UUID AS $$
 DECLARE
   app RECORD;
@@ -859,7 +859,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE OR REPLACE FUNCTION generate_monthly_fees(billing_month TEXT, fee_amount NUMERIC)
+DROP FUNCTION IF EXISTS;`nCREATE OR REPLACE FUNCTION generate_monthly_fees(billing_month TEXT, fee_amount NUMERIC)
 RETURNS INT AS $$
 DECLARE
   count INT := 0;
