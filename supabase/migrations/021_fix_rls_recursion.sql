@@ -51,7 +51,9 @@ DROP POLICY IF EXISTS "Admin can manage applications" ON applications;
 CREATE POLICY "Admin can manage applications" ON applications FOR ALL
   USING (is_admin());
 
--- Add public SELECT policy for applications (so users can track their submissions)
+-- Add public SELECT policy for applications (needed for apply form and track page)
+-- NOTE: This exposes ALL application data publicly. Consider restricting later
+-- by creating a view with limited columns or using a more restrictive policy.
 DROP POLICY IF EXISTS "Public can read own applications" ON applications;
 CREATE POLICY "Public can read own applications" ON applications FOR SELECT
   USING (true);

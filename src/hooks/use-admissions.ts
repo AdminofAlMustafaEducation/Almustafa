@@ -152,7 +152,7 @@ export function useApplication(id: string) {
       }
 
       try {
-        const { data, error } = await supabase!.from("applications").select("*").eq("id", id).single();
+        const { data, error } = await supabase!.from("applications").select("*").or(`id.eq.${id},application_number.eq.${id}`).single();
         if (error) {
           if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
             return MOCK_APPLICATIONS.find((a) => a.id === id || a.application_number === id) ?? null;
@@ -218,9 +218,9 @@ export function useCreateApplication() {
       }
 
       try {
-        // Insert without .select() to avoid RLS SELECT policy issues
-        // The public form doesn't need to read back the inserted row
-        const { error } = await supabase!.from("applications").insert(applicationData);
+        // Insert with .select() to get back the auto-generated application_number
+        // The migration adds a public SELECT policy for applications
+        const { data: result, error } = await supabase!.from("applications").insert(applicationData).select().single();
         if (error) {
           if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
             const now = new Date().toISOString();
@@ -238,17 +238,7 @@ export function useCreateApplication() {
           }
           throw new Error(error.message);
         }
-        // Construct the return object since we can't read it back without auth
-        const now = new Date().toISOString();
-        return {
-          ...applicationData,
-          id: "",
-          application_number: "",
-          status: "pending" as const,
-          documents: [],
-          created_at: now,
-          updated_at: now,
-        } as Application;
+        return result as Application;
       } catch (err) {
         if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           const now = new Date().toISOString();
