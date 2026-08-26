@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, Phone, X, GraduationCap, BookOpen, LayoutDashboard, ChevronDown } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -14,99 +14,62 @@ const nav = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
-const portalLinks = [
-  { to: "/admin", label: "Admin Panel", icon: LayoutDashboard },
-  { to: "/portal", label: "Student Portal", icon: GraduationCap },
-  { to: "/teacher", label: "Teacher Portal", icon: BookOpen },
-];
-
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [portalsOpen, setPortalsOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/60 bg-background/82 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-xl">
       <div className="container-fluid">
-        <div className="flex h-16 items-center justify-between gap-3 sm:h-20">
-          <Link to="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3.5">
-            <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white p-1 shadow-[0_12px_32px_-16px_rgba(40,15,10,0.45)] ring-1 ring-gold/25 transition-transform group-hover:scale-[1.03] sm:h-14 sm:w-14">
+        <div className="flex h-16 items-center justify-between gap-3 sm:h-[72px]">
+          <Link to="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-gold/20 sm:h-12 sm:w-12">
               <img
                 src={logo}
                 alt="Al-Mustafa Academy logo"
                 className="h-full w-full rounded-full object-cover"
-                width={56}
-                height={56}
+                width={48}
+                height={48}
                 decoding="async"
               />
             </span>
             <div className="flex min-w-0 flex-col leading-tight">
-              <span className="truncate font-display text-base font-bold tracking-tight text-navy-deep sm:text-2xl">
+              <span className="truncate font-display text-base font-bold tracking-tight text-navy-deep sm:text-lg">
                 Al-Mustafa
               </span>
-              <span className="truncate text-[9px] uppercase tracking-[0.24em] text-muted-foreground sm:text-[10px] sm:tracking-[0.26em]">
-                Academy | Since 1998
+              <span className="truncate text-[10px] text-muted-foreground sm:text-[11px]">
+                Academy, since 1998
               </span>
             </div>
           </Link>
 
-          <nav
-            className="hidden items-center gap-1 rounded-full border border-white/60 bg-white/55 px-2 py-1 shadow-soft backdrop-blur-md lg:flex"
-            aria-label="Primary"
-          >
+          <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
             {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="group relative rounded-full px-4 py-2 text-sm font-semibold text-navy-deep/82 transition-colors hover:text-gold"
-                activeProps={{ className: "relative rounded-full bg-navy-deep px-4 py-2 text-sm font-semibold text-white shadow-soft", "aria-current": "page" }}
+                className="rounded-full px-3.5 py-2 text-sm font-semibold text-navy-deep/75 transition-colors hover:text-navy-deep"
+                activeProps={{
+                  className: "rounded-full bg-navy-deep px-3.5 py-2 text-sm font-semibold text-white",
+                  "aria-current": "page",
+                }}
               >
                 {item.label}
-                <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-gold transition-transform group-hover:scale-x-100" />
               </Link>
             ))}
-
-            {/* Portals Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setPortalsOpen(!portalsOpen)}
-                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold text-navy-deep/82 transition-colors hover:text-gold"
-              >
-                Portals <ChevronDown className="h-3 w-3" />
-              </button>
-              {portalsOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setPortalsOpen(false)} />
-                  <div className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-                    {portalLinks.map((item) => (
-                      <Link
-                        key={item.to}
-                        to={item.to}
-                        onClick={() => setPortalsOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-600"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             <a
               href={`tel:${academy.phoneIntl}`}
-              className="flex items-center gap-2 rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow-gold transition-transform hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-navy-deep/80 transition-colors hover:text-navy-deep"
             >
-              <Phone className="h-4 w-4" /> {academy.phone}
+              <Phone className="h-4 w-4 text-gold" /> {academy.phone}
             </a>
             <Link
               to="/apply"
-              className="flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow-lg transition-transform hover:scale-105 hover:bg-emerald-700"
+              className="inline-flex items-center rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-bold text-navy-deep shadow-gold transition-transform hover:scale-[1.02] active:scale-[0.98]"
             >
-              Apply Now
+              Apply
             </Link>
           </div>
 
@@ -130,39 +93,26 @@ export function SiteHeader() {
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className="block rounded-2xl px-3 py-2.5 text-navy-deep/85 hover:bg-white hover:text-gold"
-                activeProps={{ className: "block rounded-2xl bg-white px-3 py-2.5 text-gold shadow-soft", "aria-current": "page" }}
+                activeProps={{
+                  className: "block rounded-2xl bg-white px-3 py-2.5 text-gold shadow-soft",
+                  "aria-current": "page",
+                }}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="mt-2 border-t border-border pt-2">
-              <p className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Portals
-              </p>
-              {portalLinks.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-navy-deep/85 hover:bg-white hover:text-gold"
-                >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              ))}
-            </div>
             <Link
               to="/apply"
               onClick={() => setOpen(false)}
-              className="mt-2 block rounded-2xl bg-emerald-600 px-3 py-2.5 text-center text-sm font-bold text-white hover:bg-emerald-700"
+              className="mt-2 block rounded-2xl bg-gold-gradient px-3 py-2.5 text-center text-sm font-bold text-navy-deep"
             >
               Apply for Admission
             </Link>
             <a
               href={`tel:${academy.phoneIntl}`}
-              className="flex items-center gap-2 px-3 py-2 font-semibold text-gold"
+              className="flex items-center gap-2 px-3 py-2 font-semibold text-navy-deep"
             >
-              <Phone className="h-4 w-4" /> {academy.phone}
+              <Phone className="h-4 w-4 text-gold" /> {academy.phone}
             </a>
           </div>
         )}

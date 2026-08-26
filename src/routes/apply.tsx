@@ -19,15 +19,14 @@ function ApplyPage() {
   return (
     <>
       <PageHero
-        eyebrow="Admissions Open"
         title={
           <>
             Apply for
             <br />
-            <em className="font-serif-elegant text-shimmer">admission.</em>
+            admission.
           </>
         }
-        description="Fill out the form below to apply for classes 9 through 12 at Al-Mustafa Academy. It only takes a few minutes — submit once and track your status online."
+        description="Fill out the form below for classes 9 through 12. It only takes a few minutes. Submit once and track your status online."
         backgroundImage={heroBg}
         stats={[
           { value: "9-12", label: "classes available" },

@@ -109,8 +109,6 @@ export const Route = createRootRoute({
         { rel: "icon", href: logoPath, type: "image/jpeg" },
         { rel: "apple-touch-icon", href: logoPath },
         { rel: "manifest", href: "/site.webmanifest" },
-        { rel: "preconnect", href: "https://fonts.googleapis.com" },
-        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
         ...pageHead.links,
       ],
     };
@@ -205,7 +203,7 @@ function AdminLayoutWrapper() {
       {!isPortal && (
         <Link
           to="/apply"
-          className="fixed bottom-24 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg transition-all hover:bg-emerald-700 hover:scale-105 sm:hidden"
+          className="fixed bottom-24 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-navy-deep text-white shadow-lg transition-transform hover:scale-[0.98] active:scale-[0.96] sm:hidden"
           title="Apply for Admission"
         >
           <GraduationCap className="h-6 w-6" />

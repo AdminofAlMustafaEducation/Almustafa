@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, Facebook, Mail, MapPin, Phone, Youtube, LayoutDashboard, GraduationCap, BookOpen, ArrowRight } from "lucide-react";
+import { Clock, Facebook, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import { academy } from "@/data/faculty";
 
 const logo = "/brand/almustafa-logo.jpg";
@@ -7,39 +7,37 @@ const logo = "/brand/almustafa-logo.jpg";
 export function SiteFooter() {
   return (
     <footer className="border-t border-gold/20 bg-navy-deep text-primary-foreground">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container-fluid py-14 sm:py-16">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-white p-1 shadow-[0_14px_34px_-18px_rgba(0,0,0,0.5)] ring-1 ring-gold/25">
+              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-white p-1 ring-1 ring-gold/25">
                 <img
                   src={logo}
                   alt="Al-Mustafa Academy logo"
-                  width={56}
-                  height={56}
+                  width={48}
+                  height={48}
                   className="h-full w-full rounded-full object-cover"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div>
-                <div className="font-display text-2xl font-bold text-gold">Al-Mustafa</div>
-                <div className="text-xs uppercase tracking-[0.2em] text-gold-soft/70">
-                  Academy | Since 1998
-                </div>
+                <div className="font-display text-xl font-bold text-gold">Al-Mustafa</div>
+                <div className="text-xs text-gold-soft/70">Academy, since 1998</div>
               </div>
             </div>
-            <p className="text-sm leading-relaxed text-primary-foreground/70">
-              Trusted evening coaching academy in Islamabad, shaping generations of students from Juniors through F.Sc since 1998.
+            <p className="max-w-xs text-sm leading-relaxed text-primary-foreground/70">
+              Evening coaching in G-11 and G-10 Islamabad for Juniors, Matric and F.Sc.
             </p>
           </div>
 
           <div>
-            <h3 className="mb-4 font-display text-lg text-gold">Explore</h3>
+            <h3 className="mb-4 font-display text-base font-bold text-gold">Explore</h3>
             <ul className="space-y-2 text-sm">
               {[
                 { to: "/", label: "Home" },
-                { to: "/about", label: "About Us" },
+                { to: "/about", label: "About" },
                 { to: "/programs", label: "Programs" },
                 { to: "/faculty", label: "Faculty" },
                 { to: "/gallery", label: "Gallery" },
@@ -55,31 +53,16 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="mb-4 font-display text-lg text-gold">Portals</h3>
+            <h3 className="mb-4 font-display text-base font-bold text-gold">Portals</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/apply" className="flex items-center gap-2 font-semibold text-emerald-400 transition-colors hover:text-emerald-300">
-                  <ArrowRight className="h-4 w-4" /> Apply for Admission
+                <Link to="/apply" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  Apply for Admission
                 </Link>
               </li>
               <li>
-                <Link to="/track" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
-                  <ArrowRight className="h-4 w-4" /> Track Application
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
-                  <LayoutDashboard className="h-4 w-4" /> Admin Panel
-                </Link>
-              </li>
-              <li>
-                <Link to="/portal" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
-                  <GraduationCap className="h-4 w-4" /> Student Portal
-                </Link>
-              </li>
-              <li>
-                <Link to="/teacher" className="flex items-center gap-2 text-primary-foreground/70 transition-colors hover:text-gold">
-                  <BookOpen className="h-4 w-4" /> Teacher Portal
+                <Link to="/track" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  Track Application
                 </Link>
               </li>
               <li>
@@ -87,19 +70,30 @@ export function SiteFooter() {
                   Login
                 </Link>
               </li>
+              <li>
+                <Link to="/portal" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  Student Portal
+                </Link>
+              </li>
+              <li>
+                <Link to="/teacher" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  Teacher Portal
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  Admin Panel
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="mb-4 font-display text-lg text-gold">Contact</h3>
+            <h3 className="mb-4 font-display text-base font-bold text-gold">Contact</h3>
             <ul className="space-y-3 text-sm text-primary-foreground/75">
               <li className="flex gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                 <span>{academy.addressPrimary}</span>
-              </li>
-              <li className="flex gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <span>{academy.addressSecondary}</span>
               </li>
               <li className="flex gap-2">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
@@ -113,43 +107,34 @@ export function SiteFooter() {
                   {academy.email}
                 </a>
               </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 font-display text-lg text-gold">Hours</h3>
-            <ul className="space-y-2 text-sm text-primary-foreground/75">
               <li className="flex gap-2">
                 <Clock className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <span>
-                  Mon - Sat
-                  <br />
-                  3:00 PM - 9:00 PM
-                </span>
+                <span>Mon-Sat, 3:00 PM to 9:00 PM</span>
               </li>
             </ul>
-            <a
-              href={academy.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-gold"
-            >
-              <Facebook className="h-4 w-4" /> Follow on Facebook
-            </a>
-            <a
-              href={academy.youtube}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-gold"
-            >
-              <Youtube className="h-4 w-4" /> Subscribe on YouTube
-            </a>
+            <div className="mt-5 flex items-center gap-4">
+              <a
+                href={academy.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-gold"
+              >
+                <Facebook className="h-4 w-4" /> Facebook
+              </a>
+              <a
+                href={academy.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-gold"
+              >
+                <Youtube className="h-4 w-4" /> YouTube
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-gold/15 pt-6 text-xs text-primary-foreground/50 sm:flex-row">
+        <div className="mt-12 border-t border-gold/15 pt-6 text-xs text-primary-foreground/50">
           <p>Copyright {new Date().getFullYear()} Al-Mustafa Academy. All rights reserved.</p>
-          <p className="font-serif-elegant italic text-gold-soft/70">"Education is the kindling of a flame."</p>
         </div>
       </div>
     </footer>

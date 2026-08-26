@@ -36,32 +36,29 @@ function TrackPage() {
   return (
     <>
       <PageHero
-        eyebrow="Application Status"
         title={
           <>
             Track your
             <br />
-            <em className="font-serif-elegant text-shimmer">application.</em>
+            application.
           </>
         }
-        description="Enter your application number to check the current status of your admission application to Al-Mustafa Academy."
+        description="Enter your application number to check the current status of your admission application."
         backgroundImage={heroBg}
-        stats={[
-          { value: "24/7", label: "online tracking" },
-          { value: "Real-time", label: "status updates" },
-          { value: "Simple", label: "enter & search" },
-        ]}
       />
 
       <section className="bg-background py-fluid-section">
         <div className="container-fluid">
           <div className="mx-auto max-w-2xl">
-            {/* Search form */}
             <Card className="border-gold/20">
               <CardContent className="px-6 py-8 sm:px-8">
                 <form onSubmit={handleSearch} className="flex flex-col gap-4 sm:flex-row">
                   <div className="flex-1">
+                    <label htmlFor="application-number" className="sr-only">
+                      Application number
+                    </label>
                     <Input
+                      id="application-number"
                       value={searchId}
                       onChange={(e) => setSearchId(e.target.value)}
                       placeholder="Enter application number (e.g. AMA-2026-0001)"
@@ -75,12 +72,11 @@ function TrackPage() {
               </CardContent>
             </Card>
 
-            {/* Results */}
             <div className="mt-8">
               {isLoading && (
                 <div className="flex items-center justify-center gap-3 py-12">
                   <Loader2 className="h-5 w-5 animate-spin text-navy" />
-                  <span className="text-sm text-muted-foreground">Searching…</span>
+                  <span className="text-sm text-muted-foreground">Searching...</span>
                 </div>
               )}
 
@@ -89,9 +85,7 @@ function TrackPage() {
                   <CardContent className="flex items-center gap-3 px-6 py-8">
                     <AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
                     <div>
-                      <p className="text-sm font-semibold text-destructive">
-                        Application not found
-                      </p>
+                      <p className="text-sm font-semibold text-destructive">Application not found</p>
                       <p className="mt-1 text-xs text-muted-foreground">
                         Please check the application number and try again. The format is AMA-YYYY-XXXX.
                       </p>
@@ -105,20 +99,14 @@ function TrackPage() {
                   <CardContent className="px-6 py-8 sm:px-8">
                     <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-4">
                       <div>
-                        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                          Application Number
-                        </p>
+                        <p className="text-xs text-muted-foreground">Application number</p>
                         <p className="font-display text-xl font-black text-navy-deep">
                           {application.application_number}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                          Applicant
-                        </p>
-                        <p className="text-sm font-semibold text-navy-deep">
-                          {application.student_name}
-                        </p>
+                        <p className="text-xs text-muted-foreground">Applicant</p>
+                        <p className="text-sm font-semibold text-navy-deep">{application.student_name}</p>
                       </div>
                     </div>
 
@@ -136,9 +124,6 @@ function TrackPage() {
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
                     Enter your application number above to view the status.
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Try <span className="font-mono font-semibold">AMA-2026-0001</span> for a demo.
                   </p>
                 </div>
               )}

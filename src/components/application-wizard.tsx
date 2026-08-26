@@ -343,11 +343,11 @@ export function ApplicationWizard() {
                   onEdit={() => handleEdit(0)}
                   rows={[
                     { label: "Full Name", value: values.full_name },
-                    { label: "Father Name", value: values.father_name || "—" },
+                    { label: "Father Name", value: values.father_name || "Not provided" },
                     { label: "Phone", value: values.phone },
                     { label: "B-Form/ID", value: values.id_number },
-                    { label: "Date of Birth", value: values.date_of_birth || "—" },
-                    { label: "Address", value: values.address || "—" },
+                    { label: "Date of Birth", value: values.date_of_birth || "Not provided" },
+                    { label: "Address", value: values.address || "Not provided" },
                   ]}
                 />
                 <ReviewSection
@@ -356,8 +356,8 @@ export function ApplicationWizard() {
                   rows={[
                     { label: "Class", value: values.grade },
                     { label: "Gender", value: values.gender === "male" ? "Male" : "Female" },
-                    { label: "Previous School", value: values.previous_school || "—" },
-                    { label: "Guardian Occupation", value: values.guardian_occupation || "—" },
+                    { label: "Previous School", value: values.previous_school || "Not provided" },
+                    { label: "Guardian Occupation", value: values.guardian_occupation || "Not provided" },
                   ]}
                 />
                 <ReviewSection
@@ -366,7 +366,7 @@ export function ApplicationWizard() {
                   rows={[
                     { label: "Name", value: values.parent_name },
                     { label: "Phone", value: values.parent_phone },
-                    { label: "CNIC", value: values.parent_cnic || "—" },
+                    { label: "CNIC", value: values.parent_cnic || "Not provided" },
                   ]}
                 />
               </div>
