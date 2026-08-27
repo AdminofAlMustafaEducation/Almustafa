@@ -12,3 +12,8 @@ No live student or teacher mutation was submitted. A valid admin identity and sa
 2. Use a disposable student test record only if the administrator approves creation, then remove or deactivate it according to academy policy.
 3. Verify admission approval through the Supabase Edge Function and confirm application tracking accepts admission code only.
 4. Verify a teacher identity with a `teachers.auth_user_id` row and matching `teacher_subjects` assignment before testing attendance and exam result writes.
+
+
+## Post-deployment verification
+
+After Vercel deployment `dpl_GeTVMzg4FDPQzhr1VsXqZKM2cGdb` reached `READY` for commit `b3fcaad`, the custom domains were confirmed as aliases. The production `/admin/students/add` route now renders **Add New Student** with the complete form, and no provisioning configuration error is shown. The production `/track` route visibly states “Enter your admission code to check your application status” and exposes a single application-number/admission-code field; email and token inputs are absent. No student record was submitted during verification.
