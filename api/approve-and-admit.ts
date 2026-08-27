@@ -12,7 +12,7 @@ type ApiResponse = {
   json(body: Record<string, unknown>): void;
 };
 
-const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
 
 function json(res: ApiResponse, status: number, body: Record<string, unknown>) {
@@ -26,7 +26,11 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   }
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    return json(res, 503, { error: "Account provisioning service is not configured" });
+    return json(res, 503, {
+      error: supabaseServiceKey
+        ? "Account provisioning service is missing SUPABASE_URL"
+        : "Account provisioning service is missing the server-only Supabase service key",
+    });
   }
 
   const rawAuthorization = req.headers.authorization;

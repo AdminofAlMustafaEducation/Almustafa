@@ -2,11 +2,11 @@
 -- Run with `supabase test db` after applying the full migration chain in a disposable project.
 
 begin;
-select plan(26);
+select plan(28);
 
 select ok(
-  has_table_privilege('anon', 'public.applications', 'insert'),
-  'anonymous callers can submit applications'
+  not has_table_privilege('anon', 'public.applications', 'insert'),
+  'anonymous callers cannot bypass the submission RPC'
 );
 select ok(
   not has_table_privilege('anon', 'public.applications', 'select'),
@@ -26,8 +26,12 @@ select ok(
   'anonymous callers can submit through the allow-listed RPC'
 );
 select ok(
-  has_function_privilege('anon', 'public.track_application(text,text,text)', 'execute'),
-  'anonymous callers can execute the token-bound tracking function'
+  has_function_privilege('anon', 'public.track_application(text)', 'execute'),
+  'anonymous callers can track by admission code'
+);
+select ok(
+  not has_function_privilege('anon', 'public.track_application(text,text)', 'execute'),
+  'anonymous callers cannot use the retired email tracking signature'
 );
 select ok(
   hasnt_column('public', 'applications', 'password'),
@@ -122,6 +126,15 @@ select ok(
 select ok(
   has_function_privilege('authenticated', 'public.is_admin()', 'execute'),
   'authenticated callers can use the policy-bound admin helper'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'students'
+      and policyname = 'Admin can manage students'
+  ),
+  'students have an explicit profile-based admin policy'
 );
 select ok(
   exists (

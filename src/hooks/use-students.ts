@@ -274,6 +274,10 @@ export function useCreateStudent() {
     mutationFn: async (
       student: Omit<Student, "id" | "created_at" | "updated_at">,
     ): Promise<Student> => {
+      if (!supabase && !USE_MOCK) {
+        throw new Error("Supabase is not configured for this deployment");
+      }
+
       if (USE_MOCK) {
         const newStudent: Student = {
           ...student,
@@ -286,7 +290,37 @@ export function useCreateStudent() {
       }
 
       try {
-        const { data, error } = await supabase!.from("students").insert(student).select().single();
+        const studentRow = Object.fromEntries(
+          Object.entries({
+            student_number: student.student_number,
+            auth_user_id: student.auth_user_id,
+            full_name: student.full_name,
+            father_name: student.father_name,
+            date_of_birth: student.date_of_birth,
+            gender: student.gender,
+            id_number: student.id_number ?? student.identity_number,
+            grade: student.grade,
+            class_id: student.class_id,
+            monthly_fee: student.monthly_fee,
+            email: student.email,
+            phone: student.phone,
+            address: student.address,
+            roll_number: student.roll_number,
+            admission_date: student.admission_date,
+            status: student.status,
+            class_level: student.class_level,
+            program: student.program,
+            campus: student.campus,
+            parent_name: student.parent_name,
+            parent_phone: student.parent_phone,
+            parent_cnic: student.parent_cnic,
+          }).filter(([, value]) => value !== undefined),
+        );
+        const { data, error } = await supabase!
+          .from("students")
+          .insert(studentRow)
+          .select()
+          .single();
 
         if (error) {
           if (

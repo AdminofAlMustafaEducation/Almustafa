@@ -69,7 +69,12 @@ function AddStudentPage() {
 
       {createStudent.isError && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-          <p className="text-sm text-red-800">Failed to create student. Please try again.</p>
+          <p className="text-sm text-red-800">
+            Failed to create student:{" "}
+            {createStudent.error instanceof Error
+              ? createStudent.error.message
+              : "Unknown Supabase error"}
+          </p>
         </div>
       )}
     </div>

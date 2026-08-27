@@ -40,7 +40,6 @@ export function ApplicationWizard() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [applicationNumber, setApplicationNumber] = useState("");
-  const [trackingToken, setTrackingToken] = useState("");
   const createApp = useCreateApplication();
 
   const form = useForm<ApplicationFormData>({
@@ -97,7 +96,6 @@ export function ApplicationWizard() {
     try {
       const result = await createApp.mutateAsync(data);
       setApplicationNumber(result.application_number);
-      setTrackingToken(result.tracking_token);
       setSubmitted(true);
       setStep(STEPS.length);
     } catch {
@@ -118,32 +116,18 @@ export function ApplicationWizard() {
           <p className="mt-3 max-w-md text-sm text-muted-foreground sm:text-base">
             Your application has been received. Please save your application number below.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-gold/20 bg-gold/5 px-6 py-5">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                Application Number
-              </p>
-              <p className="mt-1 font-display text-xl font-black tracking-wider text-navy-deep sm:text-2xl">
-                {applicationNumber}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-blue-200 bg-blue-50 px-6 py-5 text-left">
-              <p className="text-xs uppercase tracking-wider text-blue-700">
-                Private Tracking Token
-              </p>
-              <p className="mt-1 break-all font-mono text-xs font-semibold text-blue-900">
-                {trackingToken}
-              </p>
-            </div>
+          <div className="mt-6 rounded-2xl border border-gold/20 bg-gold/5 px-6 py-5">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Admission Code</p>
+            <p className="mt-1 font-display text-xl font-black tracking-wider text-navy-deep sm:text-2xl">
+              {applicationNumber}
+            </p>
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                navigator.clipboard.writeText(
-                  `Application number: ${applicationNumber}\nTracking token: ${trackingToken}`,
-                );
+                navigator.clipboard.writeText(`Admission code: ${applicationNumber}`);
                 alert("Tracking details copied to clipboard!");
               }}
             >
@@ -153,14 +137,13 @@ export function ApplicationWizard() {
           <div className="mt-6 max-w-sm rounded-xl border border-blue-200 bg-blue-50 p-4 text-left">
             <p className="text-xs font-semibold text-blue-800">Important:</p>
             <ul className="mt-1 space-y-1 text-xs text-blue-700">
-              <li>• Please screenshot or copy this number</li>
-              <li>• Keep both your application number and private token safe</li>
+              <li>• Please screenshot or copy this admission code</li>
+              <li>• Use this code to track your application status</li>
               <li>• Portal access details are provisioned after admission approval</li>
-              <li>• You will need both values to track your application status</li>
             </ul>
           </div>
           <p className="mt-4 max-w-sm text-xs text-muted-foreground">
-            Track your application status anytime on the{" "}
+            Track your application status anytime with this code on the{" "}
             <a href="/track" className="font-semibold text-navy underline underline-offset-2">
               Track Application
             </a>{" "}

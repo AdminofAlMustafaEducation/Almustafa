@@ -23,23 +23,13 @@ export const Route = createFileRoute("/track")({
 
 function TrackPage() {
   const [searchId, setSearchId] = useState("");
-  const [searchEmail, setSearchEmail] = useState("");
-  const [searchToken, setSearchToken] = useState("");
   const [queriedId, setQueriedId] = useState("");
-  const [queriedEmail, setQueriedEmail] = useState("");
-  const [queriedToken, setQueriedToken] = useState("");
-  const {
-    data: application,
-    isLoading,
-    isError,
-  } = useApplication(queriedId, queriedEmail, queriedToken);
+  const { data: application, isLoading, isError } = useApplication(queriedId);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (searchId.trim() && searchEmail.trim() && searchToken.trim()) {
+    if (searchId.trim()) {
       setQueriedId(searchId.trim());
-      setQueriedEmail(searchEmail.trim());
-      setQueriedToken(searchToken.trim());
     }
   }
 
@@ -53,7 +43,7 @@ function TrackPage() {
             application.
           </>
         }
-        description="Enter your application number, application email, and private tracking token to check your status."
+        description="Enter your admission code to check your application status."
         backgroundImage={heroBg}
       />
 
@@ -74,34 +64,7 @@ function TrackPage() {
                       id="application-number"
                       value={searchId}
                       onChange={(e) => setSearchId(e.target.value)}
-                      placeholder="Application number (e.g. AMA-2026-0001)"
-                      className="h-12 text-base"
-                      required
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <label htmlFor="application-email" className="sr-only">
-                      Application email
-                    </label>
-                    <Input
-                      id="application-email"
-                      type="email"
-                      value={searchEmail}
-                      onChange={(e) => setSearchEmail(e.target.value)}
-                      placeholder="Email used in the application"
-                      className="h-12 text-base"
-                      required
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <label htmlFor="tracking-token" className="sr-only">
-                      Private tracking token
-                    </label>
-                    <Input
-                      id="tracking-token"
-                      value={searchToken}
-                      onChange={(e) => setSearchToken(e.target.value)}
-                      placeholder="Private tracking token"
+                      placeholder="Admission code (e.g. AMA-2026-0001)"
                       className="h-12 text-base"
                       required
                     />
@@ -121,8 +84,7 @@ function TrackPage() {
                 </div>
               )}
 
-              {(isError ||
-                (queriedId && queriedEmail && queriedToken && !isLoading && !application)) && (
+              {(isError || (queriedId && !isLoading && !application)) && (
                 <Card className="border-destructive/30">
                   <CardContent className="flex items-center gap-3 px-6 py-8">
                     <AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
@@ -131,7 +93,7 @@ function TrackPage() {
                         No matching application found
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        Check both values and try again. The format is AMA-YYYY-XXXX.
+                        Check the admission code and try again. The format is AMA-YYYY-XXXX.
                       </p>
                     </div>
                   </CardContent>
@@ -157,11 +119,10 @@ function TrackPage() {
                 </Card>
               )}
 
-              {(!queriedId || !queriedEmail || !queriedToken) && !isLoading && (
+              {!queriedId && !isLoading && (
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
-                    Enter your application number, email, and private tracking token above to view
-                    the status.
+                    Enter your admission code above to view the status.
                   </p>
                 </div>
               )}

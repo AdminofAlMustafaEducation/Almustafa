@@ -99,14 +99,7 @@ const MOCK_APPLICATIONS: Application[] = [
   },
 ];
 
-const MOCK_TRACKING_TOKENS = new Map<string, string>();
 const USE_MOCK = import.meta.env.DEV && !supabase;
-
-function generateDevTrackingToken(): string {
-  return (
-    globalThis.crypto?.randomUUID?.() ?? `dev-${Date.now()}-${Math.random().toString(36).slice(2)}`
-  );
-}
 
 function generateApplicationNumber(): string {
   const year = new Date().getFullYear();
@@ -169,7 +162,6 @@ export function useApplications(filters?: { status?: string }) {
 
 export type ApplicationSubmissionResult = {
   application_number: string;
-  tracking_token: string;
 };
 
 export type ApplicationTrackingResult = Pick<
@@ -177,16 +169,13 @@ export type ApplicationTrackingResult = Pick<
   "application_number" | "status" | "created_at" | "reviewed_at"
 >;
 
-export function useApplication(applicationNumber: string, email: string, trackingToken: string) {
+export function useApplication(applicationNumber: string) {
   return useQuery<ApplicationTrackingResult | null>({
-    queryKey: ["application-tracking", applicationNumber, email, trackingToken],
+    queryKey: ["application-tracking", applicationNumber],
     queryFn: async () => {
       if (USE_MOCK) {
         const application = MOCK_APPLICATIONS.find(
-          (item) =>
-            item.application_number === applicationNumber &&
-            item.email?.toLowerCase() === email.toLowerCase() &&
-            MOCK_TRACKING_TOKENS.get(item.application_number) === trackingToken,
+          (item) => item.application_number === applicationNumber,
         );
         if (!application) return null;
         return {
@@ -199,15 +188,13 @@ export function useApplication(applicationNumber: string, email: string, trackin
 
       const { data, error } = await supabase!.rpc("track_application", {
         p_application_number: applicationNumber.trim(),
-        p_email: email.trim(),
-        p_tracking_token: trackingToken.trim(),
       });
       if (error) throw new Error("Unable to look up application status");
 
       const result = Array.isArray(data) ? data[0] : data;
       return result ? (result as ApplicationTrackingResult) : null;
     },
-    enabled: !!applicationNumber && !!email && !!trackingToken,
+    enabled: !!applicationNumber,
   });
 }
 
@@ -253,9 +240,7 @@ export function useCreateApplication() {
           updated_at: now,
         };
         MOCK_APPLICATIONS.push(newApp);
-        const trackingToken = generateDevTrackingToken();
-        MOCK_TRACKING_TOKENS.set(newApp.application_number, trackingToken);
-        return { application_number: newApp.application_number, tracking_token: trackingToken };
+        return { application_number: newApp.application_number };
       }
 
       const { data: submissionData, error } = await supabase!.rpc("submit_application", {
@@ -264,14 +249,10 @@ export function useCreateApplication() {
       if (error) throw new Error("Unable to submit application");
 
       const result = Array.isArray(submissionData) ? submissionData[0] : submissionData;
-      if (
-        !result ||
-        typeof result.application_number !== "string" ||
-        typeof result.tracking_token !== "string"
-      ) {
+      if (!result || typeof result.application_number !== "string") {
         throw new Error("Application service returned an invalid response");
       }
-      return result as ApplicationSubmissionResult;
+      return { application_number: result.application_number } as ApplicationSubmissionResult;
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["applications"] });
