@@ -2,7 +2,7 @@
 -- Run with `supabase test db` after applying the full migration chain in a disposable project.
 
 begin;
-select plan(28);
+select plan(36);
 
 select ok(
   not has_table_privilege('anon', 'public.applications', 'insert'),
@@ -153,6 +153,68 @@ select ok(
       and indexname = 'idx_applications_email_created_at'
   ),
   'application cooldown lookups have a supporting index'
+);
+select ok(
+  not has_function_privilege('anon', 'public.handle_new_user()', 'execute'),
+  'anonymous callers cannot execute the Auth profile trigger helper'
+);
+select ok(
+  not has_function_privilege('anon', 'public.enforce_application_submission_cooldown()', 'execute'),
+  'anonymous callers cannot execute the submission cooldown trigger helper'
+);
+select ok(
+  not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'applications'
+      and policyname = 'Public can insert applications'
+  ),
+  'direct public application inserts remain removed'
+);
+select ok(
+  not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'students'
+      and policyname = 'Authenticated users can manage students'
+  ),
+  'broad authenticated student management remains removed'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'students'
+      and policyname = 'Students can read own record'
+  ),
+  'students can read only their own profile row'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'teachers'
+      and policyname = 'Teachers can read own profile'
+  ),
+  'teachers can read only their own profile row'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'class_students'
+      and policyname = 'Teachers can read assigned enrollments'
+  ),
+  'teachers can read assigned class enrollments'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'exam_results'
+      and policyname = 'Teachers can manage assigned results'
+  ),
+  'teachers can manage assigned exam results'
 );
 
 select * from finish();

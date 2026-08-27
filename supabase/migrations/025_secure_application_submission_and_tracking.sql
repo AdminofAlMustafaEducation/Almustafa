@@ -24,7 +24,7 @@ SET search_path = ''
 AS $$
 DECLARE
   v_application_number TEXT;
-  v_tracking_token TEXT := encode(pg_catalog.gen_random_bytes(32), 'hex');
+  v_tracking_token TEXT := encode(extensions.gen_random_bytes(32), 'hex');
 BEGIN
   INSERT INTO public.applications (
     full_name,
@@ -67,7 +67,7 @@ BEGIN
     COALESCE(NULLIF(p_application ->> 'class_level', '')::INT, 9),
     COALESCE(NULLIF(p_application ->> 'program', ''), 'matric'),
     COALESCE(NULLIF(p_application ->> 'campus', ''), 'main'),
-    encode(pg_catalog.digest(v_tracking_token, 'sha256'), 'hex'),
+    encode(extensions.digest(v_tracking_token, 'sha256'), 'hex'),
     now()
   )
   RETURNING public.applications.application_number INTO v_application_number;
@@ -107,7 +107,7 @@ AS $$
   WHERE a.application_number = trim(p_application_number)
     AND lower(a.email) = lower(trim(p_email))
     AND a.tracking_token_hash = encode(
-      pg_catalog.digest(trim(p_tracking_token), 'sha256'),
+      extensions.digest(trim(p_tracking_token), 'sha256'),
       'hex'
     )
   LIMIT 1;

@@ -169,6 +169,48 @@ const mockStudents: Student[] = [
 
 const USE_MOCK = import.meta.env.DEV && !supabase;
 
+type StudentRow = Record<string, string | number | boolean | undefined>;
+
+function toStudentRow(student: Partial<Student>): StudentRow {
+  const row: StudentRow = {
+    student_number: student.student_number,
+    auth_user_id: student.auth_user_id,
+    father_name: student.father_name,
+    guardian_name: student.guardian_name,
+    date_of_birth: student.date_of_birth,
+    gender: student.gender,
+    identity_type: student.identity_type,
+    identity_number: student.identity_number ?? student.id_number,
+    grade: student.grade,
+    monthly_fee: student.monthly_fee,
+    student_whatsapp: student.student_whatsapp,
+    student_whatsapp_verified: student.student_whatsapp_verified,
+    parent_whatsapp: student.parent_whatsapp,
+    parent_whatsapp_verified: student.parent_whatsapp_verified,
+    email: student.email,
+    phone: student.phone,
+    address: student.address,
+    roll_number: student.roll_number,
+    photo_url: student.photo_url ?? student.photo,
+    admission_date: student.admission_date,
+    status: student.status,
+    class_level: student.class_level,
+    program: student.program,
+    campus: student.campus,
+    parent_name: student.parent_name,
+    parent_phone: student.parent_phone,
+    parent_cnic: student.parent_cnic,
+  };
+
+  if (student.full_name !== undefined || student.name !== undefined) {
+    const normalizedName = student.full_name?.trim() || student.name?.trim() || "";
+    row.full_name = normalizedName;
+    row.name = normalizedName;
+  }
+
+  return Object.fromEntries(Object.entries(row).filter(([, value]) => value !== undefined));
+}
+
 export function useStudents(filters?: { classLevel?: number; status?: string; search?: string }) {
   return useQuery({
     queryKey: ["students", filters],
@@ -290,32 +332,7 @@ export function useCreateStudent() {
       }
 
       try {
-        const studentRow = Object.fromEntries(
-          Object.entries({
-            student_number: student.student_number,
-            auth_user_id: student.auth_user_id,
-            full_name: student.full_name,
-            father_name: student.father_name,
-            date_of_birth: student.date_of_birth,
-            gender: student.gender,
-            id_number: student.id_number ?? student.identity_number,
-            grade: student.grade,
-            class_id: student.class_id,
-            monthly_fee: student.monthly_fee,
-            email: student.email,
-            phone: student.phone,
-            address: student.address,
-            roll_number: student.roll_number,
-            admission_date: student.admission_date,
-            status: student.status,
-            class_level: student.class_level,
-            program: student.program,
-            campus: student.campus,
-            parent_name: student.parent_name,
-            parent_phone: student.parent_phone,
-            parent_cnic: student.parent_cnic,
-          }).filter(([, value]) => value !== undefined),
-        );
+        const studentRow = toStudentRow(student);
         const { data, error } = await supabase!
           .from("students")
           .insert(studentRow)
@@ -386,7 +403,7 @@ export function useUpdateStudent() {
 
       const { data, error } = await supabase!
         .from("students")
-        .update({ ...updates, updated_at: new Date().toISOString() })
+        .update({ ...toStudentRow(updates), updated_at: new Date().toISOString() })
         .eq("id", id)
         .select()
         .single();

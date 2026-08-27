@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useTeacherBatches, useBatchStudents, useSaveAttendance } from "@/hooks/use-portal";
 import { Button } from "@/components/ui/button";
@@ -38,17 +38,26 @@ function MarkAttendance() {
   const [attendanceRecords, setAttendanceRecords] = useState<StudentAttendance[]>([]);
 
   const { students, isLoading: isLoadingStudents } = useBatchStudents(selectedBatchId);
+  const selectedBatch = batches.find((batch) => batch.id === selectedBatchId);
 
-  // Initialize attendance when batch is selected
+  useEffect(() => {
+    if (!selectedBatchId) {
+      setAttendanceRecords([]);
+      return;
+    }
+
+    setAttendanceRecords(
+      students.map((student) => ({
+        studentId: student.id,
+        studentName: student.name,
+        rollNumber: student.roll_number || "",
+        status: "present" as AttendanceStatus,
+      })),
+    );
+  }, [selectedBatchId, students]);
+
   const handleBatchChange = (batchId: string) => {
     setSelectedBatchId(batchId);
-    const batchStudents = students.map((s) => ({
-      studentId: s.id,
-      studentName: s.name,
-      rollNumber: s.roll_number || "",
-      status: "present" as AttendanceStatus,
-    }));
-    setAttendanceRecords(batchStudents);
   };
 
   const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
@@ -64,12 +73,14 @@ function MarkAttendance() {
   };
 
   const handleSave = async () => {
-    if (!selectedBatchId) return;
+    if (!selectedBatchId || !selectedBatch?.subject_id || !selectedBatch.teacher_id) return;
 
     const records = attendanceRecords.map((record) => ({
       student_id: record.studentId,
-      batch_id: selectedBatchId,
-      date: selectedDate,
+      class_id: selectedBatchId,
+      subject_id: selectedBatch.subject_id,
+      teacher_id: selectedBatch.teacher_id,
+      attendance_date: selectedDate,
       status: record.status,
     }));
 

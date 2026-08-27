@@ -159,6 +159,3 @@ CREATE POLICY "Admins can manage gallery objects"
   TO authenticated
   USING (bucket_id = 'gallery' AND public.is_admin())
   WITH CHECK (bucket_id = 'gallery' AND public.is_admin());
-
-COMMENT ON TABLE storage.objects IS
-  'Storage object access is controlled by bucket-specific policies in migration 026; note files are private and must use signed URLs.';

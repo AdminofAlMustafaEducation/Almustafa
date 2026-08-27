@@ -15,6 +15,8 @@ export interface TeacherBatch {
   program: string;
   grade: string;
   section?: string;
+  subject_id?: string;
+  teacher_id?: string;
   student_count: number;
 }
 
@@ -81,7 +83,7 @@ export function useTeacherProfile(userId?: string) {
         .from("teachers")
         .select("*")
         .eq("auth_user_id", userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Failed to load teacher profile:", error);
@@ -108,6 +110,7 @@ export function useTeacherBatches(userId: string) {
         .select(
           `
           id,
+          teacher_id,
           class_id,
           subject_id,
           classes (id, name, grade, section),
@@ -121,7 +124,8 @@ export function useTeacherBatches(userId: string) {
         return [];
       }
 
-      // Deduplicate classes
+      // Keep one selectable assignment per class and subject so attendance
+      // always carries the exact subject required by the database key.
       const classMap = new Map<string, TeacherBatch>();
       for (const row of data || []) {
         const cls = firstRelation(row.classes) as {
@@ -130,21 +134,25 @@ export function useTeacherBatches(userId: string) {
           grade: string;
           section?: string;
         } | null;
-        if (cls && !classMap.has(cls.id)) {
-          classMap.set(cls.id, {
+        const subject = firstRelation(row.subjects) as { name?: string } | null;
+        const assignmentKey = cls && row.subject_id ? `${cls.id}:${row.subject_id}` : cls?.id;
+        if (cls && assignmentKey && !classMap.has(assignmentKey)) {
+          classMap.set(assignmentKey, {
             id: cls.id,
-            name: cls.name,
+            name: subject?.name ? `${cls.name} · ${subject.name}` : cls.name,
             schedule: `${cls.grade} ${cls.section || ""}`.trim(),
             program: (cls.grade || "").toLowerCase().replace(/\s+/g, "_"),
             grade: cls.grade || "",
             section: cls.section,
+            subject_id: row.subject_id,
+            teacher_id: row.teacher_id,
             student_count: 0,
           });
         }
       }
 
       // Get student counts
-      const classIds = Array.from(classMap.keys());
+      const classIds = Array.from(new Set(Array.from(classMap.values()).map((batch) => batch.id)));
       if (classIds.length > 0) {
         const { data: enrollments } = await supabase
           .from("class_students")
@@ -152,8 +160,9 @@ export function useTeacherBatches(userId: string) {
           .in("class_id", classIds);
 
         for (const enrollment of enrollments || []) {
-          const batch = classMap.get(enrollment.class_id);
-          if (batch) batch.student_count++;
+          for (const batch of classMap.values()) {
+            if (batch.id === enrollment.class_id) batch.student_count++;
+          }
         }
       }
 
@@ -450,12 +459,16 @@ export function useSaveResults() {
       setIsLoading(true);
 
       try {
-        const rows = results.map((r) => ({
-          exam_id: r.exam_id || r.test_id,
-          student_id: r.student_id,
-          marks_obtained: r.marks_obtained,
-          remarks: r.remarks,
-        }));
+        const rows = results.map((r) => {
+          const examId = r.exam_id || r.test_id;
+          if (!examId) throw new Error("Exam ID is required to save results");
+          return {
+            exam_id: examId,
+            student_id: r.student_id,
+            marks_obtained: r.marks_obtained,
+            remarks: r.remarks,
+          };
+        });
 
         const { data, error } = await supabase
           .from("exam_results")
@@ -501,13 +514,23 @@ export function useSaveAttendance() {
         // Get teacher_id from the first record or look it up
         // For now, we need the teacher's DB id
         // The records may have batch_id instead of class_id
-        const rows = records.map((r) => ({
-          student_id: r.student_id,
-          class_id: r.class_id || r.batch_id,
-          attendance_date: r.attendance_date || r.date,
-          status: r.status,
-          notes: r.notes,
-        }));
+        const rows = records.map((r) => {
+          const classId = r.class_id || r.batch_id;
+          const attendanceDate = r.attendance_date || r.date;
+          if (!classId || !r.subject_id || !r.teacher_id || !attendanceDate) {
+            throw new Error("Attendance requires a class, subject, teacher, and attendance date");
+          }
+
+          return {
+            student_id: r.student_id,
+            class_id: classId,
+            subject_id: r.subject_id,
+            teacher_id: r.teacher_id,
+            attendance_date: attendanceDate,
+            status: r.status,
+            notes: r.notes,
+          };
+        });
 
         const { data, error } = await supabase
           .from("attendance")

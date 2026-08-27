@@ -143,7 +143,10 @@ export function useApplications(filters?: { status?: string }) {
           }
           throw new Error(error.message);
         }
-        return (data ?? []) as Application[];
+        return (data ?? []).map((row) => ({
+          ...(row as Application),
+          student_name: row.student_name || row.full_name,
+        }));
       } catch (err) {
         if (
           USE_MOCK &&
@@ -246,7 +249,7 @@ export function useCreateApplication() {
       const { data: submissionData, error } = await supabase!.rpc("submit_application", {
         p_application: applicationData,
       });
-      if (error) throw new Error("Unable to submit application");
+      if (error) throw new Error(error.message || "Unable to submit application");
 
       const result = Array.isArray(submissionData) ? submissionData[0] : submissionData;
       if (!result || typeof result.application_number !== "string") {
@@ -363,22 +366,18 @@ export function useApproveAndAdmit() {
         throw new Error("Administrator session is required");
       }
 
-      const response = await fetch("/api/approve-and-admit", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ applicationId }),
+      const { data, error } = await supabase.functions.invoke("approve-and-admit", {
+        body: { applicationId },
       });
-      const body = (await response.json().catch(() => ({}))) as {
+      const body = (data ?? {}) as {
         error?: string;
         result?: unknown;
       };
 
-      if (!response.ok) {
-        throw new Error(body.error || "Unable to approve application");
+      if (error) {
+        throw new Error(body.error || error.message || "Unable to approve application");
       }
+      if (body.error) throw new Error(body.error);
 
       return body.result;
     },
