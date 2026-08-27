@@ -98,7 +98,6 @@ CREATE TABLE IF NOT EXISTS students (
   photo_url TEXT,
   admission_date DATE DEFAULT CURRENT_DATE,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'graduated', 'withdrawn')),
-  password TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );
@@ -117,7 +116,6 @@ ALTER TABLE students ADD COLUMN IF NOT EXISTS parent_whatsapp_verified BOOLEAN D
 ALTER TABLE students ADD COLUMN IF NOT EXISTS guardian_name TEXT;
 ALTER TABLE students ADD COLUMN IF NOT EXISTS gender TEXT CHECK (gender IN ('male', 'female'));
 ALTER TABLE students ADD COLUMN IF NOT EXISTS email TEXT;
-ALTER TABLE students ADD COLUMN IF NOT EXISTS password TEXT;
 
 CREATE SEQUENCE IF NOT EXISTS student_number_seq START 1001;
 
@@ -153,7 +151,6 @@ CREATE TABLE IF NOT EXISTS applications (
   class_level INT,
   program TEXT,
   campus TEXT,
-  password TEXT,
   tracking_code TEXT,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'under_review', 'reviewing', 'approved', 'rejected', 'enrolled', 'withdrawn')),
   reviewer_notes TEXT,
@@ -236,11 +233,11 @@ BEGIN
 
   INSERT INTO students (student_number, full_name, father_name, phone,
     identity_type, identity_number, gender, grade, address,
-    admission_date, monthly_fee, status, email, password)
+    admission_date, monthly_fee, status, email)
   VALUES (new_student_number, app.full_name, COALESCE(app.father_name, ''), app.phone,
     'b_form', app.identity_number, COALESCE(app.gender, 'male'),
     COALESCE(app.grade, '9th'), COALESCE(app.address, ''),
-    CURRENT_DATE, 0, 'active', app.email, app.password)
+    CURRENT_DATE, 0, 'active', app.email)
   RETURNING id INTO new_student_id;
 
   UPDATE applications

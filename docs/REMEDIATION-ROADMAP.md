@@ -1,6 +1,6 @@
 # Al-Mustafa Academy Remediation Roadmap
 
-**Status:** Phase 1 in progress  
+**Status:** Phase 2 in progress
 **Owner:** Al-Mustafa engineering  
 **Scope:** Public website, Supabase data layer, authentication, admin portal, teacher portal, student portal, application tracking, Vercel delivery, and GitHub release controls.
 
@@ -54,6 +54,12 @@ Phase 1 will not invoke privileged RPCs, submit an application to production, al
 The first containment pass is implemented in the working tree. Mock mode is now development-only across the data hooks, schema-error fallbacks are development-only, public and admin student forms no longer collect raw portal passwords, the admissions mutation no longer sends a password field, the all-in-one SQL file is marked non-canonical, and `security:scan`, `typecheck`, `lint`, `verify:phase1`, and `build:release` scripts are defined.
 
 The Phase 1 security scan passed, the production build passed, and `git diff --check` passed. Typecheck and lint remain failing because of pre-existing project defects: 120 TypeScript diagnostics and 935 lint problems in the post-change run. Accordingly, `build:release` is intentionally blocked until the next correctness phase repairs those failures.
+
+## Phase 2 implementation record
+
+The repository-side Phase 2 boundary is now prepared but not applied to any Supabase environment. The public tracking route requires both application number and application email, calls a minimal status RPC, and no longer displays applicant identity or reviewer notes. Migration `022_secure_public_access_and_privileged_rpcs.sql` removes legacy password columns, replaces the password-dependent account-provisioning function, restricts direct application-table access, revokes browser execution of privileged RPCs, and uses an empty `search_path` for security-definer functions. Twelve pgTAP assertions cover table privileges and privileged-function execution.
+
+The Phase 2 security scan, production build, and diff check pass. Full database regression tests could not run because the repository has no local Supabase configuration/database and the transient CLI reported that PostgreSQL was unavailable on `127.0.0.1:54322`. The migration must therefore be tested in a disposable Supabase project before it is applied to production. Project-wide typecheck remains blocked by existing defects and is not a Phase 2 database-validation substitute.
 
 ## Required follow-up approvals
 

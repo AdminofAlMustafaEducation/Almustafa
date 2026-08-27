@@ -23,13 +23,16 @@ export const Route = createFileRoute("/track")({
 
 function TrackPage() {
   const [searchId, setSearchId] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
   const [queriedId, setQueriedId] = useState("");
-  const { data: application, isLoading, isError } = useApplication(queriedId);
+  const [queriedEmail, setQueriedEmail] = useState("");
+  const { data: application, isLoading, isError } = useApplication(queriedId, queriedEmail);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (searchId.trim()) {
+    if (searchId.trim() && searchEmail.trim()) {
       setQueriedId(searchId.trim());
+      setQueriedEmail(searchEmail.trim());
     }
   }
 
@@ -43,7 +46,7 @@ function TrackPage() {
             application.
           </>
         }
-        description="Enter your application number to check the current status of your admission application."
+        description="Enter your application number and application email to check the current status of your admission application."
         backgroundImage={heroBg}
       />
 
@@ -52,8 +55,11 @@ function TrackPage() {
           <div className="mx-auto max-w-2xl">
             <Card className="border-gold/20">
               <CardContent className="px-6 py-8 sm:px-8">
-                <form onSubmit={handleSearch} className="flex flex-col gap-4 sm:flex-row">
-                  <div className="flex-1">
+                <form
+                  onSubmit={handleSearch}
+                  className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
+                >
+                  <div className="min-w-0 flex-1">
                     <label htmlFor="application-number" className="sr-only">
                       Application number
                     </label>
@@ -61,8 +67,23 @@ function TrackPage() {
                       id="application-number"
                       value={searchId}
                       onChange={(e) => setSearchId(e.target.value)}
-                      placeholder="Enter application number (e.g. AMA-2026-0001)"
+                      placeholder="Application number (e.g. AMA-2026-0001)"
                       className="h-12 text-base"
+                      required
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <label htmlFor="application-email" className="sr-only">
+                      Application email
+                    </label>
+                    <Input
+                      id="application-email"
+                      type="email"
+                      value={searchEmail}
+                      onChange={(e) => setSearchEmail(e.target.value)}
+                      placeholder="Email used in the application"
+                      className="h-12 text-base"
+                      required
                     />
                   </div>
                   <Button type="submit" size="lg" className="h-12 shrink-0">
@@ -80,14 +101,16 @@ function TrackPage() {
                 </div>
               )}
 
-              {isError && (
+              {(isError || (queriedId && queriedEmail && !isLoading && !application)) && (
                 <Card className="border-destructive/30">
                   <CardContent className="flex items-center gap-3 px-6 py-8">
                     <AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
                     <div>
-                      <p className="text-sm font-semibold text-destructive">Application not found</p>
+                      <p className="text-sm font-semibold text-destructive">
+                        No matching application found
+                      </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        Please check the application number and try again. The format is AMA-YYYY-XXXX.
+                        Check both values and try again. The format is AMA-YYYY-XXXX.
                       </p>
                     </div>
                   </CardContent>
@@ -97,33 +120,26 @@ function TrackPage() {
               {application && (
                 <Card className="border-gold/20">
                   <CardContent className="px-6 py-8 sm:px-8">
-                    <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-4">
-                      <div>
-                        <p className="text-xs text-muted-foreground">Application number</p>
-                        <p className="font-display text-xl font-black text-navy-deep">
-                          {application.application_number}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">Applicant</p>
-                        <p className="text-sm font-semibold text-navy-deep">{application.student_name}</p>
-                      </div>
+                    <div className="mb-6 border-b border-border pb-4">
+                      <p className="text-xs text-muted-foreground">Application number</p>
+                      <p className="font-display text-xl font-black text-navy-deep">
+                        {application.application_number}
+                      </p>
                     </div>
 
                     <StatusTracker
                       status={application.status}
                       createdAt={application.created_at}
                       reviewedAt={application.reviewed_at}
-                      reviewerNotes={application.reviewer_notes}
                     />
                   </CardContent>
                 </Card>
               )}
 
-              {!queriedId && !isLoading && (
+              {(!queriedId || !queriedEmail) && !isLoading && (
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
-                    Enter your application number above to view the status.
+                    Enter your application number and application email above to view the status.
                   </p>
                 </div>
               )}
