@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { Plus, GraduationCap, Users, UserCheck, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,7 @@ const campusLabels: Record<string, string> = {
 };
 
 function StudentsPage() {
+  const pathname = useLocation({ select: (location) => location.pathname });
   const [classFilter, setClassFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
 
@@ -45,6 +46,8 @@ function StudentsPage() {
     classLevel: classFilter !== "all" ? Number(classFilter) : undefined,
     search: search || undefined,
   });
+
+  if (pathname !== "/admin/students") return <Outlet />;
 
   const activeCount = students.filter((s) => s.status === "active").length;
   const graduatedCount = students.filter((s) => s.status === "graduated").length;
