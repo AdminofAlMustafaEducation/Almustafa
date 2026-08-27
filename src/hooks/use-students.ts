@@ -159,7 +159,7 @@ const mockStudents: Student[] = [
   },
 ];
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 export function useStudents(filters?: {
   classLevel?: number;
@@ -212,7 +212,7 @@ export function useStudents(filters?: {
         const { data, error } = await query;
 
         if (error) {
-          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
             console.warn("Students table not found or RLS error, falling back to mock data");
             return [...mockStudents];
           }
@@ -221,7 +221,7 @@ export function useStudents(filters?: {
 
         return (data ?? []) as Student[];
       } catch (err) {
-        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           console.warn("Students table not found or RLS error, falling back to mock data");
           return [...mockStudents];
         }
@@ -281,7 +281,7 @@ export function useCreateStudent() {
           .single();
 
         if (error) {
-          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
             console.warn("Students table not found or RLS error, using mock data");
             const newStudent: Student = {
               ...student,
@@ -297,7 +297,7 @@ export function useCreateStudent() {
 
         return data as Student;
       } catch (err) {
-        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           console.warn("Students table not found or RLS error, using mock data");
           const newStudent: Student = {
             ...student,

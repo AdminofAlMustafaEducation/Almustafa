@@ -38,8 +38,6 @@ export function ApplicationWizard() {
     defaultValues: {
       full_name: "",
       email: "",
-      password: "",
-      confirm_password: "",
       father_name: "",
       phone: "",
       id_number: "",
@@ -65,7 +63,7 @@ export function ApplicationWizard() {
   const values = watch();
 
   const stepFields: (keyof ApplicationFormData)[][] = [
-    ["full_name", "email", "password", "confirm_password", "phone", "id_number", "date_of_birth", "address"],
+    ["full_name", "email", "phone", "id_number", "date_of_birth", "address"],
     ["grade", "gender"],
     ["parent_name", "parent_phone"],
     [],
@@ -111,7 +109,7 @@ export function ApplicationWizard() {
           </p>
           <div className="mt-6 rounded-2xl border border-gold/20 bg-gold/5 px-8 py-5">
             <p className="text-xs uppercase tracking-wider text-muted-foreground">
-              Application Number / Portal Password
+              Application Tracking Number
             </p>
             <p className="mt-1 font-display text-2xl font-black tracking-wider text-navy-deep sm:text-3xl">
               {applicationNumber}
@@ -134,8 +132,8 @@ export function ApplicationWizard() {
             <ul className="mt-1 space-y-1 text-xs text-blue-700">
               <li>• Please screenshot or copy this number</li>
               <li>• This is your application tracking code</li>
-              <li>• After admission is approved, use this as your portal password</li>
-              <li>• Login with your email + this number</li>
+              <li>• Portal access details are provisioned after admission approval</li>
+              <li>• Use this number to track your application status</li>
             </ul>
           </div>
           <p className="mt-4 max-w-sm text-xs text-muted-foreground">
@@ -228,16 +226,8 @@ export function ApplicationWizard() {
                   </div>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password *</Label>
-                    <Input id="password" type="password" placeholder="Min 8 characters" {...register("password")} />
-                    {formState.errors.password && <p className="text-xs text-destructive">{formState.errors.password.message}</p>}
-                    <p className="text-[11px] text-muted-foreground">This will be your portal password after admission.</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm_password">Confirm Password *</Label>
-                    <Input id="confirm_password" type="password" placeholder="Repeat password" {...register("confirm_password")} />
-                    {formState.errors.confirm_password && <p className="text-xs text-destructive">{formState.errors.confirm_password.message}</p>}
+                  <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 sm:col-span-2">
+                    Portal credentials are created only after your application is reviewed and approved. Do not send a password through this form.
                   </div>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">

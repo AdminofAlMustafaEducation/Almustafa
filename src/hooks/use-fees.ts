@@ -10,7 +10,7 @@ const mockFees: Fee[] = [
   { id: "5", student_id: "1", amount: 2000, fee_type: "admission", due_date: "2026-04-01", paid_date: "2026-04-01", status: "paid", payment_method: "cash", receipt_number: "RCP-003", created_at: "2026-04-01T00:00:00Z", updated_at: "2026-04-01T00:00:00Z" },
 ];
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 export function useFees(filters?: { status?: string; studentId?: string }) {
   return useQuery({
@@ -28,7 +28,7 @@ export function useFees(filters?: { status?: string; studentId?: string }) {
         if (filters?.studentId) query = query.eq("student_id", filters.studentId);
         const { data, error } = await query;
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (USE_MOCK && error.message.includes("Could not find the table")) {
             console.warn("Fees table not found, falling back to mock data");
             return [...mockFees];
           }
@@ -36,7 +36,7 @@ export function useFees(filters?: { status?: string; studentId?: string }) {
         }
         return (data ?? []) as Fee[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (USE_MOCK && err instanceof Error && err.message.includes("Could not find the table")) {
           console.warn("Fees table not found, falling back to mock data");
           return [...mockFees];
         }

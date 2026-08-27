@@ -120,7 +120,7 @@ const mockAttendance: Attendance[] = [
   { id: "a13", student_id: "s5", batch_id: "b1", date: "2025-01-19", status: "late", created_at: "2024-04-01T00:00:00Z" },
 ];
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 // ---- Batches ----
 

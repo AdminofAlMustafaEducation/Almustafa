@@ -35,7 +35,6 @@ const studentSchema = z.object({
   address: z.string().optional().or(z.literal("")),
   admission_date: z.string().optional().or(z.literal("")),
   monthly_fee: z.coerce.number().min(0).optional(),
-  password: z.string().optional().or(z.literal("")),
   parent_name: z.string().min(2, "Parent name is required"),
   parent_phone: z.string().min(11, "Parent phone is required"),
   parent_cnic: z.string().optional().or(z.literal("")),
@@ -71,7 +70,6 @@ export function StudentForm({ initialData, onSubmit, onCancel, isLoading }: Stud
       address: initialData?.address || "",
       admission_date: initialData?.admission_date || new Date().toISOString().split("T")[0],
       monthly_fee: initialData?.monthly_fee || 0,
-      password: "",
       parent_name: initialData?.parent_name || "",
       parent_phone: initialData?.parent_phone || "",
       parent_cnic: initialData?.parent_cnic || "",
@@ -241,19 +239,6 @@ export function StudentForm({ initialData, onSubmit, onCancel, isLoading }: Stud
                   <FormLabel>Monthly Fee (PKR)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Portal Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="Leave empty to keep current" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

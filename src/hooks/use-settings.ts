@@ -22,7 +22,7 @@ const defaultSettings: Record<string, unknown> = {
   youtube: "https://youtube.com/@almustafa1292",
 };
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 export function useSettings() {
   return useQuery({

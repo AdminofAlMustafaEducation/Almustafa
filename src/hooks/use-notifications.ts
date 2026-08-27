@@ -20,7 +20,7 @@ const mockNotifications: Notification[] = [
   { id: "4", title: "Evening Batches Starting Soon", message: "All evening batches for Juniors, Matric and F.Sc are starting soon. Classes run Monday to Saturday, 3:00 PM to 9:00 PM.", date: "2026-08-08", is_read: false, is_active: true, sort_order: 4, created_at: "2026-08-08T00:00:00Z", updated_at: "2026-08-08T00:00:00Z" },
 ];
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 export function useNotifications() {
   return useQuery({
@@ -32,7 +32,7 @@ export function useNotifications() {
       try {
         const { data, error } = await supabase!.from("notifications").select("*").order("sort_order");
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (USE_MOCK && error.message.includes("Could not find the table")) {
             console.warn("Notifications table not found, falling back to mock data");
             return [...mockNotifications];
           }
@@ -40,7 +40,7 @@ export function useNotifications() {
         }
         return (data ?? []) as Notification[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (USE_MOCK && err instanceof Error && err.message.includes("Could not find the table")) {
           console.warn("Notifications table not found, falling back to mock data");
           return [...mockNotifications];
         }
@@ -60,7 +60,7 @@ export function useActiveNotifications() {
       try {
         const { data, error } = await supabase!.from("notifications").select("*").eq("is_active", true).order("sort_order");
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (USE_MOCK && error.message.includes("Could not find the table")) {
             console.warn("Notifications table not found, falling back to mock data");
             return mockNotifications.filter((n) => n.is_active).sort((a, b) => a.sort_order - b.sort_order);
           }
@@ -68,7 +68,7 @@ export function useActiveNotifications() {
         }
         return (data ?? []) as Notification[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (USE_MOCK && err instanceof Error && err.message.includes("Could not find the table")) {
           console.warn("Notifications table not found, falling back to mock data");
           return mockNotifications.filter((n) => n.is_active).sort((a, b) => a.sort_order - b.sort_order);
         }

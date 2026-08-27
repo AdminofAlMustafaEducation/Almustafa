@@ -1,6 +1,7 @@
 -- =====================================================
--- AL-MUSTAFA ACADEMY - COMPLETE DATABASE MIGRATION
--- Run this entire script in Supabase SQL Editor
+-- AL-MUSTAFA ACADEMY - DATABASE MIGRATION SNAPSHOT
+-- NON-CANONICAL: use the ordered files under supabase/migrations/ for shared environments.
+-- Do not run this snapshot against production until it is generated and verified from that chain.
 -- =====================================================
 
 -- ============================================================

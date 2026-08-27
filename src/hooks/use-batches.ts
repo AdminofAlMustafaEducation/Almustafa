@@ -12,7 +12,7 @@ const mockBatches: Batch[] = [
   { id: "7", name: "Matric 9th - B", class_level: 9, program: "matric", campus: "second", capacity: 30, session: "2026-27", is_active: false, created_at: "2024-01-01T00:00:00Z", updated_at: "2024-01-01T00:00:00Z" },
 ];
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 export function useBatches(filters?: { session?: string; isActive?: boolean }) {
   return useQuery({
@@ -30,7 +30,7 @@ export function useBatches(filters?: { session?: string; isActive?: boolean }) {
         if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
         const { data, error } = await query;
         if (error) {
-          if (error.message.includes("Could not find the table")) {
+          if (USE_MOCK && error.message.includes("Could not find the table")) {
             console.warn("Batches table not found, falling back to mock data");
             return [...mockBatches];
           }
@@ -38,7 +38,7 @@ export function useBatches(filters?: { session?: string; isActive?: boolean }) {
         }
         return (data ?? []) as Batch[];
       } catch (err) {
-        if (err instanceof Error && err.message.includes("Could not find the table")) {
+        if (USE_MOCK && err instanceof Error && err.message.includes("Could not find the table")) {
           console.warn("Batches table not found, falling back to mock data");
           return [...mockBatches];
         }

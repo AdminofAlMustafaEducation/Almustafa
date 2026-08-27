@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import type { TeacherSubject } from "@/types/database";
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 const mockAssignments: TeacherSubject[] = [
   { id: "1", teacher_id: "teacher-1", subject_id: "math", class_id: "class-9", academic_year: "2026", created_at: "2026-01-01T00:00:00Z" },

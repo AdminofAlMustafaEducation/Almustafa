@@ -10,7 +10,7 @@ const mockInquiries: Inquiry[] = [
   { id: "5", name: "Tariq Mehmood", email: "tariq@example.com", phone: "0304-5678901", subject: "Campus visit", message: "Can I visit the campus before admission?", status: "closed", created_at: "2026-08-01T12:00:00Z" },
 ];
 
-const USE_MOCK = !supabase;
+const USE_MOCK = import.meta.env.DEV && !supabase;
 
 export function useInquiries(filters?: { status?: string }) {
   return useQuery({
@@ -26,7 +26,7 @@ export function useInquiries(filters?: { status?: string }) {
         if (filters?.status) query = query.eq("status", filters.status);
         const { data, error } = await query;
         if (error) {
-          if (error.message.includes("Could not find the table") || error.message.includes("infinite recursion")) {
+          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
             console.warn("Inquiries table not found or RLS error, falling back to mock data");
             return [...mockInquiries];
           }
@@ -34,7 +34,7 @@ export function useInquiries(filters?: { status?: string }) {
         }
         return (data ?? []) as Inquiry[];
       } catch (err) {
-        if (err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
           console.warn("Inquiries table not found or RLS error, falling back to mock data");
           return [...mockInquiries];
         }
