@@ -1,14 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  CalendarDays,
-  Users,
-  UserCheck,
-  UserX,
-  Clock,
-  Save,
-  CheckCircle2,
-} from "lucide-react";
+import { CalendarDays, Users, UserCheck, UserX, Clock, Save, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/admin/stats-card";
@@ -33,43 +25,36 @@ export const Route = createFileRoute("/admin/attendance")({
 });
 
 const statusConfig: Record<
-  "present" | "absent" | "late",
+  "present" | "absent" | "late" | "excused",
   { label: string; className: string }
 > = {
   present: { label: "Present", className: "badge-success" },
   absent: { label: "Absent", className: "badge-error" },
   late: { label: "Late", className: "badge-warning" },
+  excused: { label: "Excused", className: "badge-info" },
 };
 
 function AttendancePage() {
   const today = new Date().toISOString().split("T")[0];
   const [selectedBatch, setSelectedBatch] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>(today);
-  const [localRecords, setLocalRecords] = useState<
-    Map<string, "present" | "absent" | "late">
-  >(new Map());
+  const [localRecords, setLocalRecords] = useState<Map<string, "present" | "absent" | "late">>(
+    new Map(),
+  );
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const { data: batches = [] } = useBatches();
-  const { data: records = [], isLoading } = useAttendance(
-    selectedBatch,
-    selectedDate,
-  );
+  const { data: records = [], isLoading } = useAttendance(selectedBatch, selectedDate);
   const { data: stats } = useAttendanceStats(selectedBatch, selectedDate);
   const markAttendance = useMarkAttendance();
 
   // Merge server records with local edits
   const displayRecords = records.map((r) => ({
     ...r,
-    status: localRecords.has(r.student_id)
-      ? localRecords.get(r.student_id)!
-      : r.status,
+    status: localRecords.has(r.student_id) ? localRecords.get(r.student_id)! : r.status,
   }));
 
-  function handleStatusChange(
-    studentId: string,
-    status: "present" | "absent" | "late",
-  ) {
+  function handleStatusChange(studentId: string, status: "present" | "absent" | "late") {
     setLocalRecords((prev) => {
       const next = new Map(prev);
       next.set(studentId, status);
@@ -90,12 +75,10 @@ function AttendancePage() {
   function handleSave() {
     if (!selectedBatch || localRecords.size === 0) return;
 
-    const inputRecords = Array.from(localRecords.entries()).map(
-      ([studentId, status]) => ({
-        student_id: studentId,
-        status,
-      }),
-    );
+    const inputRecords = Array.from(localRecords.entries()).map(([studentId, status]) => ({
+      student_id: studentId,
+      status,
+    }));
 
     markAttendance.mutate(
       { batch_id: selectedBatch, date: selectedDate, records: inputRecords },
@@ -117,9 +100,7 @@ function AttendancePage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Attendance</h2>
-          <p className="text-gray-600">
-            Mark and manage student attendance by batch.
-          </p>
+          <p className="text-gray-600">Mark and manage student attendance by batch.</p>
         </div>
         <div className="flex items-center gap-2">
           {selectedBatch && (
@@ -161,12 +142,7 @@ function AttendancePage() {
       {selectedBatch && stats && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard title="Total Students" value={stats.totalStudents} icon={Users} />
-          <StatsCard
-            title="Present"
-            value={stats.present}
-            icon={UserCheck}
-            trend="up"
-          />
+          <StatsCard title="Present" value={stats.present} icon={UserCheck} trend="up" />
           <StatsCard title="Absent" value={stats.absent} icon={UserX} />
           <StatsCard
             title="Attendance Rate"
@@ -181,9 +157,7 @@ function AttendancePage() {
       {!selectedBatch ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white py-16">
           <CalendarDays className="h-12 w-12 text-gray-300" />
-          <p className="mt-2 text-sm text-gray-500">
-            Select a batch to view and mark attendance.
-          </p>
+          <p className="mt-2 text-sm text-gray-500">Select a batch to view and mark attendance.</p>
         </div>
       ) : (
         <div className="rounded-xl border border-gray-200 bg-white">
@@ -216,15 +190,8 @@ function AttendancePage() {
                     <td>{record.student_name}</td>
                     <td>
                       {record.status ? (
-                        <span
-                          className={cn(
-                            "badge",
-                            statusConfig[record.status].className,
-                          )}
-                        >
-                          {record.status === "late" && (
-                            <Clock className="mr-1 h-3 w-3" />
-                          )}
+                        <span className={cn("badge", statusConfig[record.status].className)}>
+                          {record.status === "late" && <Clock className="mr-1 h-3 w-3" />}
                           {statusConfig[record.status].label}
                         </span>
                       ) : (
@@ -233,34 +200,28 @@ function AttendancePage() {
                     </td>
                     <td>
                       <div className="flex items-center gap-1">
-                        {(["present", "absent", "late"] as const).map(
-                          (status) => (
-                            <Button
-                              key={status}
-                              variant={
-                                record.status === status ? "default" : "outline"
-                              }
-                              size="sm"
-                              className={cn(
-                                "h-7 text-xs",
-                                record.status === status &&
-                                  status === "present" &&
-                                  "bg-green-600 hover:bg-green-700",
-                                record.status === status &&
-                                  status === "absent" &&
-                                  "bg-red-600 hover:bg-red-700",
-                                record.status === status &&
-                                  status === "late" &&
-                                  "bg-yellow-500 hover:bg-yellow-600 text-black",
-                              )}
-                              onClick={() =>
-                                handleStatusChange(record.student_id, status)
-                              }
-                            >
-                              {status.charAt(0).toUpperCase() + status.slice(1)}
-                            </Button>
-                          ),
-                        )}
+                        {(["present", "absent", "late"] as const).map((status) => (
+                          <Button
+                            key={status}
+                            variant={record.status === status ? "default" : "outline"}
+                            size="sm"
+                            className={cn(
+                              "h-7 text-xs",
+                              record.status === status &&
+                                status === "present" &&
+                                "bg-green-600 hover:bg-green-700",
+                              record.status === status &&
+                                status === "absent" &&
+                                "bg-red-600 hover:bg-red-700",
+                              record.status === status &&
+                                status === "late" &&
+                                "bg-yellow-500 hover:bg-yellow-600 text-black",
+                            )}
+                            onClick={() => handleStatusChange(record.student_id, status)}
+                          >
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </Button>
+                        ))}
                       </div>
                     </td>
                   </tr>

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import type { ApplicationFormData } from "@/data/schema";
 import type { Application } from "@/types/database";
 
 const MOCK_APPLICATIONS: Application[] = [
@@ -214,7 +215,7 @@ export function useCreateApplication() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData: Record<string, any>) => {
+    mutationFn: async (formData: ApplicationFormData) => {
       // Filter out fields that don't exist in the database
       const data = formData;
 

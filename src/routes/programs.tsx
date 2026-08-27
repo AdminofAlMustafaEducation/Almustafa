@@ -47,28 +47,52 @@ function ProgramsPage() {
             const meta = (
               <div className={`mt-8 grid gap-4 sm:grid-cols-3 ${i === 2 ? "text-white" : ""}`}>
                 <div className="flex items-start gap-3">
-                  <Clock className={`mt-0.5 h-5 w-5 shrink-0 ${i === 2 ? "text-gold-soft" : "text-gold"}`} />
+                  <Clock
+                    className={`mt-0.5 h-5 w-5 shrink-0 ${i === 2 ? "text-gold-soft" : "text-gold"}`}
+                  />
                   <div>
-                    <div className={`text-xs ${i === 2 ? "text-white/60" : "text-muted-foreground"}`}>Timing</div>
-                    <div className={`text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}>
+                    <div
+                      className={`text-xs ${i === 2 ? "text-white/60" : "text-muted-foreground"}`}
+                    >
+                      Timing
+                    </div>
+                    <div
+                      className={`text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}
+                    >
                       Evenings, Mon-Sat
                     </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Users className={`mt-0.5 h-5 w-5 shrink-0 ${i === 2 ? "text-gold-soft" : "text-gold"}`} />
+                  <Users
+                    className={`mt-0.5 h-5 w-5 shrink-0 ${i === 2 ? "text-gold-soft" : "text-gold"}`}
+                  />
                   <div>
-                    <div className={`text-xs ${i === 2 ? "text-white/60" : "text-muted-foreground"}`}>Batch</div>
-                    <div className={`text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}>
+                    <div
+                      className={`text-xs ${i === 2 ? "text-white/60" : "text-muted-foreground"}`}
+                    >
+                      Batch
+                    </div>
+                    <div
+                      className={`text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}
+                    >
                       Small groups
                     </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <BookOpen className={`mt-0.5 h-5 w-5 shrink-0 ${i === 2 ? "text-gold-soft" : "text-gold"}`} />
+                  <BookOpen
+                    className={`mt-0.5 h-5 w-5 shrink-0 ${i === 2 ? "text-gold-soft" : "text-gold"}`}
+                  />
                   <div>
-                    <div className={`text-xs ${i === 2 ? "text-white/60" : "text-muted-foreground"}`}>Curriculum</div>
-                    <div className={`text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}>
+                    <div
+                      className={`text-xs ${i === 2 ? "text-white/60" : "text-muted-foreground"}`}
+                    >
+                      Curriculum
+                    </div>
+                    <div
+                      className={`text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}
+                    >
                       FBISE-aligned
                     </div>
                   </div>
@@ -78,7 +102,9 @@ function ProgramsPage() {
 
             const subjects = (
               <div className="mt-6">
-                <p className={`mb-3 text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}>
+                <p
+                  className={`mb-3 text-sm font-semibold ${i === 2 ? "text-white" : "text-navy-deep"}`}
+                >
                   Subjects covered
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -98,7 +124,10 @@ function ProgramsPage() {
 
             if (i === 2) {
               return (
-                <article key={program.title} className="rounded-2xl bg-navy-deep p-6 text-white sm:p-8 lg:p-12">
+                <article
+                  key={program.title}
+                  className="rounded-2xl bg-navy-deep p-6 text-white sm:p-8 lg:p-12"
+                >
                   <h2 className="headline-balance font-display text-3xl font-black tracking-tight sm:text-4xl">
                     {program.title}
                   </h2>
@@ -110,7 +139,10 @@ function ProgramsPage() {
             }
 
             return (
-              <article key={program.title} className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+              <article
+                key={program.title}
+                className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
+              >
                 <div className="overflow-hidden rounded-2xl lg:col-span-5">
                   <img
                     src={programImages[i] ?? classroom}
@@ -124,7 +156,9 @@ function ProgramsPage() {
                   <h2 className="headline-balance font-display text-3xl font-black tracking-tight text-navy-deep sm:text-4xl">
                     {program.title}
                   </h2>
-                  <p className="mt-4 max-w-[65ch] text-base text-muted-foreground">{program.description}</p>
+                  <p className="mt-4 max-w-[65ch] text-base text-muted-foreground">
+                    {program.description}
+                  </p>
                   {subjects}
                   {meta}
                 </div>

@@ -104,20 +104,112 @@ const mockStudents: Pick<Student, "id" | "name" | "roll_number" | "class_level">
 const today = new Date().toISOString().split("T")[0];
 
 const mockAttendance: Attendance[] = [
-  { id: "a1", student_id: "s1", batch_id: "b1", date: today, status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a2", student_id: "s2", batch_id: "b1", date: today, status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a3", student_id: "s3", batch_id: "b1", date: today, status: "absent", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a4", student_id: "s4", batch_id: "b1", date: today, status: "late", notes: "Arrived 20 minutes late", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a5", student_id: "s5", batch_id: "b1", date: today, status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a6", student_id: "s6", batch_id: "b3", date: today, status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a7", student_id: "s7", batch_id: "b3", date: today, status: "absent", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a8", student_id: "s8", batch_id: "b3", date: today, status: "present", created_at: "2024-04-01T00:00:00Z" },
+  {
+    id: "a1",
+    student_id: "s1",
+    batch_id: "b1",
+    date: today,
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a2",
+    student_id: "s2",
+    batch_id: "b1",
+    date: today,
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a3",
+    student_id: "s3",
+    batch_id: "b1",
+    date: today,
+    status: "absent",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a4",
+    student_id: "s4",
+    batch_id: "b1",
+    date: today,
+    status: "late",
+    notes: "Arrived 20 minutes late",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a5",
+    student_id: "s5",
+    batch_id: "b1",
+    date: today,
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a6",
+    student_id: "s6",
+    batch_id: "b3",
+    date: today,
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a7",
+    student_id: "s7",
+    batch_id: "b3",
+    date: today,
+    status: "absent",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a8",
+    student_id: "s8",
+    batch_id: "b3",
+    date: today,
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
   // Yesterday's data for history
-  { id: "a9", student_id: "s1", batch_id: "b1", date: "2025-01-19", status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a10", student_id: "s2", batch_id: "b1", date: "2025-01-19", status: "absent", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a11", student_id: "s3", batch_id: "b1", date: "2025-01-19", status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a12", student_id: "s4", batch_id: "b1", date: "2025-01-19", status: "present", created_at: "2024-04-01T00:00:00Z" },
-  { id: "a13", student_id: "s5", batch_id: "b1", date: "2025-01-19", status: "late", created_at: "2024-04-01T00:00:00Z" },
+  {
+    id: "a9",
+    student_id: "s1",
+    batch_id: "b1",
+    date: "2025-01-19",
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a10",
+    student_id: "s2",
+    batch_id: "b1",
+    date: "2025-01-19",
+    status: "absent",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a11",
+    student_id: "s3",
+    batch_id: "b1",
+    date: "2025-01-19",
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a12",
+    student_id: "s4",
+    batch_id: "b1",
+    date: "2025-01-19",
+    status: "present",
+    created_at: "2024-04-01T00:00:00Z",
+  },
+  {
+    id: "a13",
+    student_id: "s5",
+    batch_id: "b1",
+    date: "2025-01-19",
+    status: "late",
+    created_at: "2024-04-01T00:00:00Z",
+  },
 ];
 
 const USE_MOCK = import.meta.env.DEV && !supabase;
@@ -151,7 +243,7 @@ export interface AttendanceRecord {
   student_id: string;
   student_name: string;
   roll_number: string;
-  status: "present" | "absent" | "late" | null;
+  status: "present" | "absent" | "late" | "excused" | null;
   notes?: string;
 }
 
@@ -164,9 +256,7 @@ export function useAttendance(batchId: string, date: string) {
         const batch = mockBatches.find((b) => b.id === batchId);
         if (!batch) return [];
 
-        const batchStudents = mockStudents.filter(
-          (s) => s.class_level === batch.class_level,
-        );
+        const batchStudents = mockStudents.filter((s) => s.class_level === batch.class_level);
 
         return batchStudents.map((s) => {
           const att = mockAttendance.find(
@@ -175,7 +265,7 @@ export function useAttendance(batchId: string, date: string) {
           return {
             attendance_id: att?.id ?? null,
             student_id: s.id,
-            student_name: s.name,
+            student_name: s.name ?? "Unknown student",
             roll_number: s.roll_number ?? "",
             status: att?.status ?? null,
             notes: att?.notes,
@@ -302,16 +392,11 @@ export function useAttendanceStats(batchId: string, date: string) {
     queryFn: async (): Promise<AttendanceStats> => {
       if (USE_MOCK) {
         const batch = mockBatches.find((b) => b.id === batchId);
-        if (!batch)
-          return { totalStudents: 0, present: 0, absent: 0, late: 0, percentage: 0 };
+        if (!batch) return { totalStudents: 0, present: 0, absent: 0, late: 0, percentage: 0 };
 
-        const batchStudents = mockStudents.filter(
-          (s) => s.class_level === batch.class_level,
-        );
+        const batchStudents = mockStudents.filter((s) => s.class_level === batch.class_level);
 
-        const records = mockAttendance.filter(
-          (a) => a.batch_id === batchId && a.date === date,
-        );
+        const records = mockAttendance.filter((a) => a.batch_id === batchId && a.date === date);
 
         const present = records.filter((r) => r.status === "present").length;
         const absent = records.filter((r) => r.status === "absent").length;

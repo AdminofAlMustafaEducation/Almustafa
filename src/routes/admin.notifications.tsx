@@ -15,7 +15,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useNotifications, useCreateNotification, useUpdateNotification, useDeleteNotification } from "@/hooks/use-notifications";
+import {
+  useNotifications,
+  useCreateNotification,
+  useUpdateNotification,
+  useDeleteNotification,
+} from "@/hooks/use-notifications";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/notifications")({
@@ -29,7 +34,15 @@ function AdminNotifications() {
   const deleteNotification = useDeleteNotification();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingNotif, setEditingNotif] = useState<{ id: string; title: string; message: string; date: string; is_read: boolean; is_active: boolean; sort_order: number } | null>(null);
+  const [editingNotif, setEditingNotif] = useState<{
+    id: string;
+    title: string;
+    message: string;
+    date: string;
+    is_read: boolean;
+    is_active: boolean;
+    sort_order: number;
+  } | null>(null);
   const [formData, setFormData] = useState({ title: "", message: "", is_active: true });
 
   function handleAdd() {
@@ -56,12 +69,15 @@ function AdminNotifications() {
     if (editingNotif) {
       updateNotification.mutate({ id: editingNotif.id, ...formData }, callbacks);
     } else {
-      createNotification.mutate({
-        ...formData,
-        date: new Date().toISOString().split("T")[0],
-        is_read: false,
-        sort_order: notifications.length + 1,
-      }, callbacks);
+      createNotification.mutate(
+        {
+          ...formData,
+          date: new Date().toISOString().split("T")[0],
+          is_read: false,
+          sort_order: notifications.length + 1,
+        },
+        callbacks,
+      );
     }
   }
 
@@ -100,7 +116,10 @@ function AdminNotifications() {
           <Bell className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
           <div className="text-sm text-blue-800">
             <p className="font-semibold">How it works:</p>
-            <p className="mt-1 text-blue-700">Active notifications appear in the notification bell (bottom-left of all pages). Unread notifications show a red badge count.</p>
+            <p className="mt-1 text-blue-700">
+              Active notifications appear in the notification bell (bottom-left of all pages).
+              Unread notifications show a red badge count.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -125,9 +144,19 @@ function AdminNotifications() {
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">
                     <Badge variant="secondary" className="text-[10px]">
-                      {new Date(notif.date).toLocaleDateString("en-PK", { month: "short", day: "numeric" })}
+                      {new Date(notif.date).toLocaleDateString("en-PK", {
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </Badge>
-                    <Badge className={cn("border-0 text-[10px]", notif.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600")}>
+                    <Badge
+                      className={cn(
+                        "border-0 text-[10px]",
+                        notif.is_active
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-600",
+                      )}
+                    >
                       {notif.is_active ? "Active" : "Inactive"}
                     </Badge>
                   </div>
@@ -170,20 +199,39 @@ function AdminNotifications() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="notif-title">Title</Label>
-              <Input id="notif-title" value={formData.title} onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))} placeholder="e.g. Admissions Open" />
+              <Input
+                id="notif-title"
+                value={formData.title}
+                onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
+                placeholder="e.g. Admissions Open"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="notif-message">Message</Label>
-              <Textarea id="notif-message" value={formData.message} onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))} placeholder="Write the notification message..." rows={3} />
+              <Textarea
+                id="notif-message"
+                value={formData.message}
+                onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))}
+                placeholder="Write the notification message..."
+                rows={3}
+              />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="notif-active">Active</Label>
-              <Switch id="notif-active" checked={formData.is_active} onCheckedChange={(c) => setFormData((p) => ({ ...p, is_active: c }))} />
+              <Switch
+                id="notif-active"
+                checked={formData.is_active}
+                onCheckedChange={(c) => setFormData((p) => ({ ...p, is_active: c }))}
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={!formData.title || !formData.message}>{editingNotif ? "Save Changes" : "Add Notification"}</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={!formData.title || !formData.message}>
+              {editingNotif ? "Save Changes" : "Add Notification"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

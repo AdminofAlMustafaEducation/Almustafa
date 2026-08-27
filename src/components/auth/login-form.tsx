@@ -53,33 +53,15 @@ export function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          {...register("email")}
-          placeholder="admin@example.com"
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
-        )}
+        <Input id="email" type="email" {...register("email")} placeholder="admin@example.com" />
+        {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>}
       </div>
       <div>
         <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          {...register("password")}
-          placeholder="••••••••"
-        />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-500">
-            {errors.password.message}
-          </p>
-        )}
+        <Input id="password" type="password" {...register("password")} placeholder="••••••••" />
+        {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
       </div>
-      {error && (
-        <p className="rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</p>
-      )}
+      {error && <p className="rounded-md bg-red-50 p-3 text-sm text-red-500">{error}</p>}
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign In"}
       </Button>

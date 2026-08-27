@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
+function firstRelation<T>(value: T | T[] | null | undefined): T | null {
+  if (Array.isArray(value)) return value[0] ?? null;
+  return value ?? null;
+}
+
 export interface StudentProfile {
   id: string;
   auth_user_id?: string;
@@ -140,7 +145,8 @@ export function useStudentResults(studentId: string) {
 
       const { data, error } = await supabase
         .from("exam_results")
-        .select(`
+        .select(
+          `
           id,
           exam_id,
           student_id,
@@ -154,7 +160,8 @@ export function useStudentResults(studentId: string) {
             subject_id,
             subjects (name)
           )
-        `)
+        `,
+        )
         .eq("student_id", studentId)
         .order("created_at", { ascending: false });
 
@@ -164,18 +171,22 @@ export function useStudentResults(studentId: string) {
       }
 
       // Transform the joined data into the format the UI expects
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        exam_id: row.exam_id,
-        student_id: row.student_id,
-        marks_obtained: Number(row.marks_obtained),
-        total_marks: row.exams?.total_marks || 100,
-        grade: row.grade,
-        remarks: row.remarks,
-        test_name: row.exams?.name || "Unknown Exam",
-        subject: row.exams?.subjects?.name || "Unknown Subject",
-        test_date: row.exams?.exam_date || "",
-      }));
+      return (data || []).map((row) => {
+        const exam = firstRelation(row.exams);
+        const subject = firstRelation(exam?.subjects);
+        return {
+          id: row.id,
+          exam_id: row.exam_id,
+          student_id: row.student_id,
+          marks_obtained: Number(row.marks_obtained),
+          total_marks: exam?.total_marks || 100,
+          grade: row.grade,
+          remarks: row.remarks,
+          test_name: exam?.name || "Unknown Exam",
+          subject: subject?.name || "Unknown Subject",
+          test_date: exam?.exam_date || "",
+        };
+      });
     },
     enabled: !!studentId,
   });
@@ -199,7 +210,7 @@ export function useStudentFees(studentId: string) {
       }
 
       // Map database fields to what the UI expects
-      return (data || []).map((row: any) => ({
+      return (data || []).map((row) => ({
         id: row.id,
         student_id: row.student_id,
         amount: Number(row.amount),

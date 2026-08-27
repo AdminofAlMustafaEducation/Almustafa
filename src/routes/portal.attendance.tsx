@@ -12,8 +12,18 @@ export const Route = createFileRoute("/portal/attendance")({
 });
 
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -26,11 +36,7 @@ function AttendancePage() {
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
 
-  const { data: attendance = [], isLoading } = useStudentAttendance(
-    profile?.id ?? "",
-    year,
-    month,
-  );
+  const { data: attendance = [], isLoading } = useStudentAttendance(profile?.id ?? "", year, month);
 
   // Build attendance lookup by date string
   const attendanceMap = new Map<string, (typeof attendance)[0]["status"]>();
@@ -148,10 +154,7 @@ function AttendancePage() {
               {/* Day labels */}
               <div className="mb-2 grid grid-cols-7 gap-1">
                 {dayLabels.map((day) => (
-                  <div
-                    key={day}
-                    className="py-1 text-center text-xs font-semibold text-gray-500"
-                  >
+                  <div key={day} className="py-1 text-center text-xs font-semibold text-gray-500">
                     {day}
                   </div>
                 ))}

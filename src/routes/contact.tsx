@@ -54,14 +54,31 @@ function ContactPage() {
       <section className="bg-background py-fluid-section">
         <div className="container-fluid grid gap-10 lg:grid-cols-5 lg:gap-12">
           <div className="space-y-5 lg:col-span-2">
-            <h2 className="font-display text-3xl font-black tracking-tight text-navy-deep">Contact information</h2>
+            <h2 className="font-display text-3xl font-black tracking-tight text-navy-deep">
+              Contact information
+            </h2>
             {[
               { icon: MapPin, title: "Main campus", detail: academy.addressPrimary },
               { icon: MapPin, title: "Second campus", detail: academy.addressSecondary },
-              { icon: Phone, title: "Phone", detail: academy.phone, href: `tel:${academy.phoneIntl}` },
-              { icon: Mail, title: "Email", detail: academy.email, href: `mailto:${academy.email}` },
+              {
+                icon: Phone,
+                title: "Phone",
+                detail: academy.phone,
+                href: `tel:${academy.phoneIntl}`,
+              },
+              {
+                icon: Mail,
+                title: "Email",
+                detail: academy.email,
+                href: `mailto:${academy.email}`,
+              },
               { icon: Clock, title: "Hours", detail: "Monday to Saturday, 3:00 PM to 9:00 PM" },
-              { icon: Facebook, title: "Facebook", detail: "@Almustafa614", href: academy.facebook },
+              {
+                icon: Facebook,
+                title: "Facebook",
+                detail: "@Almustafa614",
+                href: academy.facebook,
+              },
               { icon: Youtube, title: "YouTube", detail: "@almustafa1292", href: academy.youtube },
             ].map(({ icon: Icon, title, detail, href }) => {
               const card = (
@@ -71,7 +88,9 @@ function ContactPage() {
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs text-muted-foreground">{title}</div>
-                    <div className="mt-0.5 break-words text-sm font-semibold text-navy-deep">{detail}</div>
+                    <div className="mt-0.5 break-words text-sm font-semibold text-navy-deep">
+                      {detail}
+                    </div>
                   </div>
                 </div>
               );
@@ -95,7 +114,9 @@ function ContactPage() {
           <div className="lg:col-span-3">
             <div className="rounded-2xl bg-navy-deep p-6 text-primary-foreground sm:p-8 md:p-10">
               <h2 className="font-display text-2xl font-bold sm:text-3xl">Send us a message</h2>
-              <p className="mt-2 text-sm text-primary-foreground/70">We will get back to you within one working day.</p>
+              <p className="mt-2 text-sm text-primary-foreground/70">
+                We will get back to you within one working day.
+              </p>
 
               <form onSubmit={handleSubmit} className="mt-6 space-y-4 sm:mt-8 sm:space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -189,7 +210,10 @@ function ContactPage() {
 
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             {branches.map((branch) => (
-              <article key={branch.id} className="overflow-hidden rounded-2xl border border-border bg-card">
+              <article
+                key={branch.id}
+                className="overflow-hidden rounded-2xl border border-border bg-card"
+              >
                 <div className="aspect-[16/10] overflow-hidden sm:aspect-[16/9]">
                   <iframe
                     src={branch.mapsEmbed}

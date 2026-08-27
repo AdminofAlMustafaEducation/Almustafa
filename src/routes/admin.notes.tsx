@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { FileText, Plus, Pencil, Trash2, Eye, EyeOff, Upload, ExternalLink, Loader2 } from "lucide-react";
+import {
+  FileText,
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  EyeOff,
+  Upload,
+  ExternalLink,
+  Loader2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -84,11 +94,12 @@ function AdminNotes() {
   }
 
   function handleSave() {
-    if (!formData.title || !formData.subject_id || !formData.class_id || !formData.teacher_id) return;
+    if (!formData.title || !formData.subject_id || !formData.class_id || !formData.teacher_id)
+      return;
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
+      onError: (err: Error) => toast.error(`Failed to save: ${err.message}`),
     };
 
     if (editingNote) {
@@ -101,7 +112,7 @@ function AdminNotes() {
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this note?")) {
       deleteNote.mutate(id, {
-        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
+        onError: (err) => toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }
@@ -109,7 +120,7 @@ function AdminNotes() {
   function handleTogglePublished(note: Note) {
     updateNote.mutate(
       { id: note.id, is_published: !note.is_published },
-      { onError: (err) => alert(`Failed to update: ${err.message}`) }
+      { onError: (err) => alert(`Failed to update: ${err.message}`) },
     );
   }
 
@@ -181,7 +192,10 @@ function AdminNotes() {
             const subject = SUBJECTS.find((s) => s.id === note.subject_id);
 
             return (
-              <Card key={note.id} className={cn("transition-all", !note.is_published && "opacity-60")}>
+              <Card
+                key={note.id}
+                className={cn("transition-all", !note.is_published && "opacity-60")}
+              >
                 <CardContent className="flex items-start gap-4 p-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100">
                     <FileText className="h-5 w-5 text-blue-600" />
@@ -192,7 +206,9 @@ function AdminNotes() {
                       <div>
                         <h3 className="font-semibold text-gray-900">{note.title}</h3>
                         {note.description && (
-                          <p className="mt-1 text-sm text-gray-500 line-clamp-2">{note.description}</p>
+                          <p className="mt-1 text-sm text-gray-500 line-clamp-2">
+                            {note.description}
+                          </p>
                         )}
                       </div>
                       <div className="flex shrink-0 items-center gap-1.5">
@@ -205,7 +221,9 @@ function AdminNotes() {
                         <Badge
                           className={cn(
                             "border-0 text-[10px]",
-                            note.is_published ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
+                            note.is_published
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-600",
                           )}
                         >
                           {note.is_published ? "Published" : "Draft"}
@@ -216,7 +234,13 @@ function AdminNotes() {
                     <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
                       {teacher && <span>By {teacher.full_name || teacher.name}</span>}
                       <span>•</span>
-                      <span>{new Date(note.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric", year: "numeric" })}</span>
+                      <span>
+                        {new Date(note.created_at).toLocaleDateString("en-PK", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
                       {note.file_path && (
                         <>
                           <span>•</span>
@@ -232,8 +256,16 @@ function AdminNotes() {
                       <Button variant="outline" size="sm" onClick={() => handleEdit(note)}>
                         <Pencil className="mr-1 h-3 w-3" /> Edit
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleTogglePublished(note)}>
-                        {note.is_published ? <EyeOff className="mr-1 h-3 w-3" /> : <Eye className="mr-1 h-3 w-3" />}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTogglePublished(note)}
+                      >
+                        {note.is_published ? (
+                          <EyeOff className="mr-1 h-3 w-3" />
+                        ) : (
+                          <Eye className="mr-1 h-3 w-3" />
+                        )}
                         {note.is_published ? "Unpublish" : "Publish"}
                       </Button>
                       {note.file_path && (
@@ -377,12 +409,23 @@ function AdminNotes() {
             </Button>
             <Button
               onClick={handleSave}
-              disabled={!formData.title || !formData.subject_id || !formData.class_id || !formData.teacher_id || createNote.isPending || updateNote.isPending}
+              disabled={
+                !formData.title ||
+                !formData.subject_id ||
+                !formData.class_id ||
+                !formData.teacher_id ||
+                createNote.isPending ||
+                updateNote.isPending
+              }
             >
-              {(createNote.isPending || updateNote.isPending) ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
+              {createNote.isPending || updateNote.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : editingNote ? (
+                "Save Changes"
               ) : (
-                editingNote ? "Save Changes" : "Add Note"
+                "Add Note"
               )}
             </Button>
           </DialogFooter>

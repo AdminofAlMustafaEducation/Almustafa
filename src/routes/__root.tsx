@@ -1,4 +1,11 @@
-import { HeadContent, Link, Outlet, Scripts, createRootRoute, useLocation } from "@tanstack/react-router";
+import {
+  HeadContent,
+  Link,
+  Outlet,
+  Scripts,
+  createRootRoute,
+  useLocation,
+} from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { GraduationCap } from "lucide-react";
@@ -150,14 +157,17 @@ function ClientOnly({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 1000 * 60 * 5,
-        retry: false,
-      },
-    },
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 60 * 5,
+            retry: false,
+          },
+        },
+      }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -174,7 +184,12 @@ function AdminLayoutWrapper() {
     // On client-side, check window.location immediately to avoid flash
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
-      return path.startsWith("/admin") || path.startsWith("/portal") || path.startsWith("/teacher") || path === "/login";
+      return (
+        path.startsWith("/admin") ||
+        path.startsWith("/portal") ||
+        path.startsWith("/teacher") ||
+        path === "/login"
+      );
     }
     return false;
   });
@@ -183,9 +198,9 @@ function AdminLayoutWrapper() {
     const path = location.pathname;
     setIsPortal(
       path.startsWith("/admin") ||
-      path.startsWith("/portal") ||
-      path.startsWith("/teacher") ||
-      path === "/login"
+        path.startsWith("/portal") ||
+        path.startsWith("/teacher") ||
+        path === "/login",
     );
   }, [location.pathname]);
 
@@ -196,9 +211,17 @@ function AdminLayoutWrapper() {
         <Outlet />
       </main>
       {!isPortal && <SiteFooter />}
-      {!isPortal && <ClientOnly><NotificationBell /></ClientOnly>}
-      {!isPortal && <ClientOnly><WhatsAppChat /></ClientOnly>}
-      
+      {!isPortal && (
+        <ClientOnly>
+          <NotificationBell />
+        </ClientOnly>
+      )}
+      {!isPortal && (
+        <ClientOnly>
+          <WhatsAppChat />
+        </ClientOnly>
+      )}
+
       {/* Floating Apply Button - Mobile Only */}
       {!isPortal && (
         <Link

@@ -30,14 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  FileText,
-  Plus,
-  Pencil,
-  Trash2,
-  BarChart3,
-  Calendar,
-} from "lucide-react";
+import { FileText, Plus, Pencil, Trash2, BarChart3, Calendar } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/teacher/tests")({
@@ -63,9 +56,7 @@ const initialFormData: TestFormData = {
 function TestManagement() {
   const { user } = useAuth();
   const { batches } = useTeacherBatches(user?.id || "");
-  const { tests, addTest, updateTest, deleteTest } = useTeacherTests(
-    user?.id || "",
-  );
+  const { tests, addTest, updateTest, deleteTest } = useTeacherTests(user?.id || "");
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTest, setEditingTest] = useState<string | null>(null);
@@ -126,25 +117,18 @@ function TestManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Test Management</h2>
-          <p className="text-gray-600">
-            Create and manage tests for your batches.
-          </p>
+          <p className="text-gray-600">Create and manage tests for your batches.</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button
-              onClick={handleOpenCreate}
-              className="bg-black text-white hover:bg-gray-800"
-            >
+            <Button onClick={handleOpenCreate} className="bg-black text-white hover:bg-gray-800">
               <Plus className="mr-2 h-4 w-4" />
               Create Test
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>
-                {editingTest ? "Edit Test" : "Create New Test"}
-              </DialogTitle>
+              <DialogTitle>{editingTest ? "Edit Test" : "Create New Test"}</DialogTitle>
               <DialogDescription>
                 {editingTest
                   ? "Update the test details below."
@@ -158,9 +142,7 @@ function TestManagement() {
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g., Mathematics Mid-Term"
                 />
               </div>
@@ -169,9 +151,7 @@ function TestManagement() {
                 <Input
                   id="subject"
                   value={formData.subject}
-                  onChange={(e) =>
-                    setFormData({ ...formData, subject: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="e.g., Mathematics"
                 />
               </div>
@@ -179,9 +159,7 @@ function TestManagement() {
                 <Label htmlFor="batch">Batch</Label>
                 <Select
                   value={formData.batch_id}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, batch_id: value })
-                  }
+                  onValueChange={(value) => setFormData({ ...formData, batch_id: value })}
                 >
                   <SelectTrigger id="batch">
                     <SelectValue placeholder="Select a batch" />
@@ -216,25 +194,17 @@ function TestManagement() {
                     id="test_date"
                     type="date"
                     value={formData.test_date}
-                    onChange={(e) =>
-                      setFormData({ ...formData, test_date: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, test_date: e.target.value })}
                   />
                 </div>
               </div>
             </div>
 
             <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsDialogOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleSave}
-                className="bg-black text-white hover:bg-gray-800"
-              >
+              <Button onClick={handleSave} className="bg-black text-white hover:bg-gray-800">
                 {editingTest ? "Update" : "Create"}
               </Button>
             </DialogFooter>
@@ -247,12 +217,8 @@ function TestManagement() {
         {tests.length === 0 ? (
           <div className="p-12 text-center">
             <FileText className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
-              No Tests Yet
-            </h3>
-            <p className="mt-2 text-sm text-gray-500">
-              Create your first test to get started.
-            </p>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">No Tests Yet</h3>
+            <p className="mt-2 text-sm text-gray-500">Create your first test to get started.</p>
           </div>
         ) : (
           <Table>
@@ -284,19 +250,12 @@ function TestManagement() {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button asChild variant="ghost" size="sm">
-                        <Link
-                          to="/teacher/results"
-                          search={{ testId: test.id }}
-                        >
+                        <Link to="/teacher/results" search={{ testId: test.id }}>
                           <BarChart3 className="mr-1 h-4 w-4" />
                           Results
                         </Link>
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleOpenEdit(test.id)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(test.id)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button

@@ -4,9 +4,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    "Supabase environment variables not set. Admin features will not work.",
-  );
+  console.warn("Supabase environment variables not set. Admin features will not work.");
 }
 
 // Validate URL format
@@ -28,8 +26,6 @@ if (supabaseUrl && !isValidSupabaseUrl(supabaseUrl)) {
   );
 }
 
-export const supabase = isConfigured
-  ? createClient(supabaseUrl!, supabaseAnonKey!)
-  : null;
+export const supabase = isConfigured ? createClient(supabaseUrl!, supabaseAnonKey!) : null;
 
 export const supabaseConfigured = isConfigured;

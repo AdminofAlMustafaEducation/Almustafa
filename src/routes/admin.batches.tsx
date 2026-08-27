@@ -67,7 +67,15 @@ function BatchesPage() {
 
   function handleAdd() {
     setEditingBatch(null);
-    setFormData({ name: "", class_level: 9, program: "matric", campus: "main", capacity: 30, session: "2026-27", is_active: true });
+    setFormData({
+      name: "",
+      class_level: 9,
+      program: "matric",
+      campus: "main",
+      capacity: 30,
+      session: "2026-27",
+      is_active: true,
+    });
     setDialogOpen(true);
   }
 
@@ -90,7 +98,7 @@ function BatchesPage() {
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
+      onError: (err: Error) => toast.error(`Failed to save: ${err.message}`),
     };
 
     if (editingBatch) {
@@ -103,25 +111,30 @@ function BatchesPage() {
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this batch?")) {
       deleteBatch.mutate(id, {
-        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
+        onError: (err) => toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }
 
   const columns: Column<Batch>[] = [
-    { key: "name", label: "Batch Name", sortable: true, render: (_v, row) => <span className="font-medium">{row.name}</span> },
+    {
+      key: "name",
+      label: "Batch Name",
+      sortable: true,
+      render: (_v, row) => <span className="font-medium">{row.name}</span>,
+    },
     { key: "class_level", label: "Class", sortable: true },
     {
       key: "program",
       label: "Program",
-      render: (_v, row) => (
-        <span className="capitalize">{row.program.replace(/_/g, " ")}</span>
-      ),
+      render: (_v, row) => <span className="capitalize">{row.program.replace(/_/g, " ")}</span>,
     },
     {
       key: "campus",
       label: "Campus",
-      render: (_v, row) => <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>,
+      render: (_v, row) => (
+        <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>
+      ),
     },
     {
       key: "capacity",
@@ -138,7 +151,12 @@ function BatchesPage() {
       key: "is_active",
       label: "Status",
       render: (_v, row) => (
-        <Badge className={cn("border-0", row.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600")}>
+        <Badge
+          className={cn(
+            "border-0",
+            row.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600",
+          )}
+        >
           {row.is_active ? "Active" : "Inactive"}
         </Badge>
       ),
@@ -151,7 +169,12 @@ function BatchesPage() {
           <Button variant="ghost" size="sm" onClick={() => handleEdit(row)}>
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700" onClick={() => handleDelete(row.id)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-red-600 hover:text-red-700"
+            onClick={() => handleDelete(row.id)}
+          >
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -173,7 +196,12 @@ function BatchesPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard title="Total Batches" value={String(batches.length)} icon={Calendar} />
-        <StatsCard title="Active" value={String(activeBatches.length)} icon={GraduationCap} trend="up" />
+        <StatsCard
+          title="Active"
+          value={String(activeBatches.length)}
+          icon={GraduationCap}
+          trend="up"
+        />
         <StatsCard title="Total Capacity" value={String(totalCapacity)} icon={Users} />
         <StatsCard title="Main Campus" value={String(mainCampus)} icon={Calendar} />
       </div>
@@ -193,46 +221,97 @@ function BatchesPage() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="batch-name">Batch Name</Label>
-              <Input id="batch-name" value={formData.name} onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))} placeholder="e.g. Class 9 - Morning" />
+              <Input
+                id="batch-name"
+                value={formData.name}
+                onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                placeholder="e.g. Class 9 - Morning"
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Program</Label>
-                <Select value={formData.program} onValueChange={(v) => setFormData((p) => ({ ...p, program: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{programOptions.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+                <Select
+                  value={formData.program}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, program: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {programOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Campus</Label>
-                <Select value={formData.campus} onValueChange={(v) => setFormData((p) => ({ ...p, campus: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{campusOptions.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+                <Select
+                  value={formData.campus}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, campus: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {campusOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="batch-class">Class Level</Label>
-                <Input id="batch-class" type="number" value={formData.class_level} onChange={(e) => setFormData((p) => ({ ...p, class_level: Number(e.target.value) }))} />
+                <Input
+                  id="batch-class"
+                  type="number"
+                  value={formData.class_level}
+                  onChange={(e) =>
+                    setFormData((p) => ({ ...p, class_level: Number(e.target.value) }))
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="batch-capacity">Capacity</Label>
-                <Input id="batch-capacity" type="number" value={formData.capacity} onChange={(e) => setFormData((p) => ({ ...p, capacity: Number(e.target.value) }))} />
+                <Input
+                  id="batch-capacity"
+                  type="number"
+                  value={formData.capacity}
+                  onChange={(e) => setFormData((p) => ({ ...p, capacity: Number(e.target.value) }))}
+                />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="batch-session">Session</Label>
-              <Input id="batch-session" value={formData.session} onChange={(e) => setFormData((p) => ({ ...p, session: e.target.value }))} />
+              <Input
+                id="batch-session"
+                value={formData.session}
+                onChange={(e) => setFormData((p) => ({ ...p, session: e.target.value }))}
+              />
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="batch-active">Active</Label>
-              <Switch id="batch-active" checked={formData.is_active} onCheckedChange={(c) => setFormData((p) => ({ ...p, is_active: c }))} />
+              <Switch
+                id="batch-active"
+                checked={formData.is_active}
+                onCheckedChange={(c) => setFormData((p) => ({ ...p, is_active: c }))}
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={!formData.name}>{editingBatch ? "Save Changes" : "Add Batch"}</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={!formData.name}>
+              {editingBatch ? "Save Changes" : "Add Batch"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

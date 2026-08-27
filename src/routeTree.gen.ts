@@ -26,19 +26,29 @@ import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TeacherTestsRouteImport } from './routes/teacher.tests'
 import { Route as TeacherResultsRouteImport } from './routes/teacher.results'
+import { Route as TeacherNotesRouteImport } from './routes/teacher.notes'
+import { Route as TeacherLiveClassesRouteImport } from './routes/teacher.live-classes'
 import { Route as TeacherAttendanceRouteImport } from './routes/teacher.attendance'
 import { Route as PortalResultsRouteImport } from './routes/portal.results'
+import { Route as PortalNotesRouteImport } from './routes/portal.notes'
 import { Route as PortalFeesRouteImport } from './routes/portal.fees'
 import { Route as PortalAttendanceRouteImport } from './routes/portal.attendance'
 import { Route as AdminStudentsRouteImport } from './routes/admin.students'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminNotesRouteImport } from './routes/admin.notes'
+import { Route as AdminLiveClassesRouteImport } from './routes/admin.live-classes'
 import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminFeesRouteImport } from './routes/admin.fees'
 import { Route as AdminFacultyRouteImport } from './routes/admin.faculty'
+import { Route as AdminExamsRouteImport } from './routes/admin.exams'
+import { Route as AdminChatAgentsRouteImport } from './routes/admin.chat-agents'
 import { Route as AdminBatchesRouteImport } from './routes/admin.batches'
 import { Route as AdminAttendanceRouteImport } from './routes/admin.attendance'
+import { Route as AdminAdmissionsRouteImport } from './routes/admin.admissions'
 import { Route as AdminStudentsAddRouteImport } from './routes/admin.students.add'
+import { Route as AdminStudentsStudentIdRouteImport } from './routes/admin.students.$studentId'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
@@ -125,6 +135,16 @@ const TeacherResultsRoute = TeacherResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => TeacherRoute,
 } as any)
+const TeacherNotesRoute = TeacherNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => TeacherRoute,
+} as any)
+const TeacherLiveClassesRoute = TeacherLiveClassesRouteImport.update({
+  id: '/live-classes',
+  path: '/live-classes',
+  getParentRoute: () => TeacherRoute,
+} as any)
 const TeacherAttendanceRoute = TeacherAttendanceRouteImport.update({
   id: '/attendance',
   path: '/attendance',
@@ -133,6 +153,11 @@ const TeacherAttendanceRoute = TeacherAttendanceRouteImport.update({
 const PortalResultsRoute = PortalResultsRouteImport.update({
   id: '/results',
   path: '/results',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalNotesRoute = PortalNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
   getParentRoute: () => PortalRoute,
 } as any)
 const PortalFeesRoute = PortalFeesRouteImport.update({
@@ -155,6 +180,21 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNotesRoute = AdminNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLiveClassesRoute = AdminLiveClassesRouteImport.update({
+  id: '/live-classes',
+  path: '/live-classes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInquiriesRoute = AdminInquiriesRouteImport.update({
   id: '/inquiries',
   path: '/inquiries',
@@ -175,6 +215,16 @@ const AdminFacultyRoute = AdminFacultyRouteImport.update({
   path: '/faculty',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminExamsRoute = AdminExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminChatAgentsRoute = AdminChatAgentsRouteImport.update({
+  id: '/chat-agents',
+  path: '/chat-agents',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBatchesRoute = AdminBatchesRouteImport.update({
   id: '/batches',
   path: '/batches',
@@ -185,9 +235,19 @@ const AdminAttendanceRoute = AdminAttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdmissionsRoute = AdminAdmissionsRouteImport.update({
+  id: '/admissions',
+  path: '/admissions',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStudentsAddRoute = AdminStudentsAddRouteImport.update({
   id: '/add',
   path: '/add',
+  getParentRoute: () => AdminStudentsRoute,
+} as any)
+const AdminStudentsStudentIdRoute = AdminStudentsStudentIdRouteImport.update({
+  id: '/$studentId',
+  path: '/$studentId',
   getParentRoute: () => AdminStudentsRoute,
 } as any)
 
@@ -204,23 +264,33 @@ export interface FileRoutesByFullPath {
   '/programs': typeof ProgramsRoute
   '/teacher': typeof TeacherRouteWithChildren
   '/track': typeof TrackRoute
+  '/admin/admissions': typeof AdminAdmissionsRoute
   '/admin/attendance': typeof AdminAttendanceRoute
   '/admin/batches': typeof AdminBatchesRoute
+  '/admin/chat-agents': typeof AdminChatAgentsRoute
+  '/admin/exams': typeof AdminExamsRoute
   '/admin/faculty': typeof AdminFacultyRoute
   '/admin/fees': typeof AdminFeesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
+  '/admin/live-classes': typeof AdminLiveClassesRoute
+  '/admin/notes': typeof AdminNotesRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRouteWithChildren
   '/portal/attendance': typeof PortalAttendanceRoute
   '/portal/fees': typeof PortalFeesRoute
+  '/portal/notes': typeof PortalNotesRoute
   '/portal/results': typeof PortalResultsRoute
   '/teacher/attendance': typeof TeacherAttendanceRoute
+  '/teacher/live-classes': typeof TeacherLiveClassesRoute
+  '/teacher/notes': typeof TeacherNotesRoute
   '/teacher/results': typeof TeacherResultsRoute
   '/teacher/tests': typeof TeacherTestsRoute
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/teacher/': typeof TeacherIndexRoute
+  '/admin/students/$studentId': typeof AdminStudentsStudentIdRoute
   '/admin/students/add': typeof AdminStudentsAddRoute
 }
 export interface FileRoutesByTo {
@@ -233,23 +303,33 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/programs': typeof ProgramsRoute
   '/track': typeof TrackRoute
+  '/admin/admissions': typeof AdminAdmissionsRoute
   '/admin/attendance': typeof AdminAttendanceRoute
   '/admin/batches': typeof AdminBatchesRoute
+  '/admin/chat-agents': typeof AdminChatAgentsRoute
+  '/admin/exams': typeof AdminExamsRoute
   '/admin/faculty': typeof AdminFacultyRoute
   '/admin/fees': typeof AdminFeesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
+  '/admin/live-classes': typeof AdminLiveClassesRoute
+  '/admin/notes': typeof AdminNotesRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRouteWithChildren
   '/portal/attendance': typeof PortalAttendanceRoute
   '/portal/fees': typeof PortalFeesRoute
+  '/portal/notes': typeof PortalNotesRoute
   '/portal/results': typeof PortalResultsRoute
   '/teacher/attendance': typeof TeacherAttendanceRoute
+  '/teacher/live-classes': typeof TeacherLiveClassesRoute
+  '/teacher/notes': typeof TeacherNotesRoute
   '/teacher/results': typeof TeacherResultsRoute
   '/teacher/tests': typeof TeacherTestsRoute
   '/admin': typeof AdminIndexRoute
   '/portal': typeof PortalIndexRoute
   '/teacher': typeof TeacherIndexRoute
+  '/admin/students/$studentId': typeof AdminStudentsStudentIdRoute
   '/admin/students/add': typeof AdminStudentsAddRoute
 }
 export interface FileRoutesById {
@@ -266,23 +346,33 @@ export interface FileRoutesById {
   '/programs': typeof ProgramsRoute
   '/teacher': typeof TeacherRouteWithChildren
   '/track': typeof TrackRoute
+  '/admin/admissions': typeof AdminAdmissionsRoute
   '/admin/attendance': typeof AdminAttendanceRoute
   '/admin/batches': typeof AdminBatchesRoute
+  '/admin/chat-agents': typeof AdminChatAgentsRoute
+  '/admin/exams': typeof AdminExamsRoute
   '/admin/faculty': typeof AdminFacultyRoute
   '/admin/fees': typeof AdminFeesRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
+  '/admin/live-classes': typeof AdminLiveClassesRoute
+  '/admin/notes': typeof AdminNotesRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRouteWithChildren
   '/portal/attendance': typeof PortalAttendanceRoute
   '/portal/fees': typeof PortalFeesRoute
+  '/portal/notes': typeof PortalNotesRoute
   '/portal/results': typeof PortalResultsRoute
   '/teacher/attendance': typeof TeacherAttendanceRoute
+  '/teacher/live-classes': typeof TeacherLiveClassesRoute
+  '/teacher/notes': typeof TeacherNotesRoute
   '/teacher/results': typeof TeacherResultsRoute
   '/teacher/tests': typeof TeacherTestsRoute
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/teacher/': typeof TeacherIndexRoute
+  '/admin/students/$studentId': typeof AdminStudentsStudentIdRoute
   '/admin/students/add': typeof AdminStudentsAddRoute
 }
 export interface FileRouteTypes {
@@ -300,23 +390,33 @@ export interface FileRouteTypes {
     | '/programs'
     | '/teacher'
     | '/track'
+    | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/batches'
+    | '/admin/chat-agents'
+    | '/admin/exams'
     | '/admin/faculty'
     | '/admin/fees'
     | '/admin/gallery'
     | '/admin/inquiries'
+    | '/admin/live-classes'
+    | '/admin/notes'
+    | '/admin/notifications'
     | '/admin/settings'
     | '/admin/students'
     | '/portal/attendance'
     | '/portal/fees'
+    | '/portal/notes'
     | '/portal/results'
     | '/teacher/attendance'
+    | '/teacher/live-classes'
+    | '/teacher/notes'
     | '/teacher/results'
     | '/teacher/tests'
     | '/admin/'
     | '/portal/'
     | '/teacher/'
+    | '/admin/students/$studentId'
     | '/admin/students/add'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -329,23 +429,33 @@ export interface FileRouteTypes {
     | '/login'
     | '/programs'
     | '/track'
+    | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/batches'
+    | '/admin/chat-agents'
+    | '/admin/exams'
     | '/admin/faculty'
     | '/admin/fees'
     | '/admin/gallery'
     | '/admin/inquiries'
+    | '/admin/live-classes'
+    | '/admin/notes'
+    | '/admin/notifications'
     | '/admin/settings'
     | '/admin/students'
     | '/portal/attendance'
     | '/portal/fees'
+    | '/portal/notes'
     | '/portal/results'
     | '/teacher/attendance'
+    | '/teacher/live-classes'
+    | '/teacher/notes'
     | '/teacher/results'
     | '/teacher/tests'
     | '/admin'
     | '/portal'
     | '/teacher'
+    | '/admin/students/$studentId'
     | '/admin/students/add'
   id:
     | '__root__'
@@ -361,23 +471,33 @@ export interface FileRouteTypes {
     | '/programs'
     | '/teacher'
     | '/track'
+    | '/admin/admissions'
     | '/admin/attendance'
     | '/admin/batches'
+    | '/admin/chat-agents'
+    | '/admin/exams'
     | '/admin/faculty'
     | '/admin/fees'
     | '/admin/gallery'
     | '/admin/inquiries'
+    | '/admin/live-classes'
+    | '/admin/notes'
+    | '/admin/notifications'
     | '/admin/settings'
     | '/admin/students'
     | '/portal/attendance'
     | '/portal/fees'
+    | '/portal/notes'
     | '/portal/results'
     | '/teacher/attendance'
+    | '/teacher/live-classes'
+    | '/teacher/notes'
     | '/teacher/results'
     | '/teacher/tests'
     | '/admin/'
     | '/portal/'
     | '/teacher/'
+    | '/admin/students/$studentId'
     | '/admin/students/add'
   fileRoutesById: FileRoutesById
 }
@@ -517,6 +637,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeacherResultsRouteImport
       parentRoute: typeof TeacherRoute
     }
+    '/teacher/notes': {
+      id: '/teacher/notes'
+      path: '/notes'
+      fullPath: '/teacher/notes'
+      preLoaderRoute: typeof TeacherNotesRouteImport
+      parentRoute: typeof TeacherRoute
+    }
+    '/teacher/live-classes': {
+      id: '/teacher/live-classes'
+      path: '/live-classes'
+      fullPath: '/teacher/live-classes'
+      preLoaderRoute: typeof TeacherLiveClassesRouteImport
+      parentRoute: typeof TeacherRoute
+    }
     '/teacher/attendance': {
       id: '/teacher/attendance'
       path: '/attendance'
@@ -529,6 +663,13 @@ declare module '@tanstack/react-router' {
       path: '/results'
       fullPath: '/portal/results'
       preLoaderRoute: typeof PortalResultsRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/notes': {
+      id: '/portal/notes'
+      path: '/notes'
+      fullPath: '/portal/notes'
+      preLoaderRoute: typeof PortalNotesRouteImport
       parentRoute: typeof PortalRoute
     }
     '/portal/fees': {
@@ -559,6 +700,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/notes': {
+      id: '/admin/notes'
+      path: '/notes'
+      fullPath: '/admin/notes'
+      preLoaderRoute: typeof AdminNotesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/live-classes': {
+      id: '/admin/live-classes'
+      path: '/live-classes'
+      fullPath: '/admin/live-classes'
+      preLoaderRoute: typeof AdminLiveClassesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/inquiries': {
       id: '/admin/inquiries'
       path: '/inquiries'
@@ -587,6 +749,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFacultyRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/exams': {
+      id: '/admin/exams'
+      path: '/exams'
+      fullPath: '/admin/exams'
+      preLoaderRoute: typeof AdminExamsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/chat-agents': {
+      id: '/admin/chat-agents'
+      path: '/chat-agents'
+      fullPath: '/admin/chat-agents'
+      preLoaderRoute: typeof AdminChatAgentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/batches': {
       id: '/admin/batches'
       path: '/batches'
@@ -601,6 +777,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttendanceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/admissions': {
+      id: '/admin/admissions'
+      path: '/admissions'
+      fullPath: '/admin/admissions'
+      preLoaderRoute: typeof AdminAdmissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/students/add': {
       id: '/admin/students/add'
       path: '/add'
@@ -608,14 +791,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudentsAddRouteImport
       parentRoute: typeof AdminStudentsRoute
     }
+    '/admin/students/$studentId': {
+      id: '/admin/students/$studentId'
+      path: '/$studentId'
+      fullPath: '/admin/students/$studentId'
+      preLoaderRoute: typeof AdminStudentsStudentIdRouteImport
+      parentRoute: typeof AdminStudentsRoute
+    }
   }
 }
 
 interface AdminStudentsRouteChildren {
+  AdminStudentsStudentIdRoute: typeof AdminStudentsStudentIdRoute
   AdminStudentsAddRoute: typeof AdminStudentsAddRoute
 }
 
 const AdminStudentsRouteChildren: AdminStudentsRouteChildren = {
+  AdminStudentsStudentIdRoute: AdminStudentsStudentIdRoute,
   AdminStudentsAddRoute: AdminStudentsAddRoute,
 }
 
@@ -624,24 +816,36 @@ const AdminStudentsRouteWithChildren = AdminStudentsRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminAdmissionsRoute: typeof AdminAdmissionsRoute
   AdminAttendanceRoute: typeof AdminAttendanceRoute
   AdminBatchesRoute: typeof AdminBatchesRoute
+  AdminChatAgentsRoute: typeof AdminChatAgentsRoute
+  AdminExamsRoute: typeof AdminExamsRoute
   AdminFacultyRoute: typeof AdminFacultyRoute
   AdminFeesRoute: typeof AdminFeesRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminInquiriesRoute: typeof AdminInquiriesRoute
+  AdminLiveClassesRoute: typeof AdminLiveClassesRoute
+  AdminNotesRoute: typeof AdminNotesRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStudentsRoute: typeof AdminStudentsRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdmissionsRoute: AdminAdmissionsRoute,
   AdminAttendanceRoute: AdminAttendanceRoute,
   AdminBatchesRoute: AdminBatchesRoute,
+  AdminChatAgentsRoute: AdminChatAgentsRoute,
+  AdminExamsRoute: AdminExamsRoute,
   AdminFacultyRoute: AdminFacultyRoute,
   AdminFeesRoute: AdminFeesRoute,
   AdminGalleryRoute: AdminGalleryRoute,
   AdminInquiriesRoute: AdminInquiriesRoute,
+  AdminLiveClassesRoute: AdminLiveClassesRoute,
+  AdminNotesRoute: AdminNotesRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStudentsRoute: AdminStudentsRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
@@ -652,6 +856,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface PortalRouteChildren {
   PortalAttendanceRoute: typeof PortalAttendanceRoute
   PortalFeesRoute: typeof PortalFeesRoute
+  PortalNotesRoute: typeof PortalNotesRoute
   PortalResultsRoute: typeof PortalResultsRoute
   PortalIndexRoute: typeof PortalIndexRoute
 }
@@ -659,6 +864,7 @@ interface PortalRouteChildren {
 const PortalRouteChildren: PortalRouteChildren = {
   PortalAttendanceRoute: PortalAttendanceRoute,
   PortalFeesRoute: PortalFeesRoute,
+  PortalNotesRoute: PortalNotesRoute,
   PortalResultsRoute: PortalResultsRoute,
   PortalIndexRoute: PortalIndexRoute,
 }
@@ -668,6 +874,8 @@ const PortalRouteWithChildren =
 
 interface TeacherRouteChildren {
   TeacherAttendanceRoute: typeof TeacherAttendanceRoute
+  TeacherLiveClassesRoute: typeof TeacherLiveClassesRoute
+  TeacherNotesRoute: typeof TeacherNotesRoute
   TeacherResultsRoute: typeof TeacherResultsRoute
   TeacherTestsRoute: typeof TeacherTestsRoute
   TeacherIndexRoute: typeof TeacherIndexRoute
@@ -675,6 +883,8 @@ interface TeacherRouteChildren {
 
 const TeacherRouteChildren: TeacherRouteChildren = {
   TeacherAttendanceRoute: TeacherAttendanceRoute,
+  TeacherLiveClassesRoute: TeacherLiveClassesRoute,
+  TeacherNotesRoute: TeacherNotesRoute,
   TeacherResultsRoute: TeacherResultsRoute,
   TeacherTestsRoute: TeacherTestsRoute,
   TeacherIndexRoute: TeacherIndexRoute,

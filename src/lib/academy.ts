@@ -82,7 +82,7 @@ export function buildAttendanceMessage(
   status: "present" | "absent" | "late" | "excused",
   className: string,
   subject: string,
-  date: string
+  date: string,
 ): string {
   const statusText =
     status === "present"
@@ -103,7 +103,7 @@ export function buildResultMessage(
   subject: string,
   marks: number,
   totalMarks: number,
-  grade: string
+  grade: string,
 ): string {
   return `Assalam-o-Alaikum,\n\n${studentName}'s result for ${examName}:\n\nSubject: ${subject}\nMarks: ${marks}/${totalMarks}\nGrade: ${grade}\n\nAl-Mustafa Academy`;
 }
@@ -113,16 +113,13 @@ export function buildFeeMessage(
   studentName: string,
   amount: number,
   month: string,
-  dueDate: string
+  dueDate: string,
 ): string {
   return `Assalam-o-Alaikum,\n\nThis is a reminder that the fee for ${studentName} (${month}) of Rs. ${amount} is due on ${dueDate}.\n\nPlease clear the dues at your earliest convenience.\n\nJazakAllah\nAl-Mustafa Academy`;
 }
 
 // Build general guardian message
-export function buildGuardianMessage(
-  guardianName: string,
-  message: string
-): string {
+export function buildGuardianMessage(guardianName: string, message: string): string {
   return `Assalam-o-Alaikum ${guardianName},\n\n${message}\n\nAl-Mustafa Academy`;
 }
 
@@ -135,7 +132,7 @@ export const GRADE_LABELS: Record<string, string> = {
   "10th": "Class 10",
   "FSc Pre-Engineering": "FSc Pre-Engineering",
   "FSc Pre-Medical": "FSc Pre-Medical",
-  "ICS": "ICS",
+  ICS: "ICS",
   "I.Com": "I.Com",
 };
 

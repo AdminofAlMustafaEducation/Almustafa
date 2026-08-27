@@ -49,7 +49,8 @@ export function SiteHeader() {
                 to={item.to}
                 className="rounded-full px-3.5 py-2 text-sm font-semibold text-navy-deep/75 transition-colors hover:text-navy-deep"
                 activeProps={{
-                  className: "rounded-full bg-navy-deep px-3.5 py-2 text-sm font-semibold text-white",
+                  className:
+                    "rounded-full bg-navy-deep px-3.5 py-2 text-sm font-semibold text-white",
                   "aria-current": "page",
                 }}
               >

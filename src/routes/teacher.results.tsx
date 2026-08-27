@@ -25,14 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  BarChart3,
-  Save,
-  TrendingUp,
-  TrendingDown,
-  Award,
-  Hash,
-} from "lucide-react";
+import { BarChart3, Save, TrendingUp, TrendingDown, Award, Hash } from "lucide-react";
 
 export const Route = createFileRoute("/teacher/results")({
   component: ResultsEntry,
@@ -56,9 +49,7 @@ function ResultsEntry() {
   const { saveResults, isLoading: isSaving } = useSaveResults();
 
   const searchParams = useSearch({ from: "/teacher/results" });
-  const [selectedTestId, setSelectedTestId] = useState<string>(
-    searchParams?.testId || "",
-  );
+  const [selectedTestId, setSelectedTestId] = useState<string>(searchParams?.testId || "");
   const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
 
   const selectedTest = tests.find((t) => t.id === selectedTestId);
@@ -78,9 +69,7 @@ function ResultsEntry() {
           studentId: s.id,
           studentName: s.name,
           rollNumber: s.roll_number || "",
-          marksObtained: existing
-            ? String(existing.marks_obtained)
-            : "",
+          marksObtained: existing ? String(existing.marks_obtained) : "",
         };
       });
       setStudentResults(batchStudents);
@@ -91,9 +80,7 @@ function ResultsEntry() {
     // Allow empty string or valid numbers
     if (marks === "" || /^\d*$/.test(marks)) {
       setStudentResults((prev) =>
-        prev.map((r) =>
-          r.studentId === studentId ? { ...r, marksObtained: marks } : r,
-        ),
+        prev.map((r) => (r.studentId === studentId ? { ...r, marksObtained: marks } : r)),
       );
     }
   };
@@ -114,9 +101,7 @@ function ResultsEntry() {
 
   // Calculate statistics
   const stats = useMemo(() => {
-    const validResults = studentResults.filter(
-      (r) => r.marksObtained !== "",
-    );
+    const validResults = studentResults.filter((r) => r.marksObtained !== "");
     if (validResults.length === 0 || !selectedTest) {
       return null;
     }
@@ -136,9 +121,7 @@ function ResultsEntry() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Enter Results</h2>
-        <p className="text-gray-600">
-          Record test results for your students.
-        </p>
+        <p className="text-gray-600">Record test results for your students.</p>
       </div>
 
       {/* Test Selection */}
@@ -166,9 +149,7 @@ function ResultsEntry() {
           <div className="rounded-xl border border-gray-200 bg-white p-4">
             <div className="flex items-center gap-2">
               <Hash className="h-5 w-5 text-gray-400" />
-              <span className="text-sm font-medium text-gray-600">
-                Graded
-              </span>
+              <span className="text-sm font-medium text-gray-600">Graded</span>
             </div>
             <p className="mt-1 text-2xl font-bold text-gray-900">
               {stats.graded}/{stats.totalStudents}
@@ -177,23 +158,17 @@ function ResultsEntry() {
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
             <div className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium text-blue-700">
-                Average
-              </span>
+              <span className="text-sm font-medium text-blue-700">Average</span>
             </div>
             <p className="mt-1 text-2xl font-bold text-blue-900">
               {stats.average.toFixed(1)}
-              <span className="text-sm font-normal text-blue-600">
-                /{selectedTest.total_marks}
-              </span>
+              <span className="text-sm font-normal text-blue-600">/{selectedTest.total_marks}</span>
             </p>
           </div>
           <div className="rounded-xl border border-green-200 bg-green-50 p-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-green-700">
-                Highest
-              </span>
+              <span className="text-sm font-medium text-green-700">Highest</span>
             </div>
             <p className="mt-1 text-2xl font-bold text-green-900">
               {stats.highest}
@@ -205,9 +180,7 @@ function ResultsEntry() {
           <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
             <div className="flex items-center gap-2">
               <TrendingDown className="h-5 w-5 text-orange-600" />
-              <span className="text-sm font-medium text-orange-700">
-                Lowest
-              </span>
+              <span className="text-sm font-medium text-orange-700">Lowest</span>
             </div>
             <p className="mt-1 text-2xl font-bold text-orange-900">
               {stats.lowest}
@@ -227,9 +200,7 @@ function ResultsEntry() {
               {selectedTest?.name || "Student Results"}
             </h3>
             {selectedTest && (
-              <p className="mt-1 text-sm text-gray-500">
-                Total Marks: {selectedTest.total_marks}
-              </p>
+              <p className="mt-1 text-sm text-gray-500">Total Marks: {selectedTest.total_marks}</p>
             )}
           </div>
 
@@ -238,9 +209,7 @@ function ResultsEntry() {
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-black border-t-transparent" />
             </div>
           ) : studentResults.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              No students found for this test.
-            </div>
+            <div className="p-8 text-center text-gray-500">No students found for this test.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -255,30 +224,19 @@ function ResultsEntry() {
               <TableBody>
                 {studentResults.map((result) => {
                   const marks = parseInt(result.marksObtained) || 0;
-                  const percentage = selectedTest
-                    ? (marks / selectedTest.total_marks) * 100
-                    : 0;
+                  const percentage = selectedTest ? (marks / selectedTest.total_marks) * 100 : 0;
                   const grade = getGrade(percentage);
 
                   return (
                     <TableRow key={result.studentId}>
-                      <TableCell className="font-mono text-sm">
-                        {result.rollNumber}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {result.studentName}
-                      </TableCell>
+                      <TableCell className="font-mono text-sm">{result.rollNumber}</TableCell>
+                      <TableCell className="font-medium">{result.studentName}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Input
                             type="text"
                             value={result.marksObtained}
-                            onChange={(e) =>
-                              handleMarksChange(
-                                result.studentId,
-                                e.target.value,
-                              )
-                            }
+                            onChange={(e) => handleMarksChange(result.studentId, e.target.value)}
                             placeholder="0"
                             className="w-20"
                           />
@@ -289,13 +247,7 @@ function ResultsEntry() {
                       </TableCell>
                       <TableCell>
                         {result.marksObtained !== "" ? (
-                          <span
-                            className={
-                              percentage >= 50
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }
-                          >
+                          <span className={percentage >= 50 ? "text-green-600" : "text-red-600"}>
                             {percentage.toFixed(1)}%
                           </span>
                         ) : (
@@ -348,9 +300,7 @@ function ResultsEntry() {
       {!selectedTestId && (
         <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
           <Award className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            Select a Test
-          </h3>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">Select a Test</h3>
           <p className="mt-2 text-sm text-gray-500">
             Choose a test from the dropdown above to enter results.
           </p>

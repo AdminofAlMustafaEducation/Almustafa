@@ -5,9 +5,30 @@ import type { TeacherSubject } from "@/types/database";
 const USE_MOCK = import.meta.env.DEV && !supabase;
 
 const mockAssignments: TeacherSubject[] = [
-  { id: "1", teacher_id: "teacher-1", subject_id: "math", class_id: "class-9", academic_year: "2026", created_at: "2026-01-01T00:00:00Z" },
-  { id: "2", teacher_id: "teacher-1", subject_id: "math", class_id: "class-10", academic_year: "2026", created_at: "2026-01-01T00:00:00Z" },
-  { id: "3", teacher_id: "teacher-2", subject_id: "physics", class_id: "class-10", academic_year: "2026", created_at: "2026-01-01T00:00:00Z" },
+  {
+    id: "1",
+    teacher_id: "teacher-1",
+    subject_id: "math",
+    class_id: "class-9",
+    academic_year: "2026",
+    created_at: "2026-01-01T00:00:00Z",
+  },
+  {
+    id: "2",
+    teacher_id: "teacher-1",
+    subject_id: "math",
+    class_id: "class-10",
+    academic_year: "2026",
+    created_at: "2026-01-01T00:00:00Z",
+  },
+  {
+    id: "3",
+    teacher_id: "teacher-2",
+    subject_id: "physics",
+    class_id: "class-10",
+    academic_year: "2026",
+    created_at: "2026-01-01T00:00:00Z",
+  },
 ];
 
 export function useTeacherAssignments(filters?: { teacherId?: string; classId?: string }) {
@@ -36,7 +57,9 @@ export function useCreateAssignment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (assignment: Omit<TeacherSubject, "id" | "created_at">): Promise<TeacherSubject> => {
+    mutationFn: async (
+      assignment: Omit<TeacherSubject, "id" | "created_at">,
+    ): Promise<TeacherSubject> => {
       if (USE_MOCK) {
         const newAssignment: TeacherSubject = {
           ...assignment,
@@ -47,7 +70,11 @@ export function useCreateAssignment() {
         return newAssignment;
       }
 
-      const { data, error } = await supabase!.from("teacher_subjects").insert(assignment).select().single();
+      const { data, error } = await supabase!
+        .from("teacher_subjects")
+        .insert(assignment)
+        .select()
+        .single();
       if (error) throw new Error(error.message);
       return data as TeacherSubject;
     },

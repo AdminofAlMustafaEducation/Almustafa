@@ -23,7 +23,7 @@ export function buildAttendanceMessage(
   status: "present" | "absent" | "late" | "excused",
   className: string,
   subject: string,
-  date: string
+  date: string,
 ): string {
   const statusText = {
     present: "was present",
@@ -54,7 +54,7 @@ export function buildResultMessage(
   subject: string,
   marks: number,
   totalMarks: number,
-  grade: string
+  grade: string,
 ): string {
   return [
     `Assalam-o-Alaikum,`,
@@ -76,7 +76,7 @@ export function buildFeeMessage(
   studentName: string,
   amount: number,
   month: string,
-  dueDate: string
+  dueDate: string,
 ): string {
   return [
     `Assalam-o-Alaikum,`,
@@ -96,7 +96,7 @@ export function buildFeeMessage(
 export function buildAdmissionMessage(
   studentName: string,
   grade: string,
-  parentName: string
+  parentName: string,
 ): string {
   return [
     `Assalam-o-Alaikum,`,
@@ -114,17 +114,8 @@ export function buildAdmissionMessage(
 /**
  * Build general guardian message
  */
-export function buildGuardianMessage(
-  guardianName: string,
-  message: string
-): string {
-  return [
-    `Assalam-o-Alaikum ${guardianName},`,
-    ``,
-    message,
-    ``,
-    `Al-Mustafa Academy`,
-  ].join("\n");
+export function buildGuardianMessage(guardianName: string, message: string): string {
+  return [`Assalam-o-Alaikum ${guardianName},`, ``, message, ``, `Al-Mustafa Academy`].join("\n");
 }
 
 /**
@@ -134,7 +125,7 @@ export function buildLiveClassMessage(
   className: string,
   subject: string,
   startTime: string,
-  meetingUrl: string
+  meetingUrl: string,
 ): string {
   return [
     `Assalam-o-Alaikum,`,
@@ -165,7 +156,7 @@ export function sendWhatsApp(phone: string, message: string): void {
 export function contactStudentWhatsApp(
   studentPhone: string,
   studentName: string,
-  message: string
+  message: string,
 ): void {
   sendWhatsApp(studentPhone, message);
 }
@@ -176,7 +167,7 @@ export function contactStudentWhatsApp(
 export function contactGuardianWhatsApp(
   guardianPhone: string,
   guardianName: string,
-  message: string
+  message: string,
 ): void {
   sendWhatsApp(guardianPhone, message);
 }

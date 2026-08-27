@@ -143,7 +143,12 @@ type StatusTrackerProps = {
   reviewerNotes?: string;
 };
 
-export function StatusTracker({ status, createdAt, reviewedAt, reviewerNotes }: StatusTrackerProps) {
+export function StatusTracker({
+  status,
+  createdAt,
+  reviewedAt,
+  reviewerNotes,
+}: StatusTrackerProps) {
   const steps = STATUS_MAP[status] ?? STATUS_MAP.pending;
   const colorClass = STATUS_COLORS[status] ?? STATUS_COLORS.pending;
 
@@ -151,13 +156,21 @@ export function StatusTracker({ status, createdAt, reviewedAt, reviewerNotes }: 
     <div className="space-y-6">
       {/* Current status badge */}
       <div className="flex items-center gap-3">
-        <div className={cn("text-sm font-bold uppercase tracking-wider", colorClass)}>
-          Status:
-        </div>
+        <div className={cn("text-sm font-bold uppercase tracking-wider", colorClass)}>Status:</div>
         <span
           className={cn(
             "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
-            STATUS_BG[status === "enrolled" ? "complete" : status === "approved" ? "complete" : status === "reviewing" ? "current" : status === "rejected" ? "rejected" : "upcoming"],
+            STATUS_BG[
+              status === "enrolled"
+                ? "complete"
+                : status === "approved"
+                  ? "complete"
+                  : status === "reviewing"
+                    ? "current"
+                    : status === "rejected"
+                      ? "rejected"
+                      : "upcoming"
+            ],
           )}
         >
           {status === "approved" || status === "enrolled" ? (
@@ -190,20 +203,13 @@ export function StatusTracker({ status, createdAt, reviewedAt, reviewerNotes }: 
                 ) : step.status === "rejected" ? (
                   <XCircle className="h-3.5 w-3.5" />
                 ) : (
-                  <div
-                    className={cn(
-                      "h-2 w-2 rounded-full",
-                      STATUS_DOT[step.status],
-                    )}
-                  />
+                  <div className={cn("h-2 w-2 rounded-full", STATUS_DOT[step.status])} />
                 )}
               </div>
               <div className="pt-0.5">
                 <div className="flex items-baseline gap-2">
                   <h4 className="text-sm font-bold text-navy-deep">{step.label}</h4>
-                  {step.date && (
-                    <span className="text-xs text-muted-foreground">{step.date}</span>
-                  )}
+                  {step.date && <span className="text-xs text-muted-foreground">{step.date}</span>}
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">{step.description}</p>
               </div>

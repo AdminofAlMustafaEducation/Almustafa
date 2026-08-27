@@ -1,6 +1,6 @@
 # Al-Mustafa Academy Remediation Roadmap
 
-**Status:** Phase 3 in progress
+**Status:** Phase 4 complete; Phase 5 pending
 **Owner:** Al-Mustafa engineering  
 **Scope:** Public website, Supabase data layer, authentication, admin portal, teacher portal, student portal, application tracking, Vercel delivery, and GitHub release controls.
 
@@ -69,6 +69,14 @@ Application submission is moving behind `submit_application(jsonb)`, which gener
 
 The Phase 3 security scan, focused Prettier checks, production build, and diff checks pass. Project-wide typecheck remains blocked only by pre-existing route/table typing defects; no new errors were reported in the Phase 3 API, auth module, admissions hook, tracking route, or application wizard. Supabase database tests remain pending because no local Postgres/Supabase instance is available. The new server endpoint also requires Vercel-only `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` environment variables and must be tested in a disposable environment before deployment.
 
+## Phase 4 implementation record
+
+Phase 4 correctness and type-safety remediation is complete in the working tree. The generated TanStack route tree was refreshed, shared Student/Faculty/Attendance models were aligned with the portal consumers, DataTable callbacks were restored to the `(value, row)` contract, optional program/campus/date values now have safe fallbacks, attendance status compatibility was repaired, student-creation unions were narrowed, and Supabase joined relations in the portal hooks are normalized without explicit `any` annotations. The admissions and student-portal mappings now use canonical form/model types and null-safe relation handling.
+
+The repository-wide formatting pass intentionally touched 77 files, primarily to remove existing formatting violations and make the lint gate actionable; this broad formatting-only impact should be reviewed separately from semantic changes. Final local checks passed: `npm run typecheck` (0 diagnostics), `npm run lint` (0 errors and 7 existing `react-refresh/only-export-components` warnings), `npm run security:scan`, `npm run build`, and `git diff --check`. The production build emitted the expected local warning that Supabase environment variables were absent; no production credentials or data were used. `npm ci` and Supabase pgTAP tests remain unverified: the lockfile/install mismatch noted earlier persists, and the test suite requires a disposable Supabase/Postgres environment because local Docker/Postgres is unavailable.
+
+Phase 4 has not been pushed. The local checkpoint includes the already-local Phase 2 and Phase 3 commits plus the uncommitted Phase 4 changes; a commit will be created after the final diff review. No Supabase migrations, Vercel environment changes, deployment, or production data mutation has been performed.
+
 ## Required follow-up approvals
 
-Before Phase 2, the owner must confirm the target Supabase project/environment for authorization tests and provide or create non-production identities for anonymous, admin, teacher, student, and guardian cases. Before Phase 3, the owner must decide whether existing applicant passwords are to be invalidated immediately and how applicants will receive new Supabase Auth credentials.
+Before Phase 2, the owner must confirm the target Supabase project/environment for authorization tests and provide or create non-production identities for anonymous, admin, teacher, student, and guardian cases. Before Phase 3, the owner must decide whether existing applicant passwords are to be invalidated immediately and how applicants will receive new Supabase Auth credentials. Before Phase 5, the owner must configure server-only Vercel variables, provision a disposable Supabase environment, run migrations `022`–`025` in order, execute the pgTAP suite, and approve any deployment or production rollout separately.

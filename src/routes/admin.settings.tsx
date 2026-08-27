@@ -86,23 +86,44 @@ function AdminSettings() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Academy Name</Label>
-              <Input id="name" value={settings.name} onChange={(e) => handleChange("name", e.target.value)} />
+              <Input
+                id="name"
+                value={settings.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="tagline">Tagline</Label>
-              <Input id="tagline" value={settings.tagline} onChange={(e) => handleChange("tagline", e.target.value)} />
+              <Input
+                id="tagline"
+                value={settings.tagline}
+                onChange={(e) => handleChange("tagline", e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" value={settings.phone} onChange={(e) => handleChange("phone", e.target.value)} />
+              <Input
+                id="phone"
+                value={settings.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phoneIntl">International Phone</Label>
-              <Input id="phoneIntl" value={settings.phoneIntl} onChange={(e) => handleChange("phoneIntl", e.target.value)} />
+              <Input
+                id="phoneIntl"
+                value={settings.phoneIntl}
+                onChange={(e) => handleChange("phoneIntl", e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={settings.email} onChange={(e) => handleChange("email", e.target.value)} />
+              <Input
+                id="email"
+                type="email"
+                value={settings.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>
@@ -114,15 +135,29 @@ function AdminSettings() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="addressPrimary">Primary Address</Label>
-              <Textarea id="addressPrimary" value={settings.addressPrimary} onChange={(e) => handleChange("addressPrimary", e.target.value)} rows={2} />
+              <Textarea
+                id="addressPrimary"
+                value={settings.addressPrimary}
+                onChange={(e) => handleChange("addressPrimary", e.target.value)}
+                rows={2}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="addressSecondary">Secondary Address</Label>
-              <Textarea id="addressSecondary" value={settings.addressSecondary} onChange={(e) => handleChange("addressSecondary", e.target.value)} rows={2} />
+              <Textarea
+                id="addressSecondary"
+                value={settings.addressSecondary}
+                onChange={(e) => handleChange("addressSecondary", e.target.value)}
+                rows={2}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input id="city" value={settings.city} onChange={(e) => handleChange("city", e.target.value)} />
+              <Input
+                id="city"
+                value={settings.city}
+                onChange={(e) => handleChange("city", e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>
@@ -135,11 +170,21 @@ function AdminSettings() {
             <div className="max-w-md space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="facebook">Facebook URL</Label>
-                <Input id="facebook" value={settings.facebook} onChange={(e) => handleChange("facebook", e.target.value)} placeholder="https://www.facebook.com/..." />
+                <Input
+                  id="facebook"
+                  value={settings.facebook}
+                  onChange={(e) => handleChange("facebook", e.target.value)}
+                  placeholder="https://www.facebook.com/..."
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="youtube">YouTube URL</Label>
-                <Input id="youtube" value={settings.youtube} onChange={(e) => handleChange("youtube", e.target.value)} placeholder="https://youtube.com/..." />
+                <Input
+                  id="youtube"
+                  value={settings.youtube}
+                  onChange={(e) => handleChange("youtube", e.target.value)}
+                  placeholder="https://youtube.com/..."
+                />
               </div>
             </div>
           </CardContent>

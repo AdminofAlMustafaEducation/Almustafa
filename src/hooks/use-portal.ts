@@ -3,6 +3,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
 // Types matching what the UI pages expect
+function firstRelation<T>(value: T | T[] | null | undefined): T | null {
+  if (Array.isArray(value)) return value[0] ?? null;
+  return value ?? null;
+}
+
 export interface TeacherBatch {
   id: string;
   name: string;
@@ -41,6 +46,17 @@ export interface TeacherStudent {
   created_at: string;
   updated_at: string;
 }
+
+export type TeacherTestInput = {
+  name: string;
+  subject_id?: string;
+  class_id?: string;
+  batch_id?: string;
+  total_marks: number;
+  test_date: string;
+};
+
+export type TeacherTestUpdate = Partial<TeacherTestInput>;
 
 export interface TeacherTestResult {
   id: string;
@@ -89,13 +105,15 @@ export function useTeacherBatches(userId: string) {
 
       const { data, error } = await supabase
         .from("teacher_subjects")
-        .select(`
+        .select(
+          `
           id,
           class_id,
           subject_id,
           classes (id, name, grade, section),
           subjects (id, name, code)
-        `)
+        `,
+        )
         .eq("teacher_id", teacherProfile.id);
 
       if (error) {
@@ -106,7 +124,12 @@ export function useTeacherBatches(userId: string) {
       // Deduplicate classes
       const classMap = new Map<string, TeacherBatch>();
       for (const row of data || []) {
-        const cls = row.classes as any;
+        const cls = firstRelation(row.classes) as {
+          id: string;
+          name: string;
+          grade: string;
+          section?: string;
+        } | null;
         if (cls && !classMap.has(cls.id)) {
           classMap.set(cls.id, {
             id: cls.id,
@@ -154,7 +177,8 @@ export function useTeacherTests(userId: string) {
 
       const { data, error } = await supabase
         .from("exams")
-        .select(`
+        .select(
+          `
           id,
           name,
           subject_id,
@@ -164,7 +188,8 @@ export function useTeacherTests(userId: string) {
           status,
           subjects (name, code),
           classes (name)
-        `)
+        `,
+        )
         .eq("teacher_id", teacherProfile.id)
         .order("exam_date", { ascending: false });
 
@@ -173,72 +198,82 @@ export function useTeacherTests(userId: string) {
         return [];
       }
 
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        name: row.name,
-        test_name: row.name,
-        subject: row.subjects?.name || "Unknown",
-        subject_id: row.subject_id,
-        class_id: row.class_id,
-        batch_id: row.class_id, // alias
-        class_name: row.classes?.name || "Unknown",
-        total_marks: row.total_marks,
-        test_date: row.exam_date,
-        status: row.status,
-      }));
+      return (data || []).map((row) => {
+        const subject = firstRelation(row.subjects);
+        const cls = firstRelation(row.classes);
+        return {
+          id: row.id,
+          name: row.name,
+          test_name: row.name,
+          subject: subject?.name || "Unknown",
+          subject_id: row.subject_id,
+          class_id: row.class_id,
+          batch_id: row.class_id, // alias
+          class_name: cls?.name || "Unknown",
+          total_marks: row.total_marks,
+          test_date: row.exam_date,
+          status: row.status,
+        };
+      });
     },
     enabled: !!teacherProfile?.id,
   });
 
-  const addTest = useCallback(async (test: any) => {
-    if (!supabase || !teacherProfile?.id) return;
-    
-    const { data, error } = await supabase
-      .from("exams")
-      .insert({
-        name: test.name,
-        subject_id: test.subject_id || null,
-        class_id: test.batch_id || test.class_id,
-        teacher_id: teacherProfile.id,
-        total_marks: test.total_marks,
-        exam_date: test.test_date,
-        status: "open",
-      })
-      .select()
-      .single();
+  const addTest = useCallback(
+    async (test: TeacherTestInput) => {
+      if (!supabase || !teacherProfile?.id) return;
 
-    if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
-    return data;
-  }, [teacherProfile?.id, queryClient]);
+      const { data, error } = await supabase
+        .from("exams")
+        .insert({
+          name: test.name,
+          subject_id: test.subject_id || null,
+          class_id: test.batch_id || test.class_id,
+          teacher_id: teacherProfile.id,
+          total_marks: test.total_marks,
+          exam_date: test.test_date,
+          status: "open",
+        })
+        .select()
+        .single();
 
-  const updateTest = useCallback(async (id: string, updates: any) => {
-    if (!supabase) return;
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
+      return data;
+    },
+    [teacherProfile?.id, queryClient],
+  );
 
-    const { error } = await supabase
-      .from("exams")
-      .update({
-        name: updates.name,
-        total_marks: updates.total_marks,
-        exam_date: updates.test_date,
-      })
-      .eq("id", id);
+  const updateTest = useCallback(
+    async (id: string, updates: TeacherTestUpdate) => {
+      if (!supabase) return;
 
-    if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
-  }, [queryClient]);
+      const { error } = await supabase
+        .from("exams")
+        .update({
+          name: updates.name,
+          total_marks: updates.total_marks,
+          exam_date: updates.test_date,
+        })
+        .eq("id", id);
 
-  const deleteTest = useCallback(async (id: string) => {
-    if (!supabase) return;
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
+    },
+    [queryClient],
+  );
 
-    const { error } = await supabase
-      .from("exams")
-      .delete()
-      .eq("id", id);
+  const deleteTest = useCallback(
+    async (id: string) => {
+      if (!supabase) return;
 
-    if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
-  }, [queryClient]);
+      const { error } = await supabase.from("exams").delete().eq("id", id);
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["teacher-tests"] });
+    },
+    [queryClient],
+  );
 
   return { tests, isLoading, addTest, updateTest, deleteTest };
 }
@@ -252,10 +287,12 @@ export function useBatchStudents(classId: string) {
 
       const { data, error } = await supabase
         .from("class_students")
-        .select(`
+        .select(
+          `
           student_id,
           students (id, full_name, roll_number, grade, status, admission_date, created_at, updated_at)
-        `)
+        `,
+        )
         .eq("class_id", classId);
 
       if (error) {
@@ -263,20 +300,34 @@ export function useBatchStudents(classId: string) {
         return [];
       }
 
-      return (data || []).map((row: any) => {
-        const s = row.students || {};
-        return {
-          id: s.id || row.student_id,
-          full_name: s.full_name || "Unknown",
-          name: s.full_name || "Unknown", // alias
-          roll_number: s.roll_number,
-          grade: s.grade,
-          status: s.status || "active",
-          admission_date: s.admission_date || "",
-          created_at: s.created_at || "",
-          updated_at: s.updated_at || "",
-        };
-      });
+      return (data || []).map(
+        (row: {
+          student_id: string;
+          students?: Array<{
+            id?: string;
+            full_name?: string;
+            roll_number?: string;
+            grade?: string;
+            status?: string;
+            admission_date?: string;
+            created_at?: string;
+            updated_at?: string;
+          }> | null;
+        }) => {
+          const s = firstRelation(row.students) || {};
+          return {
+            id: s.id || row.student_id,
+            full_name: s.full_name || "Unknown",
+            name: s.full_name || "Unknown", // alias
+            roll_number: s.roll_number,
+            grade: s.grade,
+            status: s.status || "active",
+            admission_date: s.admission_date || "",
+            created_at: s.created_at || "",
+            updated_at: s.updated_at || "",
+          };
+        },
+      );
     },
     enabled: !!classId,
   });
@@ -293,7 +344,8 @@ export function useTestResults(examId: string) {
 
       const { data, error } = await supabase
         .from("exam_results")
-        .select(`
+        .select(
+          `
           id,
           exam_id,
           student_id,
@@ -302,7 +354,8 @@ export function useTestResults(examId: string) {
           remarks,
           created_at,
           students (full_name)
-        `)
+        `,
+        )
         .eq("exam_id", examId);
 
       if (error) {
@@ -310,22 +363,25 @@ export function useTestResults(examId: string) {
         return [];
       }
 
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        exam_id: row.exam_id,
-        test_id: row.exam_id, // alias
-        student_id: row.student_id,
-        student_name: row.students?.full_name || "Unknown",
-        marks_obtained: Number(row.marks_obtained),
-        grade: row.grade,
-        remarks: row.remarks,
-        created_at: row.created_at,
-      }));
+      return (data || []).map((row) => {
+        const student = firstRelation(row.students);
+        return {
+          id: row.id,
+          exam_id: row.exam_id,
+          test_id: row.exam_id, // alias
+          student_id: row.student_id,
+          student_name: student?.full_name || "Unknown",
+          marks_obtained: Number(row.marks_obtained),
+          grade: row.grade,
+          remarks: row.remarks,
+          created_at: row.created_at,
+        };
+      });
     },
     enabled: !!examId,
   });
 
-  const saveResults = useCallback(async (newResults: any[]) => {
+  const saveResults = useCallback(async (newResults: Partial<TeacherTestResult>[]) => {
     return newResults;
   }, []);
 
@@ -336,38 +392,41 @@ export function useTestResults(examId: string) {
 export function useCreateTest() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const createTest = useCallback(async (test: {
-    name: string;
-    subject_id?: string;
-    class_id: string;
-    teacher_id: string;
-    total_marks: number;
-    exam_date: string;
-  }) => {
-    if (!supabase) throw new Error("Supabase not configured");
-    setIsLoading(true);
+  const createTest = useCallback(
+    async (test: {
+      name: string;
+      subject_id?: string;
+      class_id: string;
+      teacher_id: string;
+      total_marks: number;
+      exam_date: string;
+    }) => {
+      if (!supabase) throw new Error("Supabase not configured");
+      setIsLoading(true);
 
-    try {
-      const { data, error } = await supabase
-        .from("exams")
-        .insert({
-          name: test.name,
-          subject_id: test.subject_id,
-          class_id: test.class_id,
-          teacher_id: test.teacher_id,
-          total_marks: test.total_marks,
-          exam_date: test.exam_date,
-          status: "open",
-        })
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("exams")
+          .insert({
+            name: test.name,
+            subject_id: test.subject_id,
+            class_id: test.class_id,
+            teacher_id: test.teacher_id,
+            total_marks: test.total_marks,
+            exam_date: test.exam_date,
+            status: "open",
+          })
+          .select()
+          .single();
 
-      if (error) throw error;
-      return data;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        if (error) throw error;
+        return data;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   return { createTest, isLoading };
 }
@@ -377,36 +436,41 @@ export function useSaveResults() {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
-  const saveResults = useCallback(async (results: {
-    exam_id?: string;
-    test_id?: string;
-    student_id: string;
-    marks_obtained: number;
-    remarks?: string;
-  }[]) => {
-    if (!supabase) throw new Error("Supabase not configured");
-    setIsLoading(true);
+  const saveResults = useCallback(
+    async (
+      results: {
+        exam_id?: string;
+        test_id?: string;
+        student_id: string;
+        marks_obtained: number;
+        remarks?: string;
+      }[],
+    ) => {
+      if (!supabase) throw new Error("Supabase not configured");
+      setIsLoading(true);
 
-    try {
-      const rows = results.map((r) => ({
-        exam_id: r.exam_id || r.test_id,
-        student_id: r.student_id,
-        marks_obtained: r.marks_obtained,
-        remarks: r.remarks,
-      }));
+      try {
+        const rows = results.map((r) => ({
+          exam_id: r.exam_id || r.test_id,
+          student_id: r.student_id,
+          marks_obtained: r.marks_obtained,
+          remarks: r.remarks,
+        }));
 
-      const { data, error } = await supabase
-        .from("exam_results")
-        .upsert(rows, { onConflict: "exam_id,student_id" })
-        .select();
+        const { data, error } = await supabase
+          .from("exam_results")
+          .upsert(rows, { onConflict: "exam_id,student_id" })
+          .select();
 
-      if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ["test-results"] });
-      return data;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [queryClient]);
+        if (error) throw error;
+        queryClient.invalidateQueries({ queryKey: ["test-results"] });
+        return data;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [queryClient],
+  );
 
   return { saveResults, isLoading };
 }
@@ -416,44 +480,49 @@ export function useSaveAttendance() {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
-  const saveAttendance = useCallback(async (records: {
-    student_id: string;
-    class_id?: string;
-    batch_id?: string;
-    subject_id?: string;
-    teacher_id?: string;
-    attendance_date?: string;
-    date?: string;
-    status: string;
-    notes?: string;
-  }[]) => {
-    if (!supabase) throw new Error("Supabase not configured");
-    setIsLoading(true);
+  const saveAttendance = useCallback(
+    async (
+      records: {
+        student_id: string;
+        class_id?: string;
+        batch_id?: string;
+        subject_id?: string;
+        teacher_id?: string;
+        attendance_date?: string;
+        date?: string;
+        status: string;
+        notes?: string;
+      }[],
+    ) => {
+      if (!supabase) throw new Error("Supabase not configured");
+      setIsLoading(true);
 
-    try {
-      // Get teacher_id from the first record or look it up
-      // For now, we need the teacher's DB id
-      // The records may have batch_id instead of class_id
-      const rows = records.map((r) => ({
-        student_id: r.student_id,
-        class_id: r.class_id || r.batch_id,
-        attendance_date: r.attendance_date || r.date,
-        status: r.status,
-        notes: r.notes,
-      }));
+      try {
+        // Get teacher_id from the first record or look it up
+        // For now, we need the teacher's DB id
+        // The records may have batch_id instead of class_id
+        const rows = records.map((r) => ({
+          student_id: r.student_id,
+          class_id: r.class_id || r.batch_id,
+          attendance_date: r.attendance_date || r.date,
+          status: r.status,
+          notes: r.notes,
+        }));
 
-      const { data, error } = await supabase
-        .from("attendance")
-        .upsert(rows, { onConflict: "student_id,class_id,subject_id,attendance_date" })
-        .select();
+        const { data, error } = await supabase
+          .from("attendance")
+          .upsert(rows, { onConflict: "student_id,class_id,subject_id,attendance_date" })
+          .select();
 
-      if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ["student-attendance"] });
-      return data;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [queryClient]);
+        if (error) throw error;
+        queryClient.invalidateQueries({ queryKey: ["student-attendance"] });
+        return data;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [queryClient],
+  );
 
   return { saveAttendance, isLoading };
 }

@@ -29,14 +29,70 @@ type GalleryItem = {
 const categories = ["all", "campus", "classroom", "events", "sports"] as const;
 
 const mockGallery: GalleryItem[] = [
-  { id: "1", url: "/gallery/campus-exterior.jpg", caption: "Main Campus, G-11/2", category: "campus", sort_order: 1, is_active: true },
-  { id: "2", url: "/gallery/teacher-board.jpg", caption: "Mathematics in motion", category: "classroom", sort_order: 2, is_active: true },
-  { id: "3", url: "/gallery/students-group.jpg", caption: "Group study session", category: "events", sort_order: 3, is_active: true },
-  { id: "4", url: "/gallery/library.jpg", caption: "The Reading Corner", category: "campus", sort_order: 4, is_active: true },
-  { id: "5", url: "/gallery/lab.jpg", caption: "Science Lab", category: "campus", sort_order: 5, is_active: false },
-  { id: "6", url: "/gallery/award.jpg", caption: "Recognising excellence", category: "events", sort_order: 6, is_active: true },
-  { id: "7", url: "/gallery/sports-day.jpg", caption: "Annual Sports Day", category: "sports", sort_order: 7, is_active: true },
-  { id: "8", url: "/gallery/empty-classroom.jpg", caption: "Where lessons begin", category: "classroom", sort_order: 8, is_active: true },
+  {
+    id: "1",
+    url: "/gallery/campus-exterior.jpg",
+    caption: "Main Campus, G-11/2",
+    category: "campus",
+    sort_order: 1,
+    is_active: true,
+  },
+  {
+    id: "2",
+    url: "/gallery/teacher-board.jpg",
+    caption: "Mathematics in motion",
+    category: "classroom",
+    sort_order: 2,
+    is_active: true,
+  },
+  {
+    id: "3",
+    url: "/gallery/students-group.jpg",
+    caption: "Group study session",
+    category: "events",
+    sort_order: 3,
+    is_active: true,
+  },
+  {
+    id: "4",
+    url: "/gallery/library.jpg",
+    caption: "The Reading Corner",
+    category: "campus",
+    sort_order: 4,
+    is_active: true,
+  },
+  {
+    id: "5",
+    url: "/gallery/lab.jpg",
+    caption: "Science Lab",
+    category: "campus",
+    sort_order: 5,
+    is_active: false,
+  },
+  {
+    id: "6",
+    url: "/gallery/award.jpg",
+    caption: "Recognising excellence",
+    category: "events",
+    sort_order: 6,
+    is_active: true,
+  },
+  {
+    id: "7",
+    url: "/gallery/sports-day.jpg",
+    caption: "Annual Sports Day",
+    category: "sports",
+    sort_order: 7,
+    is_active: true,
+  },
+  {
+    id: "8",
+    url: "/gallery/empty-classroom.jpg",
+    caption: "Where lessons begin",
+    category: "classroom",
+    sort_order: 8,
+    is_active: true,
+  },
 ];
 
 function AdminGallery() {
@@ -45,9 +101,7 @@ function AdminGallery() {
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
   const filtered =
-    categoryFilter === "all"
-      ? images
-      : images.filter((img) => img.category === categoryFilter);
+    categoryFilter === "all" ? images : images.filter((img) => img.category === categoryFilter);
 
   function handleToggleActive(id: string) {
     setImages((prev) =>
@@ -126,18 +180,12 @@ function AdminGallery() {
             )}
           >
             <div className="aspect-square bg-gray-100">
-              <img
-                src={img.url}
-                alt={img.caption}
-                className="h-full w-full object-cover"
-              />
+              <img src={img.url} alt={img.caption} className="h-full w-full object-cover" />
             </div>
             <CardContent className="p-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900">
-                    {img.caption}
-                  </p>
+                  <p className="truncate text-sm font-medium text-gray-900">{img.caption}</p>
                   <Badge variant="secondary" className="mt-1 text-xs">
                     {img.category}
                   </Badge>
@@ -171,11 +219,7 @@ function AdminGallery() {
                     </>
                   )}
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(img.id)}
-                >
+                <Button variant="destructive" size="sm" onClick={() => handleDelete(img.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>

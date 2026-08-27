@@ -164,7 +164,7 @@ export function HoverExpandGallery({ images, className }: HoverExpandGalleryProp
               onClick={() => setActiveImage(index)}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
-                activeImage === index ? "w-6 bg-navy-deep" : "w-1.5 bg-navy-deep/40"
+                activeImage === index ? "w-6 bg-navy-deep" : "w-1.5 bg-navy-deep/40",
               )}
               aria-label={`Go to image ${index + 1}`}
             />

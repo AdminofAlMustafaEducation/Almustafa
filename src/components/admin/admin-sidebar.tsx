@@ -51,20 +51,14 @@ export function AdminSidebar() {
       )}
     >
       <div className="flex h-16 items-center justify-between border-b border-gray-800 px-4">
-        {!collapsed && (
-          <span className="font-display text-lg font-bold">Al-Mustafa</span>
-        )}
+        {!collapsed && <span className="font-display text-lg font-bold">Al-Mustafa</span>}
         <button
           type="button"
           onClick={() => setCollapsed(!collapsed)}
           className="rounded p-1 hover:bg-gray-800"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
-            <ChevronRight className="h-5 w-5" />
-          ) : (
-            <ChevronLeft className="h-5 w-5" />
-          )}
+          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </button>
       </div>
 

@@ -44,7 +44,10 @@ export function SiteFooter() {
                 { to: "/contact", label: "Contact" },
               ].map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="text-primary-foreground/70 transition-colors hover:text-gold">
+                  <Link
+                    to={link.to}
+                    className="text-primary-foreground/70 transition-colors hover:text-gold"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -56,32 +59,50 @@ export function SiteFooter() {
             <h3 className="mb-4 font-display text-base font-bold text-gold">Portals</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/apply" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                <Link
+                  to="/apply"
+                  className="text-primary-foreground/70 transition-colors hover:text-gold"
+                >
                   Apply for Admission
                 </Link>
               </li>
               <li>
-                <Link to="/track" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                <Link
+                  to="/track"
+                  className="text-primary-foreground/70 transition-colors hover:text-gold"
+                >
                   Track Application
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                <Link
+                  to="/login"
+                  className="text-primary-foreground/70 transition-colors hover:text-gold"
+                >
                   Login
                 </Link>
               </li>
               <li>
-                <Link to="/portal" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                <Link
+                  to="/portal"
+                  className="text-primary-foreground/70 transition-colors hover:text-gold"
+                >
                   Student Portal
                 </Link>
               </li>
               <li>
-                <Link to="/teacher" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                <Link
+                  to="/teacher"
+                  className="text-primary-foreground/70 transition-colors hover:text-gold"
+                >
                   Teacher Portal
                 </Link>
               </li>
               <li>
-                <Link to="/admin" className="text-primary-foreground/70 transition-colors hover:text-gold">
+                <Link
+                  to="/admin"
+                  className="text-primary-foreground/70 transition-colors hover:text-gold"
+                >
                   Admin Panel
                 </Link>
               </li>

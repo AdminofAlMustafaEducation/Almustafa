@@ -112,21 +112,48 @@ export const programs = [
     title: "Juniors (Class 1-8)",
     description:
       "Strong foundation in core subjects with personalised attention. We focus on conceptual clarity, study habits and confidence-building from an early age.",
-    subjects: ["English", "Mathematics", "Science", "Urdu", "Islamiat", "Computer", "Pakistan Studies"],
+    subjects: [
+      "English",
+      "Mathematics",
+      "Science",
+      "Urdu",
+      "Islamiat",
+      "Computer",
+      "Pakistan Studies",
+    ],
     icon: "1-8",
   },
   {
     title: "Matric (9th & 10th)",
     description:
       "FBISE-aligned coaching for Matric students. Concept-based teaching, weekly tests, past-paper practice and exam strategy from senior subject specialists.",
-    subjects: ["Physics", "Chemistry", "Biology", "Mathematics", "English", "Computer", "Urdu", "Islamiat", "Pakistan Studies"],
+    subjects: [
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "Mathematics",
+      "English",
+      "Computer",
+      "Urdu",
+      "Islamiat",
+      "Pakistan Studies",
+    ],
     icon: "9-10",
   },
   {
     title: "F.Sc (1st & 2nd Year)",
     description:
       "Pre-Medical and Pre-Engineering coaching by college-level lecturers. Designed to maximise board marks and prepare students for MDCAT / ECAT entry tests.",
-    subjects: ["Physics", "Chemistry", "Biology", "Mathematics", "English", "Urdu", "Islamiat", "Pakistan Studies"],
+    subjects: [
+      "Physics",
+      "Chemistry",
+      "Biology",
+      "Mathematics",
+      "English",
+      "Urdu",
+      "Islamiat",
+      "Pakistan Studies",
+    ],
     icon: "FSc",
   },
 ];

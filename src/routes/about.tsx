@@ -44,13 +44,14 @@ function AboutPage() {
               A vision born in Islamabad, in 1998.
             </h2>
             <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-              Founded by Syed Ali Azeem Kazmi and Syed Ali Abbas Kazmi, Al-Mustafa Academy began with a simple
-              conviction: every child in Islamabad deserves access to the same quality of teaching as the country&apos;s
-              best institutions.
+              Founded by Syed Ali Azeem Kazmi and Syed Ali Abbas Kazmi, Al-Mustafa Academy began
+              with a simple conviction: every child in Islamabad deserves access to the same quality
+              of teaching as the country&apos;s best institutions.
             </p>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Over more than two decades, that conviction has shaped every classroom, every test, and every student
-              conversation. Today we coach students from Class 1 through F.Sc across campuses in G-11/2 and G-10.
+              Over more than two decades, that conviction has shaped every classroom, every test,
+              and every student conversation. Today we coach students from Class 1 through F.Sc
+              across campuses in G-11/2 and G-10.
             </p>
           </div>
           <div className="overflow-hidden rounded-2xl">
@@ -85,7 +86,9 @@ function AboutPage() {
           ].map((item) => (
             <div key={item.t} className="border-t border-white/15 pt-8">
               <h2 className="font-display text-2xl font-black text-gold sm:text-3xl">{item.t}</h2>
-              <p className="mt-3 max-w-[65ch] text-base leading-relaxed text-primary-foreground/75">{item.d}</p>
+              <p className="mt-3 max-w-[65ch] text-base leading-relaxed text-primary-foreground/75">
+                {item.d}
+              </p>
             </div>
           ))}
         </div>
@@ -128,7 +131,9 @@ function AboutPage() {
                 <div className="font-display text-xl font-black text-gold">{milestone.year}</div>
                 <div>
                   <h3 className="font-display text-lg font-bold text-navy-deep">{milestone.t}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{milestone.d}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {milestone.d}
+                  </p>
                 </div>
               </li>
             ))}
@@ -138,7 +143,9 @@ function AboutPage() {
 
       <section className="bg-muted/40 py-14 sm:py-16">
         <div className="container-fluid text-center">
-          <h2 className="font-display text-3xl font-black text-navy-deep">Become part of our story.</h2>
+          <h2 className="font-display text-3xl font-black text-navy-deep">
+            Become part of our story.
+          </h2>
           <p className="mt-3 text-sm text-muted-foreground">Visit us at {academy.addressPrimary}</p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link

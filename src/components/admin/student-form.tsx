@@ -29,7 +29,7 @@ const studentSchema = z.object({
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
   id_number: z.string().optional().or(z.literal("")),
-  gender: z.enum(["male", "female"]).default("male"),
+  gender: z.enum(["male", "female"]),
   grade: z.string().min(1, "Grade is required"),
   roll_number: z.string().optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
@@ -195,7 +195,9 @@ export function StudentForm({ initialData, onSubmit, onCancel, isLoading }: Stud
                     </FormControl>
                     <SelectContent>
                       {GRADES.map((grade) => (
-                        <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                        <SelectItem key={grade} value={grade}>
+                          {grade}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

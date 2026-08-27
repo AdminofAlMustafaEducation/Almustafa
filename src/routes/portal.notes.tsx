@@ -69,7 +69,12 @@ function PortalNotes() {
                     </div>
 
                     <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
-                      <span>{new Date(note.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" })}</span>
+                      <span>
+                        {new Date(note.created_at).toLocaleDateString("en-PK", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
                     </div>
 
                     {note.file_path && (

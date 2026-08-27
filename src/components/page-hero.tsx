@@ -38,9 +38,7 @@ export function PageHero({
 
       <div className="container-fluid relative grid gap-10 lg:grid-cols-12 lg:items-end">
         <div className={aside ? "lg:col-span-7" : "lg:col-span-10"}>
-          {eyebrow ? (
-            <p className="text-sm font-semibold text-gold-soft">{eyebrow}</p>
-          ) : null}
+          {eyebrow ? <p className="text-sm font-semibold text-gold-soft">{eyebrow}</p> : null}
           <h1 className="headline-balance mt-3 font-display text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
             {title}
           </h1>

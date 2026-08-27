@@ -26,8 +26,7 @@ function FacultyPage() {
         title={
           <>
             Experienced teachers.
-            <br />
-            A steadier learning journey.
+            <br />A steadier learning journey.
           </>
         }
         description="Senior lecturers, coordinators and subject specialists from well-known institutions across Islamabad and Rawalpindi."
@@ -46,8 +45,8 @@ function FacultyPage() {
             Directors and senior faculty
           </h2>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-            The academic tone of the academy is shaped by experienced leadership that blends discipline and long-term
-            consistency.
+            The academic tone of the academy is shaped by experienced leadership that blends
+            discipline and long-term consistency.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {directors.map((member) => (
@@ -63,8 +62,8 @@ function FacultyPage() {
             Lecturers and coordinators
           </h2>
           <p className="mt-4 max-w-3xl text-base text-muted-foreground">
-            From science and mathematics to administration, each member supports the academy with subject depth and
-            classroom experience.
+            From science and mathematics to administration, each member supports the academy with
+            subject depth and classroom experience.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {lecturers.map((member) => (

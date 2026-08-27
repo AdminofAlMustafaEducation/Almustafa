@@ -1,11 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import {
-  useTeacherBatches,
-  useBatchStudents,
-  useSaveAttendance,
-} from "@/hooks/use-portal";
+import { useTeacherBatches, useBatchStudents, useSaveAttendance } from "@/hooks/use-portal";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -38,15 +34,10 @@ function MarkAttendance() {
   const { saveAttendance, isLoading: isSaving } = useSaveAttendance();
 
   const [selectedBatchId, setSelectedBatchId] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0],
-  );
-  const [attendanceRecords, setAttendanceRecords] = useState<
-    StudentAttendance[]
-  >([]);
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [attendanceRecords, setAttendanceRecords] = useState<StudentAttendance[]>([]);
 
-  const { students, isLoading: isLoadingStudents } =
-    useBatchStudents(selectedBatchId);
+  const { students, isLoading: isLoadingStudents } = useBatchStudents(selectedBatchId);
 
   // Initialize attendance when batch is selected
   const handleBatchChange = (batchId: string) => {
@@ -62,9 +53,7 @@ function MarkAttendance() {
 
   const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
     setAttendanceRecords((prev) =>
-      prev.map((record) =>
-        record.studentId === studentId ? { ...record, status } : record,
-      ),
+      prev.map((record) => (record.studentId === studentId ? { ...record, status } : record)),
     );
   };
 
@@ -88,23 +77,15 @@ function MarkAttendance() {
     // Show success message or toast
   };
 
-  const presentCount = attendanceRecords.filter(
-    (r) => r.status === "present",
-  ).length;
-  const absentCount = attendanceRecords.filter(
-    (r) => r.status === "absent",
-  ).length;
-  const lateCount = attendanceRecords.filter(
-    (r) => r.status === "late",
-  ).length;
+  const presentCount = attendanceRecords.filter((r) => r.status === "present").length;
+  const absentCount = attendanceRecords.filter((r) => r.status === "absent").length;
+  const lateCount = attendanceRecords.filter((r) => r.status === "late").length;
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Mark Attendance</h2>
-        <p className="text-gray-600">
-          Record student attendance for your classes.
-        </p>
+        <p className="text-gray-600">Record student attendance for your classes.</p>
       </div>
 
       {/* Filters */}
@@ -145,18 +126,14 @@ function MarkAttendance() {
               <Users className="h-5 w-5 text-gray-400" />
               <span className="text-sm font-medium text-gray-600">Total</span>
             </div>
-            <p className="mt-1 text-2xl font-bold text-gray-900">
-              {attendanceRecords.length}
-            </p>
+            <p className="mt-1 text-2xl font-bold text-gray-900">{attendanceRecords.length}</p>
           </div>
           <div className="rounded-xl border border-green-200 bg-green-50 p-4">
             <div className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-600" />
               <span className="text-sm font-medium text-green-700">Present</span>
             </div>
-            <p className="mt-1 text-2xl font-bold text-green-900">
-              {presentCount}
-            </p>
+            <p className="mt-1 text-2xl font-bold text-green-900">{presentCount}</p>
           </div>
           <div className="rounded-xl border border-red-200 bg-red-50 p-4">
             <div className="flex items-center gap-2">
@@ -180,11 +157,7 @@ function MarkAttendance() {
         <div className="rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
             <h3 className="font-semibold text-gray-900">Student List</h3>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleMarkAllPresent}
-            >
+            <Button variant="outline" size="sm" onClick={handleMarkAllPresent}>
               <Check className="mr-2 h-4 w-4" />
               Mark All Present
             </Button>
@@ -195,27 +168,18 @@ function MarkAttendance() {
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-black border-t-transparent" />
             </div>
           ) : attendanceRecords.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              No students found in this batch.
-            </div>
+            <div className="p-8 text-center text-gray-500">No students found in this batch.</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {attendanceRecords.map((record) => (
-                <div
-                  key={record.studentId}
-                  className="flex items-center justify-between px-6 py-4"
-                >
+                <div key={record.studentId} className="flex items-center justify-between px-6 py-4">
                   <div className="flex items-center gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-medium text-gray-700">
                       {record.studentName.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">
-                        {record.studentName}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Roll # {record.rollNumber}
-                      </p>
+                      <p className="font-medium text-gray-900">{record.studentName}</p>
+                      <p className="text-sm text-gray-500">Roll # {record.rollNumber}</p>
                     </div>
                   </div>
 
@@ -225,12 +189,9 @@ function MarkAttendance() {
                       variant={record.status === "present" ? "default" : "outline"}
                       className={cn(
                         "min-w-[90px]",
-                        record.status === "present" &&
-                          "bg-green-600 text-white hover:bg-green-700",
+                        record.status === "present" && "bg-green-600 text-white hover:bg-green-700",
                       )}
-                      onClick={() =>
-                        handleStatusChange(record.studentId, "present")
-                      }
+                      onClick={() => handleStatusChange(record.studentId, "present")}
                     >
                       <Check className="mr-1 h-4 w-4" />
                       Present
@@ -240,12 +201,9 @@ function MarkAttendance() {
                       variant={record.status === "absent" ? "default" : "outline"}
                       className={cn(
                         "min-w-[90px]",
-                        record.status === "absent" &&
-                          "bg-red-600 text-white hover:bg-red-700",
+                        record.status === "absent" && "bg-red-600 text-white hover:bg-red-700",
                       )}
-                      onClick={() =>
-                        handleStatusChange(record.studentId, "absent")
-                      }
+                      onClick={() => handleStatusChange(record.studentId, "absent")}
                     >
                       <X className="mr-1 h-4 w-4" />
                       Absent
@@ -255,12 +213,9 @@ function MarkAttendance() {
                       variant={record.status === "late" ? "default" : "outline"}
                       className={cn(
                         "min-w-[90px]",
-                        record.status === "late" &&
-                          "bg-yellow-600 text-white hover:bg-yellow-700",
+                        record.status === "late" && "bg-yellow-600 text-white hover:bg-yellow-700",
                       )}
-                      onClick={() =>
-                        handleStatusChange(record.studentId, "late")
-                      }
+                      onClick={() => handleStatusChange(record.studentId, "late")}
                     >
                       <Clock className="mr-1 h-4 w-4" />
                       Late
@@ -299,9 +254,7 @@ function MarkAttendance() {
       {!selectedBatchId && (
         <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
           <CalendarCheck className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-medium text-gray-900">
-            Select a Batch
-          </h3>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">Select a Batch</h3>
           <p className="mt-2 text-sm text-gray-500">
             Choose a batch from the dropdown above to mark attendance.
           </p>

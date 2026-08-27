@@ -104,7 +104,10 @@ export function DataTable<T extends { id: string }>({
         <Skeleton className="h-10 w-full max-w-sm" />
         <div className="rounded-xl border border-gray-200 bg-white">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 border-b border-gray-100 p-4 last:border-0">
+            <div
+              key={i}
+              className="flex items-center gap-4 border-b border-gray-100 p-4 last:border-0"
+            >
               {columns.map((col) => (
                 <Skeleton key={String(col.key)} className="h-4 flex-1" />
               ))}
@@ -177,7 +180,7 @@ export function DataTable<T extends { id: string }>({
                     <td key={String(col.key)}>
                       {col.render
                         ? col.render(row[col.key], row)
-                        : (row[col.key] as React.ReactNode) ?? "—"}
+                        : ((row[col.key] as React.ReactNode) ?? "—")}
                     </td>
                   ))}
                 </tr>

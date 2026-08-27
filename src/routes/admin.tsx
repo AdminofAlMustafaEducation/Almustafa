@@ -30,14 +30,14 @@ function AdminErrorComponent({ error }: { error: Error }) {
           <AlertTriangle className="h-8 w-8 text-red-600" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900">Something went wrong</h1>
-        <p className="mt-2 text-sm text-gray-600">{error.message || "An unexpected error occurred."}</p>
+        <p className="mt-2 text-sm text-gray-600">
+          {error.message || "An unexpected error occurred."}
+        </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button onClick={() => window.location.reload()} variant="outline">
             <RefreshCw className="mr-2 h-4 w-4" /> Reload Page
           </Button>
-          <Button onClick={() => window.location.href = "/admin"}>
-            Go to Dashboard
-          </Button>
+          <Button onClick={() => (window.location.href = "/admin")}>Go to Dashboard</Button>
         </div>
       </div>
     </div>

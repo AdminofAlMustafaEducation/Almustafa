@@ -177,9 +177,7 @@ function ResultsPage() {
                 </TableHeader>
                 <TableBody>
                   {results.map((result) => {
-                    const pct = Math.round(
-                      (result.marks_obtained / result.total_marks) * 100,
-                    );
+                    const pct = Math.round((result.marks_obtained / result.total_marks) * 100);
                     const grade = getGrade(pct);
                     return (
                       <TableRow key={result.id}>

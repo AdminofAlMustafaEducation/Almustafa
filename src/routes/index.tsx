@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, FlaskConical, GraduationCap, Mail, MapPin, Navigation, Phone } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  FlaskConical,
+  GraduationCap,
+  Mail,
+  MapPin,
+  Navigation,
+  Phone,
+} from "lucide-react";
 import campusExterior from "@/assets/gallery/campus-exterior.jpg";
 import library from "@/assets/gallery/library.jpg";
 import studentPortrait from "@/assets/gallery/student-portrait.jpg";
@@ -65,7 +74,8 @@ function HomePage() {
               Evening coaching families trust.
             </h1>
             <p className="mt-5 max-w-[36rem] text-base leading-relaxed text-white/85 sm:text-lg">
-              Juniors, Matric and F.Sc in G-11 and G-10. Senior lecturers, small batches, weekly tests.
+              Juniors, Matric and F.Sc in G-11 and G-10. Senior lecturers, small batches, weekly
+              tests.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
@@ -118,7 +128,8 @@ function HomePage() {
             Programs shaped for each stage.
           </h2>
           <p className="mt-4 max-w-[65ch] text-base text-muted-foreground">
-            Every level has its own pace and pressure. We adjust the structure instead of treating every batch the same.
+            Every level has its own pace and pressure. We adjust the structure instead of treating
+            every batch the same.
           </p>
 
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
@@ -132,8 +143,12 @@ function HomePage() {
                     className="paper-panel group block p-6 transition-transform hover:-translate-y-0.5 sm:p-8"
                   >
                     <Icon className="h-7 w-7 text-gold" />
-                    <h3 className="mt-5 font-display text-2xl font-black text-navy-deep">{program.title}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{program.description}</p>
+                    <h3 className="mt-5 font-display text-2xl font-black text-navy-deep">
+                      {program.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      {program.description}
+                    </p>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {program.subjects.slice(0, 4).map((subject) => (
                         <span
@@ -165,8 +180,12 @@ function HomePage() {
                 />
                 <div className="relative flex h-full flex-col">
                   <GraduationCap className="h-7 w-7 text-gold" />
-                  <h3 className="mt-5 font-display text-2xl font-black text-navy-deep">{programs[2].title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{programs[2].description}</p>
+                  <h3 className="mt-5 font-display text-2xl font-black text-navy-deep">
+                    {programs[2].title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {programs[2].description}
+                  </p>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {programs[2].subjects.map((subject) => (
                       <span
@@ -205,15 +224,16 @@ function HomePage() {
               Good teachers, steady systems, and a culture that feels human.
             </h2>
             <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-muted-foreground">
-              Al-Mustafa Academy began in 1998 with a single room and a clear idea: excellence is a quiet, daily
-              practice. Today, senior lecturers from IMCB, ICB, Bahria College, APS Rawalpindi and Al-Kausar carry that
-              same conviction across G-11/2 and G-10.
+              Al-Mustafa Academy began in 1998 with a single room and a clear idea: excellence is a
+              quiet, daily practice. Today, senior lecturers from IMCB, ICB, Bahria College, APS
+              Rawalpindi and Al-Kausar carry that same conviction across G-11/2 and G-10.
             </p>
             <ul className="mt-8 space-y-5">
               {[
                 {
                   title: "Senior college lecturers",
-                  detail: "Teachers who know how board-facing preparation should actually be paced.",
+                  detail:
+                    "Teachers who know how board-facing preparation should actually be paced.",
                 },
                 {
                   title: "Small, focused batches",
@@ -221,11 +241,14 @@ function HomePage() {
                 },
                 {
                   title: "Weekly tests and feedback",
-                  detail: "Progress stays visible for both students and parents throughout the session.",
+                  detail:
+                    "Progress stays visible for both students and parents throughout the session.",
                 },
               ].map((feature) => (
                 <li key={feature.title}>
-                  <div className="font-display text-lg font-bold text-navy-deep">{feature.title}</div>
+                  <div className="font-display text-lg font-bold text-navy-deep">
+                    {feature.title}
+                  </div>
                   <p className="mt-1 text-sm text-muted-foreground">{feature.detail}</p>
                 </li>
               ))}
@@ -264,7 +287,8 @@ function HomePage() {
               },
               {
                 title: "Parent-aware follow-up",
-                detail: "The academy experience is built to feel transparent and reassuring for families, not just students.",
+                detail:
+                  "The academy experience is built to feel transparent and reassuring for families, not just students.",
               },
             ].map((card) => (
               <div key={card.title} className="border-t border-border pt-5">
@@ -282,25 +306,30 @@ function HomePage() {
             From first inquiry to first class.
           </h2>
           <p className="mt-4 max-w-[65ch] text-base text-white/75">
-            The admission journey is designed to feel clear and low-stress for both students and parents.
+            The admission journey is designed to feel clear and low-stress for both students and
+            parents.
           </p>
           <div className="mt-10 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
             {[
               {
                 title: "Talk to us",
-                detail: "Call, message or visit so we can understand the student's class level and needs.",
+                detail:
+                  "Call, message or visit so we can understand the student's class level and needs.",
               },
               {
                 title: "Choose the program",
-                detail: "We place students into Juniors, Matric or F.Sc according to the right learning stage.",
+                detail:
+                  "We place students into Juniors, Matric or F.Sc according to the right learning stage.",
               },
               {
                 title: "Meet the faculty plan",
-                detail: "Teachers explain the routine, timing, subjects and weekly follow-up before the session begins.",
+                detail:
+                  "Teachers explain the routine, timing, subjects and weekly follow-up before the session begins.",
               },
               {
                 title: "Confirm admission",
-                detail: "Secure the seat and start with a clearer evening learning routine from day one.",
+                detail:
+                  "Secure the seat and start with a clearer evening learning routine from day one.",
               },
             ].map((step) => (
               <div key={step.title}>
@@ -391,7 +420,8 @@ function HomePage() {
       <section className="bg-background py-fluid-section">
         <div className="container-fluid max-w-4xl">
           <blockquote className="headline-balance font-display text-2xl font-medium leading-snug text-navy-deep sm:text-3xl">
-            &quot;They did not just teach my son Physics and Maths, they taught him how to think.&quot;
+            &quot;They did not just teach my son Physics and Maths, they taught him how to
+            think.&quot;
           </blockquote>
           <div className="mt-6 text-sm">
             <div className="font-bold text-navy-deep">A parent of an F.Sc graduate</div>
@@ -490,10 +520,14 @@ function HomePage() {
               {branches.map((branch) => (
                 <div key={branch.id} className="paper-panel rounded-2xl p-5 sm:p-6">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-display text-lg font-bold text-navy-deep">{branch.label}</h3>
+                    <h3 className="font-display text-lg font-bold text-navy-deep">
+                      {branch.label}
+                    </h3>
                     <MapPin className="h-5 w-5 shrink-0 text-gold" />
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{branch.address}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {branch.address}
+                  </p>
                   <p className="mt-1 text-xs text-muted-foreground">{branch.hours}</p>
                   <a
                     href={branch.mapsLink}

@@ -57,7 +57,12 @@ export const noteKeys = {
 };
 
 // Hooks
-export function useNotes(filters?: { classId?: string; subjectId?: string; teacherId?: string; published?: boolean }) {
+export function useNotes(filters?: {
+  classId?: string;
+  subjectId?: string;
+  teacherId?: string;
+  published?: boolean;
+}) {
   return useQuery({
     queryKey: noteKeys.list(filters),
     queryFn: async (): Promise<Note[]> => {
@@ -66,8 +71,11 @@ export function useNotes(filters?: { classId?: string; subjectId?: string; teach
         if (filters?.classId) result = result.filter((n) => n.class_id === filters.classId);
         if (filters?.subjectId) result = result.filter((n) => n.subject_id === filters.subjectId);
         if (filters?.teacherId) result = result.filter((n) => n.teacher_id === filters.teacherId);
-        if (filters?.published !== undefined) result = result.filter((n) => n.is_published === filters.published);
-        return result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        if (filters?.published !== undefined)
+          result = result.filter((n) => n.is_published === filters.published);
+        return result.sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
       }
 
       try {
@@ -79,7 +87,11 @@ export function useNotes(filters?: { classId?: string; subjectId?: string; teach
 
         const { data, error } = await query;
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             console.warn("Notes table not found or RLS error, falling back to mock data");
             return [...mockNotes];
           }
@@ -87,7 +99,12 @@ export function useNotes(filters?: { classId?: string; subjectId?: string; teach
         }
         return (data ?? []) as Note[];
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           console.warn("Notes table not found or RLS error, falling back to mock data");
           return [...mockNotes];
         }
@@ -108,14 +125,23 @@ export function useNote(id: string) {
       try {
         const { data, error } = await supabase!.from("notes").select("*").eq("id", id).single();
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             return mockNotes.find((n) => n.id === id) ?? null;
           }
           throw new Error(error.message);
         }
         return data as Note;
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           return mockNotes.find((n) => n.id === id) ?? null;
         }
         throw err;
@@ -144,7 +170,11 @@ export function useCreateNote() {
       try {
         const { data, error } = await supabase!.from("notes").insert(note).select().single();
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             const newNote: Note = {
               ...note,
               id: String(Date.now()),
@@ -158,7 +188,12 @@ export function useCreateNote() {
         }
         return data as Note;
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           const newNote: Note = {
             ...note,
             id: String(Date.now()),
@@ -185,31 +220,53 @@ export function useUpdateNote() {
       if (USE_MOCK) {
         const index = mockNotes.findIndex((n) => n.id === id);
         if (index === -1) throw new Error("Note not found");
-        mockNotes[index] = { ...mockNotes[index], ...updates, updated_at: new Date().toISOString() };
+        mockNotes[index] = {
+          ...mockNotes[index],
+          ...updates,
+          updated_at: new Date().toISOString(),
+        };
         return mockNotes[index];
       }
 
       try {
-        const { data, error } = await supabase!.from("notes")
+        const { data, error } = await supabase!
+          .from("notes")
           .update({ ...updates, updated_at: new Date().toISOString() })
           .eq("id", id)
           .select()
           .single();
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             const index = mockNotes.findIndex((n) => n.id === id);
             if (index === -1) throw new Error("Note not found");
-            mockNotes[index] = { ...mockNotes[index], ...updates, updated_at: new Date().toISOString() };
+            mockNotes[index] = {
+              ...mockNotes[index],
+              ...updates,
+              updated_at: new Date().toISOString(),
+            };
             return mockNotes[index];
           }
           throw new Error(error.message);
         }
         return data as Note;
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           const index = mockNotes.findIndex((n) => n.id === id);
           if (index === -1) throw new Error("Note not found");
-          mockNotes[index] = { ...mockNotes[index], ...updates, updated_at: new Date().toISOString() };
+          mockNotes[index] = {
+            ...mockNotes[index],
+            ...updates,
+            updated_at: new Date().toISOString(),
+          };
           return mockNotes[index];
         }
         throw err;
@@ -235,7 +292,11 @@ export function useDeleteNote() {
       try {
         const { error } = await supabase!.from("notes").delete().eq("id", id);
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             const index = mockNotes.findIndex((n) => n.id === id);
             if (index !== -1) mockNotes.splice(index, 1);
             return;
@@ -243,7 +304,12 @@ export function useDeleteNote() {
           throw new Error(error.message);
         }
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           const index = mockNotes.findIndex((n) => n.id === id);
           if (index !== -1) mockNotes.splice(index, 1);
           return;
@@ -266,9 +332,7 @@ export async function uploadNoteFile(file: File, noteId: string): Promise<string
   const fileExt = file.name.split(".").pop();
   const filePath = `notes/${noteId}.${fileExt}`;
 
-  const { error } = await supabase.storage
-    .from("notes")
-    .upload(filePath, file, { upsert: true });
+  const { error } = await supabase.storage.from("notes").upload(filePath, file, { upsert: true });
 
   if (error) {
     throw new Error(`Upload failed: ${error.message}`);

@@ -9,13 +9,7 @@ interface StatsCardProps {
   trend?: "up" | "down" | "neutral";
 }
 
-export function StatsCard({
-  title,
-  value,
-  description,
-  icon: Icon,
-  trend,
-}: StatsCardProps) {
+export function StatsCard({ title, value, description, icon: Icon, trend }: StatsCardProps) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
       <div className="flex items-center justify-between">
@@ -27,11 +21,7 @@ export function StatsCard({
         <p
           className={cn(
             "mt-1 text-sm",
-            trend === "up"
-              ? "text-green-600"
-              : trend === "down"
-                ? "text-red-600"
-                : "text-gray-500",
+            trend === "up" ? "text-green-600" : trend === "down" ? "text-red-600" : "text-gray-500",
           )}
         >
           {description}

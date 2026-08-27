@@ -14,7 +14,17 @@ export type ChatAgent = {
 };
 
 const mockAgents: ChatAgent[] = [
-  { id: "1", name: "Al-Mustafa Academy", role: "Admissions", photo_url: "/brand/almustafa-logo.jpg", whatsapp_number: "+923350555696", is_active: true, sort_order: 1, created_at: "2026-08-08T00:00:00Z", updated_at: "2026-08-08T00:00:00Z" },
+  {
+    id: "1",
+    name: "Al-Mustafa Academy",
+    role: "Admissions",
+    photo_url: "/brand/almustafa-logo.jpg",
+    whatsapp_number: "+923350555696",
+    is_active: true,
+    sort_order: 1,
+    created_at: "2026-08-08T00:00:00Z",
+    updated_at: "2026-08-08T00:00:00Z",
+  },
 ];
 
 const USE_MOCK = import.meta.env.DEV && !supabase;
@@ -55,11 +65,17 @@ export function useActiveChatAgents() {
         return mockAgents.filter((a) => a.is_active).sort((a, b) => a.sort_order - b.sort_order);
       }
       try {
-        const { data, error } = await supabase!.from("chat_agents").select("*").eq("is_active", true).order("sort_order");
+        const { data, error } = await supabase!
+          .from("chat_agents")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order");
         if (error) {
           if (USE_MOCK && error.message.includes("Could not find the table")) {
             console.warn("Chat agents table not found, falling back to mock data");
-            return mockAgents.filter((a) => a.is_active).sort((a, b) => a.sort_order - b.sort_order);
+            return mockAgents
+              .filter((a) => a.is_active)
+              .sort((a, b) => a.sort_order - b.sort_order);
           }
           throw new Error(error.message);
         }
@@ -78,9 +94,16 @@ export function useActiveChatAgents() {
 export function useCreateChatAgent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (agent: Omit<ChatAgent, "id" | "created_at" | "updated_at">): Promise<ChatAgent> => {
+    mutationFn: async (
+      agent: Omit<ChatAgent, "id" | "created_at" | "updated_at">,
+    ): Promise<ChatAgent> => {
       if (USE_MOCK) {
-        const newItem: ChatAgent = { ...agent, id: String(Date.now()), created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+        const newItem: ChatAgent = {
+          ...agent,
+          id: String(Date.now()),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
         mockAgents.push(newItem);
         return newItem;
       }
@@ -95,14 +118,26 @@ export function useCreateChatAgent() {
 export function useUpdateChatAgent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<ChatAgent> & { id: string }): Promise<ChatAgent> => {
+    mutationFn: async ({
+      id,
+      ...updates
+    }: Partial<ChatAgent> & { id: string }): Promise<ChatAgent> => {
       if (USE_MOCK) {
         const index = mockAgents.findIndex((a) => a.id === id);
         if (index === -1) throw new Error("Agent not found");
-        mockAgents[index] = { ...mockAgents[index], ...updates, updated_at: new Date().toISOString() };
+        mockAgents[index] = {
+          ...mockAgents[index],
+          ...updates,
+          updated_at: new Date().toISOString(),
+        };
         return mockAgents[index];
       }
-      const { data, error } = await supabase!.from("chat_agents").update({ ...updates, updated_at: new Date().toISOString() }).eq("id", id).select().single();
+      const { data, error } = await supabase!
+        .from("chat_agents")
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .select()
+        .single();
       if (error) throw new Error(error.message);
       return data as ChatAgent;
     },

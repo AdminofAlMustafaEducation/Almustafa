@@ -38,15 +38,21 @@ const statusColors: Record<string, string> = {
 function FeesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const { data: allFees = [], isLoading } = useFees();
-  const { data: filteredFees = [] } = useFees(statusFilter === "all" ? undefined : { status: statusFilter });
+  const { data: filteredFees = [] } = useFees(
+    statusFilter === "all" ? undefined : { status: statusFilter },
+  );
   const updateFee = useUpdateFee();
 
   const [selectedFee, setSelectedFee] = useState<Fee | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const totalAmount = allFees.reduce((sum, f) => sum + f.amount, 0);
-  const paidAmount = allFees.filter((f) => f.status === "paid").reduce((sum, f) => sum + f.amount, 0);
-  const pendingAmount = allFees.filter((f) => f.status === "pending").reduce((sum, f) => sum + f.amount, 0);
+  const paidAmount = allFees
+    .filter((f) => f.status === "paid")
+    .reduce((sum, f) => sum + f.amount, 0);
+  const pendingAmount = allFees
+    .filter((f) => f.status === "pending")
+    .reduce((sum, f) => sum + f.amount, 0);
 
   function handleMarkPaid(fee: Fee) {
     updateFee.mutate(
@@ -59,8 +65,8 @@ function FeesPage() {
       },
       {
         onSuccess: () => setDialogOpen(false),
-        onError: (err) =>         toast.error(`Failed to update: ${err.message}`),
-      }
+        onError: (err) => toast.error(`Failed to update: ${err.message}`),
+      },
     );
   }
 
@@ -88,11 +94,20 @@ function FeesPage() {
       sortable: true,
       render: (_v, row) => <span className="font-medium">Rs. {row.amount.toLocaleString()}</span>,
     },
-    { key: "due_date", label: "Due Date", render: (_v, row) => new Date(row.due_date).toLocaleDateString("en-PK", { month: "short", day: "numeric" }) },
+    {
+      key: "due_date",
+      label: "Due Date",
+      render: (_v, row) =>
+        new Date(row.due_date).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
+    },
     {
       key: "status",
       label: "Status",
-      render: (_v, row) => <Badge className={cn("border-0", statusColors[row.status])}>{row.status.charAt(0).toUpperCase() + row.status.slice(1)}</Badge>,
+      render: (_v, row) => (
+        <Badge className={cn("border-0", statusColors[row.status])}>
+          {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+        </Badge>
+      ),
     },
     {
       key: "id",
@@ -103,7 +118,12 @@ function FeesPage() {
             <Eye className="h-4 w-4" />
           </Button>
           {row.status === "pending" && (
-            <Button variant="ghost" size="sm" className="text-green-600" onClick={() => handleMarkPaid(row)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-green-600"
+              onClick={() => handleMarkPaid(row)}
+            >
               <Check className="h-4 w-4" />
             </Button>
           )}
@@ -122,7 +142,9 @@ function FeesPage() {
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-gray-400" />
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36"><SelectValue placeholder="Filter" /></SelectTrigger>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
@@ -134,13 +156,31 @@ function FeesPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard title="Total Fees" value={`Rs. ${totalAmount.toLocaleString()}`} icon={CreditCard} />
-        <StatsCard title="Collected" value={`Rs. ${paidAmount.toLocaleString()}`} icon={Check} trend="up" />
-        <StatsCard title="Pending" value={`Rs. ${pendingAmount.toLocaleString()}`} icon={CreditCard} />
+        <StatsCard
+          title="Total Fees"
+          value={`Rs. ${totalAmount.toLocaleString()}`}
+          icon={CreditCard}
+        />
+        <StatsCard
+          title="Collected"
+          value={`Rs. ${paidAmount.toLocaleString()}`}
+          icon={Check}
+          trend="up"
+        />
+        <StatsCard
+          title="Pending"
+          value={`Rs. ${pendingAmount.toLocaleString()}`}
+          icon={CreditCard}
+        />
         <StatsCard title="Records" value={String(allFees.length)} icon={CreditCard} />
       </div>
 
-      <DataTable data={filteredFees} columns={columns} isLoading={isLoading} emptyMessage="No fee records found." />
+      <DataTable
+        data={filteredFees}
+        columns={columns}
+        isLoading={isLoading}
+        emptyMessage="No fee records found."
+      />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
@@ -150,21 +190,60 @@ function FeesPage() {
           {selectedFee && (
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">Student:</span> <span className="font-medium">#{selectedFee.student_id}</span></div>
-                <div><span className="text-gray-500">Type:</span> <span className="font-medium capitalize">{selectedFee.fee_type}</span></div>
-                <div><span className="text-gray-500">Month:</span> <span className="font-medium">{selectedFee.month || "N/A"}</span></div>
-                <div><span className="text-gray-500">Amount:</span> <span className="font-medium">Rs. {selectedFee.amount.toLocaleString()}</span></div>
-                <div><span className="text-gray-500">Due Date:</span> <span className="font-medium">{new Date(selectedFee.due_date).toLocaleDateString()}</span></div>
-                <div><span className="text-gray-500">Status:</span> <Badge className={cn("border-0", statusColors[selectedFee.status])}>{selectedFee.status}</Badge></div>
-                {selectedFee.paid_date && <div><span className="text-gray-500">Paid Date:</span> <span className="font-medium">{new Date(selectedFee.paid_date).toLocaleDateString()}</span></div>}
-                {selectedFee.receipt_number && <div><span className="text-gray-500">Receipt:</span> <span className="font-mono">{selectedFee.receipt_number}</span></div>}
+                <div>
+                  <span className="text-gray-500">Student:</span>{" "}
+                  <span className="font-medium">#{selectedFee.student_id}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Type:</span>{" "}
+                  <span className="font-medium capitalize">{selectedFee.fee_type}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Month:</span>{" "}
+                  <span className="font-medium">{selectedFee.month || "N/A"}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Amount:</span>{" "}
+                  <span className="font-medium">Rs. {selectedFee.amount.toLocaleString()}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Due Date:</span>{" "}
+                  <span className="font-medium">
+                    {new Date(selectedFee.due_date).toLocaleDateString()}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Status:</span>{" "}
+                  <Badge className={cn("border-0", statusColors[selectedFee.status])}>
+                    {selectedFee.status}
+                  </Badge>
+                </div>
+                {selectedFee.paid_date && (
+                  <div>
+                    <span className="text-gray-500">Paid Date:</span>{" "}
+                    <span className="font-medium">
+                      {new Date(selectedFee.paid_date).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+                {selectedFee.receipt_number && (
+                  <div>
+                    <span className="text-gray-500">Receipt:</span>{" "}
+                    <span className="font-mono">{selectedFee.receipt_number}</span>
+                  </div>
+                )}
               </div>
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Close
+            </Button>
             {selectedFee?.status === "pending" && (
-              <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleMarkPaid(selectedFee)}>
+              <Button
+                className="bg-green-600 hover:bg-green-700"
+                onClick={() => handleMarkPaid(selectedFee)}
+              >
                 <Check className="mr-1 h-3 w-3" /> Mark as Paid
               </Button>
             )}

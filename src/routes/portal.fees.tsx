@@ -40,9 +40,7 @@ function FeesPage() {
   const { data: profile } = useStudentProfile(user?.id);
   const { data: fees = [], isLoading } = useStudentFees(profile?.id ?? "");
 
-  const totalPaid = fees
-    .filter((f) => f.status === "paid")
-    .reduce((sum, f) => sum + f.amount, 0);
+  const totalPaid = fees.filter((f) => f.status === "paid").reduce((sum, f) => sum + f.amount, 0);
   const totalPending = fees
     .filter((f) => f.status === "pending")
     .reduce((sum, f) => sum + f.amount, 0);
@@ -81,9 +79,7 @@ function FeesPage() {
             </div>
             <div>
               <p className="text-xs font-medium text-gray-500">Total Paid</p>
-              <p className="text-xl font-bold text-green-700">
-                Rs. {totalPaid.toLocaleString()}
-              </p>
+              <p className="text-xl font-bold text-green-700">Rs. {totalPaid.toLocaleString()}</p>
             </div>
           </CardContent>
         </Card>
@@ -105,10 +101,7 @@ function FeesPage() {
             <div>
               <p className="text-xs font-medium text-gray-500">Balance</p>
               <p
-                className={cn(
-                  "text-xl font-bold",
-                  balance > 0 ? "text-red-700" : "text-green-700",
-                )}
+                className={cn("text-xl font-bold", balance > 0 ? "text-red-700" : "text-green-700")}
               >
                 {balance > 0 ? `Rs. ${balance.toLocaleString()}` : "All Clear"}
               </p>
@@ -147,9 +140,7 @@ function FeesPage() {
                     const config = statusConfig[fee.status] ?? statusConfig.pending;
                     return (
                       <TableRow key={fee.id}>
-                        <TableCell className="font-medium">
-                          {fee.month ?? "-"}
-                        </TableCell>
+                        <TableCell className="font-medium">{fee.month ?? "-"}</TableCell>
                         <TableCell className="text-gray-600">
                           {feeTypeLabels[fee.fee_type] ?? fee.fee_type}
                         </TableCell>
@@ -170,9 +161,7 @@ function FeesPage() {
                             {config.label}
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell text-gray-500">
-                          -
-                        </TableCell>
+                        <TableCell className="hidden sm:table-cell text-gray-500">-</TableCell>
                       </TableRow>
                     );
                   })}

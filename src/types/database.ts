@@ -32,6 +32,8 @@ export interface Student {
   student_number?: string;
   auth_user_id?: string;
   full_name: string;
+  /** Legacy list/detail alias; prefer full_name in new code. */
+  name?: string;
   father_name?: string;
   guardian_name?: string;
   date_of_birth?: string;
@@ -55,7 +57,7 @@ export interface Student {
   admission_date: string;
   status: "active" | "inactive" | "graduated" | "withdrawn";
   // Legacy fields (backward compatibility)
-  class_level?: 9 | 10 | 11 | 12;
+  class_level?: number;
   program?: "matric" | "fsc_pre_medical" | "fsc_pre_engineering";
   campus?: "main" | "second";
   parent_name?: string;
@@ -109,6 +111,9 @@ export interface Faculty {
   id: string;
   user_id?: string;
   name: string;
+  /** Legacy API alias used by older portal components. */
+  full_name?: string;
+  initials?: string;
   subject: string;
   designation?: string;
   bio?: string;
@@ -149,7 +154,14 @@ export interface Application {
   class_level?: number;
   program?: string;
   campus?: string;
-  status: "pending" | "under_review" | "reviewing" | "approved" | "rejected" | "enrolled" | "withdrawn";
+  status:
+    | "pending"
+    | "under_review"
+    | "reviewing"
+    | "approved"
+    | "rejected"
+    | "enrolled"
+    | "withdrawn";
   reviewer_notes?: string;
   reviewed_by?: string;
   reviewed_at?: string;
@@ -215,14 +227,18 @@ export interface ClassStudent {
 export interface Attendance {
   id: string;
   student_id: string;
-  class_id: string;
-  subject_id: string;
-  teacher_id: string;
-  attendance_date: string;
+  /** Canonical schema fields. */
+  class_id?: string;
+  subject_id?: string;
+  teacher_id?: string;
+  attendance_date?: string;
+  /** Legacy attendance-hook aliases. */
+  batch_id?: string;
+  date?: string;
   status: "present" | "absent" | "late" | "excused";
   notes?: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 // Exam

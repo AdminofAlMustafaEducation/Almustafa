@@ -8,6 +8,7 @@ const mockStudents: Student[] = [
   {
     id: "1",
     roll_number: "2024-001",
+    full_name: "Ahmed Khan",
     name: "Ahmed Khan",
     email: "ahmed.khan@example.com",
     phone: "0300-1234567",
@@ -27,6 +28,7 @@ const mockStudents: Student[] = [
   {
     id: "2",
     roll_number: "2024-002",
+    full_name: "Fatima Ali",
     name: "Fatima Ali",
     email: "fatima.ali@example.com",
     phone: "0301-2345678",
@@ -46,6 +48,7 @@ const mockStudents: Student[] = [
   {
     id: "3",
     roll_number: "2023-015",
+    full_name: "Usman Ahmed",
     name: "Usman Ahmed",
     email: "usman.ahmed@example.com",
     phone: "0302-3456789",
@@ -65,6 +68,7 @@ const mockStudents: Student[] = [
   {
     id: "4",
     roll_number: "2023-008",
+    full_name: "Ayesha Malik",
     name: "Ayesha Malik",
     email: "ayesha.malik@example.com",
     phone: "0303-4567890",
@@ -84,6 +88,7 @@ const mockStudents: Student[] = [
   {
     id: "5",
     roll_number: "2024-003",
+    full_name: "Bilal Hussain",
     name: "Bilal Hussain",
     email: "bilal.hussain@example.com",
     phone: "0304-5678901",
@@ -103,6 +108,7 @@ const mockStudents: Student[] = [
   {
     id: "6",
     roll_number: "2022-020",
+    full_name: "Zainab Bibi",
     name: "Zainab Bibi",
     email: "zainab.bibi@example.com",
     phone: "0305-6789012",
@@ -122,6 +128,7 @@ const mockStudents: Student[] = [
   {
     id: "7",
     roll_number: "2024-004",
+    full_name: "Hamza Shah",
     name: "Hamza Shah",
     email: "hamza.shah@example.com",
     phone: "0306-7890123",
@@ -141,6 +148,7 @@ const mockStudents: Student[] = [
   {
     id: "8",
     roll_number: "2023-012",
+    full_name: "Sara Iqbal",
     name: "Sara Iqbal",
     email: "sara.iqbal@example.com",
     phone: "0307-8901234",
@@ -161,11 +169,7 @@ const mockStudents: Student[] = [
 
 const USE_MOCK = import.meta.env.DEV && !supabase;
 
-export function useStudents(filters?: {
-  classLevel?: number;
-  status?: string;
-  search?: string;
-}) {
+export function useStudents(filters?: { classLevel?: number; status?: string; search?: string }) {
   return useQuery({
     queryKey: ["students", filters],
     queryFn: async (): Promise<Student[]> => {
@@ -193,7 +197,10 @@ export function useStudents(filters?: {
       }
 
       try {
-        let query = supabase!.from("students").select("*").order("created_at", { ascending: false });
+        let query = supabase!
+          .from("students")
+          .select("*")
+          .order("created_at", { ascending: false });
 
         if (filters?.classLevel) {
           query = query.eq("class_level", filters.classLevel);
@@ -212,7 +219,11 @@ export function useStudents(filters?: {
         const { data, error } = await query;
 
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             console.warn("Students table not found or RLS error, falling back to mock data");
             return [...mockStudents];
           }
@@ -221,7 +232,12 @@ export function useStudents(filters?: {
 
         return (data ?? []) as Student[];
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           console.warn("Students table not found or RLS error, falling back to mock data");
           return [...mockStudents];
         }
@@ -239,11 +255,7 @@ export function useStudent(id: string) {
         return mockStudents.find((s) => s.id === id) ?? null;
       }
 
-      const { data, error } = await supabase!
-        .from("students")
-        .select("*")
-        .eq("id", id)
-        .single();
+      const { data, error } = await supabase!.from("students").select("*").eq("id", id).single();
 
       if (error) {
         throw new Error(error.message);
@@ -274,14 +286,14 @@ export function useCreateStudent() {
       }
 
       try {
-        const { data, error } = await supabase!
-          .from("students")
-          .insert(student)
-          .select()
-          .single();
+        const { data, error } = await supabase!.from("students").insert(student).select().single();
 
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             console.warn("Students table not found or RLS error, using mock data");
             const newStudent: Student = {
               ...student,
@@ -297,7 +309,12 @@ export function useCreateStudent() {
 
         return data as Student;
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           console.warn("Students table not found or RLS error, using mock data");
           const newStudent: Student = {
             ...student,
@@ -321,10 +338,7 @@ export function useUpdateStudent() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      ...updates
-    }: Partial<Student> & { id: string }): Promise<Student> => {
+    mutationFn: async ({ id, ...updates }: Partial<Student> & { id: string }): Promise<Student> => {
       if (USE_MOCK) {
         const index = mockStudents.findIndex((s) => s.id === id);
         if (index === -1) throw new Error("Student not found");

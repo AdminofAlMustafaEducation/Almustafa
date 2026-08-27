@@ -39,7 +39,11 @@ export const liveClassKeys = {
   list: (filters?: Record<string, unknown>) => [...liveClassKeys.lists(), filters] as const,
 };
 
-export function useLiveClasses(filters?: { classId?: string; teacherId?: string; status?: string }) {
+export function useLiveClasses(filters?: {
+  classId?: string;
+  teacherId?: string;
+  status?: string;
+}) {
   return useQuery({
     queryKey: liveClassKeys.list(filters),
     queryFn: async (): Promise<LiveClass[]> => {
@@ -48,7 +52,9 @@ export function useLiveClasses(filters?: { classId?: string; teacherId?: string;
         if (filters?.classId) result = result.filter((lc) => lc.class_id === filters.classId);
         if (filters?.teacherId) result = result.filter((lc) => lc.teacher_id === filters.teacherId);
         if (filters?.status) result = result.filter((lc) => lc.status === filters.status);
-        return result.sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+        return result.sort(
+          (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
+        );
       }
 
       try {
@@ -59,7 +65,11 @@ export function useLiveClasses(filters?: { classId?: string; teacherId?: string;
 
         const { data, error } = await query;
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             console.warn("live_classes table not found or RLS error, falling back to mock data");
             return [...mockLiveClasses];
           }
@@ -67,7 +77,12 @@ export function useLiveClasses(filters?: { classId?: string; teacherId?: string;
         }
         return (data ?? []) as LiveClass[];
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           return [...mockLiveClasses];
         }
         throw err;
@@ -80,7 +95,9 @@ export function useCreateLiveClass() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (liveClass: Omit<LiveClass, "id" | "created_at" | "updated_at">): Promise<LiveClass> => {
+    mutationFn: async (
+      liveClass: Omit<LiveClass, "id" | "created_at" | "updated_at">,
+    ): Promise<LiveClass> => {
       if (USE_MOCK) {
         const newClass: LiveClass = {
           ...liveClass,
@@ -93,9 +110,17 @@ export function useCreateLiveClass() {
       }
 
       try {
-        const { data, error } = await supabase!.from("live_classes").insert(liveClass).select().single();
+        const { data, error } = await supabase!
+          .from("live_classes")
+          .insert(liveClass)
+          .select()
+          .single();
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             const newClass: LiveClass = {
               ...liveClass,
               id: String(Date.now()),
@@ -109,7 +134,12 @@ export function useCreateLiveClass() {
         }
         return data as LiveClass;
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           const newClass: LiveClass = {
             ...liveClass,
             id: String(Date.now()),
@@ -132,35 +162,60 @@ export function useUpdateLiveClass() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<LiveClass> & { id: string }): Promise<LiveClass> => {
+    mutationFn: async ({
+      id,
+      ...updates
+    }: Partial<LiveClass> & { id: string }): Promise<LiveClass> => {
       if (USE_MOCK) {
         const index = mockLiveClasses.findIndex((lc) => lc.id === id);
         if (index === -1) throw new Error("Live class not found");
-        mockLiveClasses[index] = { ...mockLiveClasses[index], ...updates, updated_at: new Date().toISOString() };
+        mockLiveClasses[index] = {
+          ...mockLiveClasses[index],
+          ...updates,
+          updated_at: new Date().toISOString(),
+        };
         return mockLiveClasses[index];
       }
 
       try {
-        const { data, error } = await supabase!.from("live_classes")
+        const { data, error } = await supabase!
+          .from("live_classes")
           .update({ ...updates, updated_at: new Date().toISOString() })
           .eq("id", id)
           .select()
           .single();
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             const index = mockLiveClasses.findIndex((lc) => lc.id === id);
             if (index === -1) throw new Error("Live class not found");
-            mockLiveClasses[index] = { ...mockLiveClasses[index], ...updates, updated_at: new Date().toISOString() };
+            mockLiveClasses[index] = {
+              ...mockLiveClasses[index],
+              ...updates,
+              updated_at: new Date().toISOString(),
+            };
             return mockLiveClasses[index];
           }
           throw new Error(error.message);
         }
         return data as LiveClass;
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           const index = mockLiveClasses.findIndex((lc) => lc.id === id);
           if (index === -1) throw new Error("Live class not found");
-          mockLiveClasses[index] = { ...mockLiveClasses[index], ...updates, updated_at: new Date().toISOString() };
+          mockLiveClasses[index] = {
+            ...mockLiveClasses[index],
+            ...updates,
+            updated_at: new Date().toISOString(),
+          };
           return mockLiveClasses[index];
         }
         throw err;
@@ -186,7 +241,11 @@ export function useDeleteLiveClass() {
       try {
         const { error } = await supabase!.from("live_classes").delete().eq("id", id);
         if (error) {
-          if (USE_MOCK && (error.message.includes("Could not find the table") || error.message.includes("infinite recursion"))) {
+          if (
+            USE_MOCK &&
+            (error.message.includes("Could not find the table") ||
+              error.message.includes("infinite recursion"))
+          ) {
             const index = mockLiveClasses.findIndex((lc) => lc.id === id);
             if (index !== -1) mockLiveClasses.splice(index, 1);
             return;
@@ -194,7 +253,12 @@ export function useDeleteLiveClass() {
           throw new Error(error.message);
         }
       } catch (err) {
-        if (USE_MOCK && err instanceof Error && (err.message.includes("Could not find the table") || err.message.includes("infinite recursion"))) {
+        if (
+          USE_MOCK &&
+          err instanceof Error &&
+          (err.message.includes("Could not find the table") ||
+            err.message.includes("infinite recursion"))
+        ) {
           const index = mockLiveClasses.findIndex((lc) => lc.id === id);
           if (index !== -1) mockLiveClasses.splice(index, 1);
           return;

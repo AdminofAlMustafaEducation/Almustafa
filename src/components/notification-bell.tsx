@@ -43,16 +43,26 @@ export function NotificationBell() {
                 <div>
                   <h3 className="text-sm font-bold text-white">Notifications</h3>
                   <p className="text-[11px] text-white/70">
-                    {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}` : "All caught up!"}
+                    {unreadCount > 0
+                      ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
+                      : "All caught up!"}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
-                    <button type="button" onClick={markAllAsRead} className="rounded-full px-2 py-1 text-[10px] font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white">
+                    <button
+                      type="button"
+                      onClick={markAllAsRead}
+                      className="rounded-full px-2 py-1 text-[10px] font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                    >
                       Mark all read
                     </button>
                   )}
-                  <button type="button" onClick={() => setIsOpen(false)} className="rounded-full p-1 text-white/80 hover:bg-white/10 hover:text-white">
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="rounded-full p-1 text-white/80 hover:bg-white/10 hover:text-white"
+                  >
                     <X className="h-4 w-4" />
                   </button>
                 </div>
@@ -69,7 +79,7 @@ export function NotificationBell() {
                     onClick={() => markAsRead(notif.id)}
                     className={cn(
                       "flex w-full items-start gap-3 border-b border-gray-100 p-4 text-left transition-colors hover:bg-gray-50",
-                      !isRead && "bg-blue-50/50"
+                      !isRead && "bg-blue-50/50",
                     )}
                   >
                     <div className="relative mt-0.5 shrink-0">
@@ -82,12 +92,19 @@ export function NotificationBell() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className={cn("text-sm text-gray-900", !isRead && "font-semibold")}>{notif.title}</h4>
+                        <h4 className={cn("text-sm text-gray-900", !isRead && "font-semibold")}>
+                          {notif.title}
+                        </h4>
                         <span className="shrink-0 text-[10px] text-gray-400">
-                          {new Date(notif.date).toLocaleDateString("en-PK", { month: "short", day: "numeric" })}
+                          {new Date(notif.date).toLocaleDateString("en-PK", {
+                            month: "short",
+                            day: "numeric",
+                          })}
                         </span>
                       </div>
-                      <p className="mt-0.5 text-xs leading-relaxed text-gray-500">{notif.message}</p>
+                      <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
+                        {notif.message}
+                      </p>
                     </div>
                   </button>
                 );
@@ -102,7 +119,7 @@ export function NotificationBell() {
         onClick={handleOpen}
         className={cn(
           "relative flex h-14 w-14 items-center justify-center rounded-full bg-navy-deep text-white shadow-lg transition-all hover:bg-navy hover:scale-105 sm:h-12 sm:w-12",
-          "focus:outline-none focus:ring-4 focus:ring-navy/30"
+          "focus:outline-none focus:ring-4 focus:ring-navy/30",
         )}
         whileTap={{ scale: 0.95 }}
       >

@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Video, Plus, Pencil, Trash2, ExternalLink, Clock, Loader2 } from "lucide-react";
+import {
+  Video,
+  Plus,
+  Pencil,
+  Trash2,
+  ExternalLink,
+  Clock,
+  Loader2,
+  ClipboardList,
+  Save,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +31,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useExams, useCreateExam, useExamResults, useSaveExamResults, useDeleteExam } from "@/hooks/use-exams";
+import {
+  useExams,
+  useCreateExam,
+  useExamResults,
+  useSaveExamResults,
+  useDeleteExam,
+} from "@/hooks/use-exams";
 import { useStudents } from "@/hooks/use-students";
 import { GRADES, SUBJECTS } from "@/lib/academy";
 import { cn } from "@/lib/utils";
@@ -73,23 +89,31 @@ function AdminExams() {
     createExam.mutate(examData, {
       onSuccess: () => {
         setDialogOpen(false);
-        setFormData({ name: "", subject_id: "", grade: "9th", total_marks: 100, exam_date: new Date().toISOString().split("T")[0] });
+        setFormData({
+          name: "",
+          subject_id: "",
+          grade: "9th",
+          total_marks: 100,
+          exam_date: new Date().toISOString().split("T")[0],
+        });
       },
-      onError: (err) =>       toast.error(`Failed to create exam: ${err.message}`),
+      onError: (err) => toast.error(`Failed to create exam: ${err.message}`),
     });
   }
 
   function handleDelete(id: string) {
     if (confirm("Are you sure you want to delete this exam?")) {
       deleteExam.mutate(id, {
-        onError: (err) =>         toast.error(`Failed to delete: ${err.message}`),
+        onError: (err) => toast.error(`Failed to delete: ${err.message}`),
       });
     }
   }
 
   // Filter students for selected exam's grade
   const examStudents = selectedExam
-    ? students.filter((s) => s.grade === selectedExam.class_id || String(s.class_level) === selectedExam.class_id)
+    ? students.filter(
+        (s) => s.grade === selectedExam.class_id || String(s.class_level) === selectedExam.class_id,
+      )
     : [];
 
   return (
@@ -140,7 +164,7 @@ function AdminExams() {
                   "w-full rounded-xl border p-4 text-left transition-all",
                   selectedExam?.id === exam.id
                     ? "border-blue-500 bg-blue-50/50 shadow-sm"
-                    : "border-gray-200 bg-white hover:bg-gray-50"
+                    : "border-gray-200 bg-white hover:bg-gray-50",
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -161,11 +185,7 @@ function AdminExams() {
         {/* Results */}
         <div className="lg:col-span-2">
           {selectedExam ? (
-            <ExamResultsPanel
-              exam={selectedExam}
-              students={examStudents}
-              onDelete={handleDelete}
-            />
+            <ExamResultsPanel exam={selectedExam} students={examStudents} onDelete={handleDelete} />
           ) : (
             <div className="flex h-full min-h-[200px] items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white">
               <p className="text-sm text-gray-500">Select an exam to view results.</p>
@@ -233,7 +253,9 @@ function AdminExams() {
                 <Input
                   type="number"
                   value={formData.total_marks}
-                  onChange={(e) => setFormData((p) => ({ ...p, total_marks: Number(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormData((p) => ({ ...p, total_marks: Number(e.target.value) }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -289,7 +311,7 @@ function ExamResultsPanel({
         toast.success("Results saved successfully!");
         setMarks({});
       },
-      onError: (err) =>       toast.error(`Failed to save: ${err.message}`),
+      onError: (err) => toast.error(`Failed to save: ${err.message}`),
     });
   }
 
@@ -304,7 +326,12 @@ function ExamResultsPanel({
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleSave} disabled={saveResults.isPending}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSave}
+              disabled={saveResults.isPending}
+            >
               <Save className="mr-1 h-3 w-3" />
               {saveResults.isPending ? "Saving..." : "Save Results"}
             </Button>
@@ -324,7 +351,10 @@ function ExamResultsPanel({
               const studentName = student.full_name || student.name || "Unknown";
 
               return (
-                <div key={student.id} className="flex items-center gap-3 rounded-lg border border-gray-100 p-3">
+                <div
+                  key={student.id}
+                  className="flex items-center gap-3 rounded-lg border border-gray-100 p-3"
+                >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{studentName}</p>
                   </div>

@@ -104,30 +104,32 @@ function AdminAdmissions() {
     {
       key: "application_number",
       label: "App #",
-      render: (row) => <span className="font-mono text-xs">{row.application_number}</span>,
+      render: (_value, row) => <span className="font-mono text-xs">{row.application_number}</span>,
     },
     {
       key: "student_name",
       label: "Student Name",
-      render: (row) => <span className="font-medium">{row.student_name}</span>,
+      render: (_value, row) => <span className="font-medium">{row.student_name}</span>,
     },
     {
       key: "program",
       label: "Program",
-      render: (row) => <span className="capitalize">{row.program.replace(/_/g, " ")}</span>,
+      render: (_value, row) => (
+        <span className="capitalize">{(row.program ?? "unassigned").replace(/_/g, " ")}</span>
+      ),
     },
     { key: "class_level", label: "Class" },
     {
       key: "campus",
       label: "Campus",
-      render: (row) => (
+      render: (_value, row) => (
         <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>
       ),
     },
     {
       key: "status",
       label: "Status",
-      render: (row) => {
+      render: (_value, row) => {
         const config = statusConfig[row.status];
         if (!config) return <Badge>{row.status}</Badge>;
         return (
@@ -141,13 +143,13 @@ function AdminAdmissions() {
     {
       key: "created_at",
       label: "Applied",
-      render: (row) =>
+      render: (_value, row) =>
         new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
     },
     {
       key: "id",
       label: "Actions",
-      render: (row) => (
+      render: (_value, row) => (
         <Button variant="ghost" size="sm" onClick={() => handleView(row)}>
           <Eye className="h-4 w-4" />
         </Button>
@@ -223,7 +225,9 @@ function AdminAdmissions() {
                 </div>
                 <div>
                   <span className="text-gray-500">Program:</span>{" "}
-                  <span className="capitalize">{selectedApp.program.replace(/_/g, " ")}</span>
+                  <span className="capitalize">
+                    {(selectedApp.program ?? "unassigned").replace(/_/g, " ")}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-500">Campus:</span> {selectedApp.campus}

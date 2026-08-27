@@ -1,17 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { FileText, Eye, Check, X, Clock, Loader2, MessageSquare, CheckCircle, XCircle } from "lucide-react";
+import {
+  FileText,
+  Eye,
+  Check,
+  X,
+  Clock,
+  Loader2,
+  MessageSquare,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { StatsCard } from "@/components/admin/stats-card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -35,9 +40,11 @@ const statusConfig: Record<string, { label: string; color: string }> = {
 
 function AdminInquiries() {
   const [statusFilter, setStatusFilter] = useState("all");
-  const { data: inquiries = [], isLoading, error } = useInquiries(
-    statusFilter === "all" ? undefined : { status: statusFilter }
-  );
+  const {
+    data: inquiries = [],
+    isLoading,
+    error,
+  } = useInquiries(statusFilter === "all" ? undefined : { status: statusFilter });
   const updateInquiry = useUpdateInquiry();
 
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
@@ -53,14 +60,18 @@ function AdminInquiries() {
 
   function handleStatusChange(id: string, newStatus: Inquiry["status"]) {
     updateInquiry.mutate(
-      { id, status: newStatus, responded_at: newStatus === "responded" ? new Date().toISOString() : undefined },
+      {
+        id,
+        status: newStatus,
+        responded_at: newStatus === "responded" ? new Date().toISOString() : undefined,
+      },
       {
         onSuccess: () => {
           setDialogOpen(false);
           setSelectedInquiry(null);
         },
-        onError: (err) =>         toast.error(`Failed to update: ${err.message}`),
-      }
+        onError: (err) => toast.error(`Failed to update: ${err.message}`),
+      },
     );
   }
 
@@ -75,7 +86,9 @@ function AdminInquiries() {
         <div className="text-center">
           <MessageSquare className="mx-auto h-12 w-12 text-red-400" />
           <p className="mt-2 text-sm text-red-600">Failed to load inquiries: {error.message}</p>
-          <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>Retry</Button>
+          <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
         </div>
       </div>
     );
@@ -86,7 +99,7 @@ function AdminInquiries() {
       key: "name",
       label: "Name",
       sortable: true,
-      render: (row) => <span className="font-medium">{row.name}</span>,
+      render: (_value, row) => <span className="font-medium">{row.name}</span>,
     },
     { key: "email", label: "Email" },
     { key: "phone", label: "Phone" },
@@ -94,20 +107,23 @@ function AdminInquiries() {
     {
       key: "status",
       label: "Status",
-      render: (row) => {
+      render: (_value, row) => {
         const config = statusConfig[row.status];
-        return <Badge className={cn("border-0", config?.color)}>{config?.label || row.status}</Badge>;
+        return (
+          <Badge className={cn("border-0", config?.color)}>{config?.label || row.status}</Badge>
+        );
       },
     },
     {
       key: "created_at",
       label: "Date",
-      render: (row) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
+      render: (_value, row) =>
+        new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
     },
     {
       key: "id",
       label: "Actions",
-      render: (row) => (
+      render: (_value, row) => (
         <Button variant="ghost" size="sm" onClick={() => handleView(row)}>
           <Eye className="h-4 w-4" />
         </Button>
@@ -124,7 +140,9 @@ function AdminInquiries() {
         </div>
         <div className="flex items-center gap-2">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36"><SelectValue placeholder="Filter" /></SelectTrigger>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="new">New</SelectItem>
@@ -159,30 +177,51 @@ function AdminInquiries() {
           {selectedInquiry && (
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">Name:</span> <span className="font-medium">{selectedInquiry.name}</span></div>
-                <div><span className="text-gray-500">Email:</span> {selectedInquiry.email || "N/A"}</div>
-                <div><span className="text-gray-500">Phone:</span> {selectedInquiry.phone || "N/A"}</div>
-                <div><span className="text-gray-500">Subject:</span> {selectedInquiry.subject || "N/A"}</div>
+                <div>
+                  <span className="text-gray-500">Name:</span>{" "}
+                  <span className="font-medium">{selectedInquiry.name}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Email:</span> {selectedInquiry.email || "N/A"}
+                </div>
+                <div>
+                  <span className="text-gray-500">Phone:</span> {selectedInquiry.phone || "N/A"}
+                </div>
+                <div>
+                  <span className="text-gray-500">Subject:</span> {selectedInquiry.subject || "N/A"}
+                </div>
                 <div>
                   <span className="text-gray-500">Status:</span>{" "}
                   <Badge className={cn("border-0", statusConfig[selectedInquiry.status]?.color)}>
                     {statusConfig[selectedInquiry.status]?.label || selectedInquiry.status}
                   </Badge>
                 </div>
-                <div><span className="text-gray-500">Date:</span> {new Date(selectedInquiry.created_at).toLocaleString()}</div>
+                <div>
+                  <span className="text-gray-500">Date:</span>{" "}
+                  {new Date(selectedInquiry.created_at).toLocaleString()}
+                </div>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">Message</p>
-                <p className="text-sm text-gray-900 rounded-lg bg-gray-50 p-3">{selectedInquiry.message}</p>
+                <p className="text-sm text-gray-900 rounded-lg bg-gray-50 p-3">
+                  {selectedInquiry.message}
+                </p>
               </div>
               <div className="flex flex-wrap gap-2 pt-2">
                 {selectedInquiry.status === "new" && (
-                  <Button size="sm" onClick={() => handleStatusChange(selectedInquiry.id, "responded")}>
+                  <Button
+                    size="sm"
+                    onClick={() => handleStatusChange(selectedInquiry.id, "responded")}
+                  >
                     <CheckCircle className="mr-1 h-3 w-3" /> Mark Responded
                   </Button>
                 )}
                 {selectedInquiry.status !== "closed" && (
-                  <Button variant="outline" size="sm" onClick={() => handleStatusChange(selectedInquiry.id, "closed")}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleStatusChange(selectedInquiry.id, "closed")}
+                  >
                     <XCircle className="mr-1 h-3 w-3" /> Close
                   </Button>
                 )}

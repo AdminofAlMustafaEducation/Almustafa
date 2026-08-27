@@ -12,11 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import {
-  useStudentProfile,
-  useStudentResults,
-  useStudentFees,
-} from "@/hooks/use-student-portal";
+import { useStudentProfile, useStudentResults, useStudentFees } from "@/hooks/use-student-portal";
 
 export const Route = createFileRoute("/portal/")({
   component: PortalDashboard,
@@ -44,9 +40,7 @@ function PortalDashboard() {
     .filter((f) => f.status === "pending" || f.status === "overdue")
     .slice(0, 3);
 
-  const totalPaid = fees
-    .filter((f) => f.status === "paid")
-    .reduce((sum, f) => sum + f.amount, 0);
+  const totalPaid = fees.filter((f) => f.status === "paid").reduce((sum, f) => sum + f.amount, 0);
   const totalDue = fees
     .filter((f) => f.status === "pending" || f.status === "overdue")
     .reduce((sum, f) => sum + f.amount, 0);
@@ -80,11 +74,9 @@ function PortalDashboard() {
               <p className="text-xs font-medium text-gray-500">Class</p>
               <GraduationCap className="h-4 w-4 text-gray-400" />
             </div>
-            <p className="mt-1 text-2xl font-bold text-gray-900">
-              {profile?.class_level ?? "-"}
-            </p>
+            <p className="mt-1 text-2xl font-bold text-gray-900">{profile?.class_level ?? "-"}</p>
             <p className="text-xs text-gray-500">
-              {profile ? programLabels[profile.program] : "-"}
+              {profile ? (programLabels[profile.program ?? ""] ?? profile.program ?? "-") : "-"}
             </p>
           </CardContent>
         </Card>
@@ -96,7 +88,7 @@ function PortalDashboard() {
               <MapPin className="h-4 w-4 text-gray-400" />
             </div>
             <p className="mt-1 text-lg font-bold text-gray-900">
-              {profile ? campusLabels[profile.campus] : "-"}
+              {profile ? (campusLabels[profile.campus ?? ""] ?? profile.campus ?? "-") : "-"}
             </p>
           </CardContent>
         </Card>
@@ -107,9 +99,7 @@ function PortalDashboard() {
               <p className="text-xs font-medium text-gray-500">Roll #</p>
               <BookOpen className="h-4 w-4 text-gray-400" />
             </div>
-            <p className="mt-1 text-lg font-bold text-gray-900">
-              {profile?.roll_number ?? "-"}
-            </p>
+            <p className="mt-1 text-lg font-bold text-gray-900">{profile?.roll_number ?? "-"}</p>
           </CardContent>
         </Card>
       </div>
@@ -239,9 +229,7 @@ function PortalDashboard() {
           </CardHeader>
           <CardContent className="pt-0">
             {upcomingFees.length === 0 ? (
-              <p className="py-4 text-center text-sm text-gray-500">
-                No pending fees. All paid!
-              </p>
+              <p className="py-4 text-center text-sm text-gray-500">No pending fees. All paid!</p>
             ) : (
               <div className="space-y-3">
                 {upcomingFees.map((fee) => (
@@ -254,7 +242,13 @@ function PortalDashboard() {
                         {fee.month ?? fee.fee_type}
                       </p>
                       <p className="text-xs text-gray-500">
-                        Due: {new Date(fee.due_date).toLocaleDateString("en-PK", { day: "numeric", month: "short" })}
+                        Due:{" "}
+                        {fee.due_date
+                          ? new Date(fee.due_date).toLocaleDateString("en-PK", {
+                              day: "numeric",
+                              month: "short",
+                            })
+                          : "No due date"}
                       </p>
                     </div>
                     <div className="text-right">
@@ -291,5 +285,3 @@ function PortalDashboard() {
     </div>
   );
 }
-
-

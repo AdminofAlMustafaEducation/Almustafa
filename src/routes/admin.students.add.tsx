@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { StudentForm, type StudentFormValues } from "@/components/admin/student-form";
 import { useCreateStudent } from "@/hooks/use-students";
+import type { Student } from "@/types/database";
 
 export const Route = createFileRoute("/admin/students/add")({
   component: AddStudentPage,
@@ -14,6 +15,13 @@ function AddStudentPage() {
   const createStudent = useCreateStudent();
 
   const handleSubmit = (data: StudentFormValues) => {
+    const program: Student["program"] =
+      data.program === "fsc_pre_medical"
+        ? "fsc_pre_medical"
+        : data.program === "fsc_pre_engineering"
+          ? "fsc_pre_engineering"
+          : "matric";
+    const campus: Student["campus"] = data.campus === "second" ? "second" : "main";
     const studentData = {
       ...data,
       email: data.email || undefined,
@@ -22,6 +30,9 @@ function AddStudentPage() {
       address: data.address || undefined,
       parent_cnic: data.parent_cnic || undefined,
       admission_date: new Date().toISOString().split("T")[0],
+      program,
+      campus,
+
       status: "active" as const,
     };
 
@@ -58,9 +69,7 @@ function AddStudentPage() {
 
       {createStudent.isError && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-          <p className="text-sm text-red-800">
-            Failed to create student. Please try again.
-          </p>
+          <p className="text-sm text-red-800">Failed to create student. Please try again.</p>
         </div>
       )}
     </div>

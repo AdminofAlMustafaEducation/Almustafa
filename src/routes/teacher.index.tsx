@@ -1,14 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { useTeacherBatches } from "@/hooks/use-portal";
-import {
-  Users,
-  Calendar,
-  FileText,
-  CalendarCheck,
-  BarChart3,
-  Clock,
-} from "lucide-react";
+import { Users, Calendar, FileText, CalendarCheck, BarChart3, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/admin/stats-card";
 
@@ -72,12 +65,8 @@ function TeacherDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">
-          Welcome, {user?.name || "Teacher"}!
-        </h2>
-        <p className="text-gray-600">
-          Here&apos;s what&apos;s happening with your classes today.
-        </p>
+        <h2 className="text-2xl font-bold text-gray-900">Welcome, {user?.name || "Teacher"}!</h2>
+        <p className="text-gray-600">Here&apos;s what&apos;s happening with your classes today.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

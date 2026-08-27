@@ -21,7 +21,8 @@ function GalleryPage() {
   const [filter, setFilter] = useState<(typeof galleryCategories)[number]>("All");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const visible = filter === "All" ? galleryImages : galleryImages.filter((image) => image.category === filter);
+  const visible =
+    filter === "All" ? galleryImages : galleryImages.filter((image) => image.category === filter);
 
   const close = useCallback(() => setActiveIndex(null), []);
   const next = useCallback(
@@ -29,7 +30,10 @@ function GalleryPage() {
     [visible.length],
   );
   const prev = useCallback(
-    () => setActiveIndex((index) => (index === null ? null : (index - 1 + visible.length) % visible.length)),
+    () =>
+      setActiveIndex((index) =>
+        index === null ? null : (index - 1 + visible.length) % visible.length,
+      ),
     [visible.length],
   );
 
@@ -118,7 +122,9 @@ function GalleryPage() {
             </div>
           ) : (
             <div className="rounded-2xl border border-border px-6 py-10 text-center">
-              <h3 className="font-display text-2xl font-black text-navy-deep">No images in this filter yet</h3>
+              <h3 className="font-display text-2xl font-black text-navy-deep">
+                No images in this filter yet
+              </h3>
               <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
                 Try another category to explore more of the academy.
               </p>

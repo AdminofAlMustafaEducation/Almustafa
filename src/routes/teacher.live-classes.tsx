@@ -21,7 +21,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useLiveClasses, useCreateLiveClass, useUpdateLiveClass, useDeleteLiveClass } from "@/hooks/use-live-classes";
+import {
+  useLiveClasses,
+  useCreateLiveClass,
+  useUpdateLiveClass,
+  useDeleteLiveClass,
+} from "@/hooks/use-live-classes";
 import { useAuth } from "@/hooks/use-auth";
 import { useTeacherProfile } from "@/hooks/use-portal";
 import { GRADES, SUBJECTS } from "@/lib/academy";
@@ -61,7 +66,15 @@ function TeacherLiveClasses() {
 
   function handleAdd() {
     setEditingClass(null);
-    setFormData({ title: "", subject_id: "", class_id: "", start_time: "", end_time: "", meeting_url: "", status: "scheduled" });
+    setFormData({
+      title: "",
+      subject_id: "",
+      class_id: "",
+      start_time: "",
+      end_time: "",
+      meeting_url: "",
+      status: "scheduled",
+    });
     setDialogOpen(true);
   }
 
@@ -107,9 +120,9 @@ function TeacherLiveClasses() {
 
   function handleDelete(id: string) {
     if (confirm("Delete this live class?")) {
-      deleteLiveClass.mutate(id, { 
+      deleteLiveClass.mutate(id, {
         onSuccess: () => toast.success("Live class deleted"),
-        onError: (err) => toast.error(`Failed: ${err.message}`) 
+        onError: (err) => toast.error(`Failed: ${err.message}`),
       });
     }
   }
@@ -119,7 +132,9 @@ function TeacherLiveClasses() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Live Classes</h1>
-          <p className="text-sm text-gray-500">Schedule and manage your live classes with Google Meet.</p>
+          <p className="text-sm text-gray-500">
+            Schedule and manage your live classes with Google Meet.
+          </p>
         </div>
         <Button onClick={handleAdd}>
           <Plus className="mr-2 h-4 w-4" /> Schedule Class
@@ -128,7 +143,9 @@ function TeacherLiveClasses() {
 
       {isLoading ? (
         <div className="space-y-3">
-          {[...Array(3)].map((_, i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-gray-100" />)}
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-24 animate-pulse rounded-xl bg-gray-100" />
+          ))}
         </div>
       ) : liveClasses.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-16">
@@ -163,9 +180,17 @@ function TeacherLiveClasses() {
                     <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {new Date(lc.start_time).toLocaleString("en-PK", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(lc.start_time).toLocaleString("en-PK", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                         {" - "}
-                        {new Date(lc.end_time).toLocaleTimeString("en-PK", { hour: "2-digit", minute: "2-digit" })}
+                        {new Date(lc.end_time).toLocaleTimeString("en-PK", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </span>
                     </div>
                     <div className="mt-3 flex items-center gap-2">
@@ -197,43 +222,100 @@ function TeacherLiveClasses() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Title *</Label>
-              <Input value={formData.title} onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))} placeholder="e.g. Mathematics - Grade 9" />
+              <Input
+                value={formData.title}
+                onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
+                placeholder="e.g. Mathematics - Grade 9"
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Subject</Label>
-                <Select value={formData.subject_id} onValueChange={(v) => setFormData((p) => ({ ...p, subject_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                  <SelectContent>{SUBJECTS.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                <Select
+                  value={formData.subject_id}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, subject_id: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBJECTS.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Class *</Label>
-                <Select value={formData.class_id} onValueChange={(v) => setFormData((p) => ({ ...p, class_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                  <SelectContent>{GRADES.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
+                <Select
+                  value={formData.class_id}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, class_id: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GRADES.map((g) => (
+                      <SelectItem key={g} value={g}>
+                        {g}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Start Time *</Label>
-                <Input type="datetime-local" value={formData.start_time} onChange={(e) => setFormData((p) => ({ ...p, start_time: e.target.value }))} />
+                <Input
+                  type="datetime-local"
+                  value={formData.start_time}
+                  onChange={(e) => setFormData((p) => ({ ...p, start_time: e.target.value }))}
+                />
               </div>
               <div className="space-y-2">
                 <Label>End Time *</Label>
-                <Input type="datetime-local" value={formData.end_time} onChange={(e) => setFormData((p) => ({ ...p, end_time: e.target.value }))} />
+                <Input
+                  type="datetime-local"
+                  value={formData.end_time}
+                  onChange={(e) => setFormData((p) => ({ ...p, end_time: e.target.value }))}
+                />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Google Meet URL *</Label>
-              <Input value={formData.meeting_url} onChange={(e) => setFormData((p) => ({ ...p, meeting_url: e.target.value }))} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+              <Input
+                value={formData.meeting_url}
+                onChange={(e) => setFormData((p) => ({ ...p, meeting_url: e.target.value }))}
+                placeholder="https://meet.google.com/xxx-xxxx-xxx"
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={!formData.title || !formData.class_id || !formData.meeting_url || createLiveClass.isPending || updateLiveClass.isPending}>
-              {createLiveClass.isPending || updateLiveClass.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : editingClass ? "Save" : "Schedule"}
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={
+                !formData.title ||
+                !formData.class_id ||
+                !formData.meeting_url ||
+                createLiveClass.isPending ||
+                updateLiveClass.isPending
+              }
+            >
+              {createLiveClass.isPending || updateLiveClass.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : editingClass ? (
+                "Save"
+              ) : (
+                "Schedule"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

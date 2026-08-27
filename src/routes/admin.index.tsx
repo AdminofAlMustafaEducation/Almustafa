@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Users, FileText, MessageSquare, GraduationCap, ArrowRight, Clock, CheckCircle } from "lucide-react";
+import {
+  Users,
+  FileText,
+  MessageSquare,
+  GraduationCap,
+  ArrowRight,
+  Clock,
+  CheckCircle,
+} from "lucide-react";
 import { StatsCard } from "@/components/admin/stats-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,7 +55,7 @@ function AdminDashboard() {
       value: String(inquiries.length),
       icon: MessageSquare,
       description: `${newInquiries} new`,
-      trend: newInquiries > 0 ? "up" as const : "neutral" as const,
+      trend: newInquiries > 0 ? ("up" as const) : ("neutral" as const),
     },
     {
       title: "Applications",
@@ -83,7 +91,10 @@ function AdminDashboard() {
           <div className="mt-4 space-y-3">
             {recentInquiries.length > 0 ? (
               recentInquiries.map((inquiry) => (
-                <div key={inquiry.id} className="flex items-start gap-3 rounded-lg border border-gray-100 p-3">
+                <div
+                  key={inquiry.id}
+                  className="flex items-start gap-3 rounded-lg border border-gray-100 p-3"
+                >
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-600">
                     {inquiry.name.charAt(0)}
                   </div>

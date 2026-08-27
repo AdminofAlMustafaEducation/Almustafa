@@ -33,9 +33,33 @@ const mockExams: Exam[] = [
 ];
 
 const mockResults: ExamResult[] = [
-  { id: "1", exam_id: "1", student_id: "1", marks_obtained: 85, grade: "A", created_at: "2026-08-10T00:00:00Z", updated_at: "2026-08-10T00:00:00Z" },
-  { id: "2", exam_id: "1", student_id: "2", marks_obtained: 72, grade: "B", created_at: "2026-08-10T00:00:00Z", updated_at: "2026-08-10T00:00:00Z" },
-  { id: "3", exam_id: "1", student_id: "3", marks_obtained: 91, grade: "A+", created_at: "2026-08-10T00:00:00Z", updated_at: "2026-08-10T00:00:00Z" },
+  {
+    id: "1",
+    exam_id: "1",
+    student_id: "1",
+    marks_obtained: 85,
+    grade: "A",
+    created_at: "2026-08-10T00:00:00Z",
+    updated_at: "2026-08-10T00:00:00Z",
+  },
+  {
+    id: "2",
+    exam_id: "1",
+    student_id: "2",
+    marks_obtained: 72,
+    grade: "B",
+    created_at: "2026-08-10T00:00:00Z",
+    updated_at: "2026-08-10T00:00:00Z",
+  },
+  {
+    id: "3",
+    exam_id: "1",
+    student_id: "3",
+    marks_obtained: 91,
+    grade: "A+",
+    created_at: "2026-08-10T00:00:00Z",
+    updated_at: "2026-08-10T00:00:00Z",
+  },
 ];
 
 // Query keys
@@ -95,7 +119,10 @@ export function useExamResults(examId: string) {
         return mockResults.filter((r) => r.exam_id === examId);
       }
 
-      const { data, error } = await supabase!.from("exam_results").select("*").eq("exam_id", examId);
+      const { data, error } = await supabase!
+        .from("exam_results")
+        .select("*")
+        .eq("exam_id", examId);
       if (error) throw new Error(error.message);
       return (data ?? []) as ExamResult[];
     },
@@ -134,12 +161,12 @@ export function useSaveExamResults() {
 
   return useMutation({
     mutationFn: async (
-      results: { exam_id: string; student_id: string; marks_obtained: number; remarks?: string }[]
+      results: { exam_id: string; student_id: string; marks_obtained: number; remarks?: string }[],
     ): Promise<ExamResult[]> => {
       if (USE_MOCK) {
         const saved: ExamResult[] = results.map((r) => {
           const existing = mockResults.find(
-            (mr) => mr.exam_id === r.exam_id && mr.student_id === r.student_id
+            (mr) => mr.exam_id === r.exam_id && mr.student_id === r.student_id,
           );
           if (existing) {
             existing.marks_obtained = r.marks_obtained;
@@ -161,15 +188,18 @@ export function useSaveExamResults() {
       }
 
       // Upsert results
-      const { data, error } = await supabase!.from("exam_results").upsert(
-        results.map((r) => ({
-          exam_id: r.exam_id,
-          student_id: r.student_id,
-          marks_obtained: r.marks_obtained,
-          remarks: r.remarks,
-        })),
-        { onConflict: "exam_id,student_id" }
-      ).select();
+      const { data, error } = await supabase!
+        .from("exam_results")
+        .upsert(
+          results.map((r) => ({
+            exam_id: r.exam_id,
+            student_id: r.student_id,
+            marks_obtained: r.marks_obtained,
+            remarks: r.remarks,
+          })),
+          { onConflict: "exam_id,student_id" },
+        )
+        .select();
 
       if (error) throw new Error(error.message);
       return (data ?? []) as ExamResult[];

@@ -21,7 +21,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useLiveClasses, useCreateLiveClass, useUpdateLiveClass, useDeleteLiveClass } from "@/hooks/use-live-classes";
+import {
+  useLiveClasses,
+  useCreateLiveClass,
+  useUpdateLiveClass,
+  useDeleteLiveClass,
+} from "@/hooks/use-live-classes";
 import { useFaculty } from "@/hooks/use-faculty";
 import { GRADES, SUBJECTS } from "@/lib/academy";
 import { cn } from "@/lib/utils";
@@ -60,7 +65,16 @@ function AdminLiveClasses() {
 
   function handleAdd() {
     setEditingClass(null);
-    setFormData({ title: "", subject_id: "", class_id: "", teacher_id: faculty[0]?.id || "", start_time: "", end_time: "", meeting_url: "", status: "scheduled" });
+    setFormData({
+      title: "",
+      subject_id: "",
+      class_id: "",
+      teacher_id: faculty[0]?.id || "",
+      start_time: "",
+      end_time: "",
+      meeting_url: "",
+      status: "scheduled",
+    });
     setDialogOpen(true);
   }
 
@@ -80,11 +94,12 @@ function AdminLiveClasses() {
   }
 
   function handleSave() {
-    if (!formData.title || !formData.class_id || !formData.teacher_id || !formData.meeting_url) return;
+    if (!formData.title || !formData.class_id || !formData.teacher_id || !formData.meeting_url)
+      return;
 
     const callbacks = {
       onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) =>       toast.error(`Failed to save: ${err.message}`),
+      onError: (err: Error) => toast.error(`Failed to save: ${err.message}`),
     };
 
     const data = {
@@ -121,7 +136,9 @@ function AdminLiveClasses() {
 
       {isLoading ? (
         <div className="space-y-3">
-          {[...Array(3)].map((_, i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-gray-100" />)}
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-24 animate-pulse rounded-xl bg-gray-100" />
+          ))}
         </div>
       ) : liveClasses.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12">
@@ -149,7 +166,8 @@ function AdminLiveClasses() {
                       <div>
                         <h3 className="font-semibold text-gray-900">{lc.title}</h3>
                         <p className="text-sm text-gray-500">
-                          {lc.class_id} {subject ? `• ${subject.name}` : ""} {teacher ? `• ${teacher.full_name || teacher.name}` : ""}
+                          {lc.class_id} {subject ? `• ${subject.name}` : ""}{" "}
+                          {teacher ? `• ${teacher.full_name || teacher.name}` : ""}
                         </p>
                       </div>
                       <Badge className={cn("border-0", config.color)}>{config.label}</Badge>
@@ -157,9 +175,17 @@ function AdminLiveClasses() {
                     <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {new Date(lc.start_time).toLocaleString("en-PK", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(lc.start_time).toLocaleString("en-PK", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                         {" - "}
-                        {new Date(lc.end_time).toLocaleTimeString("en-PK", { hour: "2-digit", minute: "2-digit" })}
+                        {new Date(lc.end_time).toLocaleTimeString("en-PK", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </span>
                     </div>
                     <div className="mt-3 flex items-center gap-2">
@@ -191,50 +217,117 @@ function AdminLiveClasses() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Title *</Label>
-              <Input value={formData.title} onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))} placeholder="e.g. Mathematics - Grade 9" />
+              <Input
+                value={formData.title}
+                onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
+                placeholder="e.g. Mathematics - Grade 9"
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Subject</Label>
-                <Select value={formData.subject_id} onValueChange={(v) => setFormData((p) => ({ ...p, subject_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                  <SelectContent>{SUBJECTS.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                <Select
+                  value={formData.subject_id}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, subject_id: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBJECTS.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Class *</Label>
-                <Select value={formData.class_id} onValueChange={(v) => setFormData((p) => ({ ...p, class_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                  <SelectContent>{GRADES.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
+                <Select
+                  value={formData.class_id}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, class_id: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GRADES.map((g) => (
+                      <SelectItem key={g} value={g}>
+                        {g}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="space-y-2">
               <Label>Teacher *</Label>
-              <Select value={formData.teacher_id} onValueChange={(v) => setFormData((p) => ({ ...p, teacher_id: v }))}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>{faculty.map((f) => <SelectItem key={f.id} value={f.id}>{f.full_name || f.name}</SelectItem>)}</SelectContent>
+              <Select
+                value={formData.teacher_id}
+                onValueChange={(v) => setFormData((p) => ({ ...p, teacher_id: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  {faculty.map((f) => (
+                    <SelectItem key={f.id} value={f.id}>
+                      {f.full_name || f.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Start Time *</Label>
-                <Input type="datetime-local" value={formData.start_time} onChange={(e) => setFormData((p) => ({ ...p, start_time: e.target.value }))} />
+                <Input
+                  type="datetime-local"
+                  value={formData.start_time}
+                  onChange={(e) => setFormData((p) => ({ ...p, start_time: e.target.value }))}
+                />
               </div>
               <div className="space-y-2">
                 <Label>End Time *</Label>
-                <Input type="datetime-local" value={formData.end_time} onChange={(e) => setFormData((p) => ({ ...p, end_time: e.target.value }))} />
+                <Input
+                  type="datetime-local"
+                  value={formData.end_time}
+                  onChange={(e) => setFormData((p) => ({ ...p, end_time: e.target.value }))}
+                />
               </div>
             </div>
             <div className="space-y-2">
               <Label>Google Meet URL *</Label>
-              <Input value={formData.meeting_url} onChange={(e) => setFormData((p) => ({ ...p, meeting_url: e.target.value }))} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+              <Input
+                value={formData.meeting_url}
+                onChange={(e) => setFormData((p) => ({ ...p, meeting_url: e.target.value }))}
+                placeholder="https://meet.google.com/xxx-xxxx-xxx"
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={!formData.title || !formData.class_id || !formData.teacher_id || !formData.meeting_url}>
-              {createLiveClass.isPending || updateLiveClass.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : editingClass ? "Save" : "Schedule"}
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={
+                !formData.title ||
+                !formData.class_id ||
+                !formData.teacher_id ||
+                !formData.meeting_url
+              }
+            >
+              {createLiveClass.isPending || updateLiveClass.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : editingClass ? (
+                "Save"
+              ) : (
+                "Schedule"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

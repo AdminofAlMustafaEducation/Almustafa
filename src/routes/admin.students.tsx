@@ -19,10 +19,7 @@ export const Route = createFileRoute("/admin/students")({
   component: StudentsPage,
 });
 
-const statusConfig: Record<
-  Student["status"],
-  { label: string; className: string }
-> = {
+const statusConfig: Record<Student["status"], { label: string; className: string }> = {
   active: { label: "Active", className: "badge-success" },
   inactive: { label: "Inactive", className: "badge-neutral" },
   graduated: { label: "Graduated", className: "badge-info" },
@@ -82,12 +79,18 @@ function StudentsPage() {
       key: "program",
       label: "Program",
       sortable: true,
-      render: (_value, row) => programLabels[row.program] ?? row.program,
+      render: (_value, row) => {
+        const program = row.program ?? "unassigned";
+        return programLabels[program] ?? program;
+      },
     },
     {
       key: "campus",
       label: "Campus",
-      render: (_value, row) => campusLabels[row.campus] ?? row.campus,
+      render: (_value, row) => {
+        const campus = row.campus ?? "unassigned";
+        return campusLabels[campus] ?? campus;
+      },
     },
     {
       key: "status",
@@ -133,27 +136,10 @@ function StudentsPage() {
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Total Students"
-          value={students.length}
-          icon={Users}
-        />
-        <StatsCard
-          title="Active"
-          value={activeCount}
-          icon={UserCheck}
-          trend="up"
-        />
-        <StatsCard
-          title="Graduated"
-          value={graduatedCount}
-          icon={GraduationCap}
-        />
-        <StatsCard
-          title="Inactive / Withdrawn"
-          value={inactiveCount}
-          icon={UserX}
-        />
+        <StatsCard title="Total Students" value={students.length} icon={Users} />
+        <StatsCard title="Active" value={activeCount} icon={UserCheck} trend="up" />
+        <StatsCard title="Graduated" value={graduatedCount} icon={GraduationCap} />
+        <StatsCard title="Inactive / Withdrawn" value={inactiveCount} icon={UserX} />
       </div>
 
       {/* Filters */}

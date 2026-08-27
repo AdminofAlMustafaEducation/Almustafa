@@ -43,6 +43,8 @@ function StudentDetail() {
     graduated: "bg-blue-100 text-blue-800",
     withdrawn: "bg-red-100 text-red-800",
   };
+  const studentName = student.name ?? student.full_name;
+  const program = student.program ?? "Not assigned";
 
   return (
     <div className="space-y-6">
@@ -54,7 +56,7 @@ function StudentDetail() {
             </Button>
           </Link>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{student.name}</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{studentName}</h2>
             <p className="text-gray-600">Roll Number: {student.roll_number || "N/A"}</p>
           </div>
         </div>
@@ -68,14 +70,20 @@ function StudentDetail() {
         <Card>
           <CardContent className="flex flex-col items-center p-6">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={student.photo_url} alt={student.name} />
+              <AvatarImage src={student.photo_url} alt={studentName} />
               <AvatarFallback className="bg-gray-200 text-2xl font-bold">
-                {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                {studentName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)}
               </AvatarFallback>
             </Avatar>
-            <h3 className="mt-4 text-xl font-bold text-gray-900">{student.name}</h3>
-            <p className="text-sm text-gray-500 capitalize">{student.program.replace(/_/g, " ")}</p>
-            <Badge variant="secondary" className="mt-2">Class {student.class_level}</Badge>
+            <h3 className="mt-4 text-xl font-bold text-gray-900">{studentName}</h3>
+            <p className="text-sm text-gray-500 capitalize">{program.replace(/_/g, " ")}</p>
+            <Badge variant="secondary" className="mt-2">
+              Class {student.class_level}
+            </Badge>
           </CardContent>
         </Card>
 
@@ -102,7 +110,14 @@ function StudentDetail() {
             {student.date_of_birth && (
               <div className="flex items-center gap-2 text-sm">
                 <Calendar className="h-4 w-4 text-gray-400" />
-                <span>DOB: {new Date(student.date_of_birth).toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" })}</span>
+                <span>
+                  DOB:{" "}
+                  {new Date(student.date_of_birth).toLocaleDateString("en-PK", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
               </div>
             )}
             {student.address && (
@@ -125,7 +140,8 @@ function StudentDetail() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="text-sm">
-              <span className="text-gray-500">Name:</span> <span className="font-medium">{student.parent_name}</span>
+              <span className="text-gray-500">Name:</span>{" "}
+              <span className="font-medium">{student.parent_name}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Phone className="h-4 w-4 text-gray-400" />
@@ -149,7 +165,7 @@ function StudentDetail() {
           <div className="grid gap-4 sm:grid-cols-4">
             <div>
               <p className="text-xs text-gray-500">Program</p>
-              <p className="font-medium capitalize">{student.program.replace(/_/g, " ")}</p>
+              <p className="font-medium capitalize">{program.replace(/_/g, " ")}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Class Level</p>
@@ -161,7 +177,13 @@ function StudentDetail() {
             </div>
             <div>
               <p className="text-xs text-gray-500">Admission Date</p>
-              <p className="font-medium">{new Date(student.admission_date).toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" })}</p>
+              <p className="font-medium">
+                {new Date(student.admission_date).toLocaleDateString("en-PK", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
             </div>
           </div>
         </CardContent>

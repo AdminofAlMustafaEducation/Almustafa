@@ -21,7 +21,9 @@ export function FacultyCard({ member, featured = false }: { member: Faculty; fea
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <span className="font-display text-2xl font-bold text-gold sm:text-3xl">{member.initials}</span>
+              <span className="font-display text-2xl font-bold text-gold sm:text-3xl">
+                {member.initials}
+              </span>
             </div>
           )}
         </div>

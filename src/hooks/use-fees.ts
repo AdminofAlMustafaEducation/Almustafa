@@ -3,11 +3,69 @@ import { supabase } from "@/lib/supabase";
 import type { Fee } from "@/types/database";
 
 const mockFees: Fee[] = [
-  { id: "1", student_id: "1", amount: 5000, fee_type: "monthly", month: "August 2026", due_date: "2026-08-10", status: "pending", created_at: "2026-08-01T00:00:00Z", updated_at: "2026-08-01T00:00:00Z" },
-  { id: "2", student_id: "2", amount: 5000, fee_type: "monthly", month: "August 2026", due_date: "2026-08-10", paid_date: "2026-08-05", status: "paid", payment_method: "cash", receipt_number: "RCP-001", created_at: "2026-08-01T00:00:00Z", updated_at: "2026-08-05T00:00:00Z" },
-  { id: "3", student_id: "3", amount: 6000, fee_type: "monthly", month: "August 2026", due_date: "2026-08-10", status: "overdue", created_at: "2026-08-01T00:00:00Z", updated_at: "2026-08-01T00:00:00Z" },
-  { id: "4", student_id: "4", amount: 5000, fee_type: "monthly", month: "August 2026", due_date: "2026-08-10", paid_date: "2026-08-03", status: "paid", payment_method: "bank", receipt_number: "RCP-002", created_at: "2026-08-01T00:00:00Z", updated_at: "2026-08-03T00:00:00Z" },
-  { id: "5", student_id: "1", amount: 2000, fee_type: "admission", due_date: "2026-04-01", paid_date: "2026-04-01", status: "paid", payment_method: "cash", receipt_number: "RCP-003", created_at: "2026-04-01T00:00:00Z", updated_at: "2026-04-01T00:00:00Z" },
+  {
+    id: "1",
+    student_id: "1",
+    amount: 5000,
+    fee_type: "monthly",
+    month: "August 2026",
+    due_date: "2026-08-10",
+    status: "pending",
+    created_at: "2026-08-01T00:00:00Z",
+    updated_at: "2026-08-01T00:00:00Z",
+  },
+  {
+    id: "2",
+    student_id: "2",
+    amount: 5000,
+    fee_type: "monthly",
+    month: "August 2026",
+    due_date: "2026-08-10",
+    paid_date: "2026-08-05",
+    status: "paid",
+    payment_method: "cash",
+    receipt_number: "RCP-001",
+    created_at: "2026-08-01T00:00:00Z",
+    updated_at: "2026-08-05T00:00:00Z",
+  },
+  {
+    id: "3",
+    student_id: "3",
+    amount: 6000,
+    fee_type: "monthly",
+    month: "August 2026",
+    due_date: "2026-08-10",
+    status: "overdue",
+    created_at: "2026-08-01T00:00:00Z",
+    updated_at: "2026-08-01T00:00:00Z",
+  },
+  {
+    id: "4",
+    student_id: "4",
+    amount: 5000,
+    fee_type: "monthly",
+    month: "August 2026",
+    due_date: "2026-08-10",
+    paid_date: "2026-08-03",
+    status: "paid",
+    payment_method: "bank",
+    receipt_number: "RCP-002",
+    created_at: "2026-08-01T00:00:00Z",
+    updated_at: "2026-08-03T00:00:00Z",
+  },
+  {
+    id: "5",
+    student_id: "1",
+    amount: 2000,
+    fee_type: "admission",
+    due_date: "2026-04-01",
+    paid_date: "2026-04-01",
+    status: "paid",
+    payment_method: "cash",
+    receipt_number: "RCP-003",
+    created_at: "2026-04-01T00:00:00Z",
+    updated_at: "2026-04-01T00:00:00Z",
+  },
 ];
 
 const USE_MOCK = import.meta.env.DEV && !supabase;
@@ -23,7 +81,10 @@ export function useFees(filters?: { status?: string; studentId?: string }) {
         return result;
       }
       try {
-        let query = supabase!.from("fee_invoices").select("*").order("created_at", { ascending: false });
+        let query = supabase!
+          .from("fee_invoices")
+          .select("*")
+          .order("created_at", { ascending: false });
         if (filters?.status) query = query.eq("status", filters.status);
         if (filters?.studentId) query = query.eq("student_id", filters.studentId);
         const { data, error } = await query;
@@ -56,7 +117,12 @@ export function useUpdateFee() {
         mockFees[index] = { ...mockFees[index], ...updates, updated_at: new Date().toISOString() };
         return mockFees[index];
       }
-      const { data, error } = await supabase!.from("fees").update({ ...updates, updated_at: new Date().toISOString() }).eq("id", id).select().single();
+      const { data, error } = await supabase!
+        .from("fees")
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .select()
+        .single();
       if (error) throw new Error(error.message);
       return data as Fee;
     },
