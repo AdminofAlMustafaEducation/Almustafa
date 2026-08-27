@@ -24,15 +24,22 @@ export const Route = createFileRoute("/track")({
 function TrackPage() {
   const [searchId, setSearchId] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
+  const [searchToken, setSearchToken] = useState("");
   const [queriedId, setQueriedId] = useState("");
   const [queriedEmail, setQueriedEmail] = useState("");
-  const { data: application, isLoading, isError } = useApplication(queriedId, queriedEmail);
+  const [queriedToken, setQueriedToken] = useState("");
+  const {
+    data: application,
+    isLoading,
+    isError,
+  } = useApplication(queriedId, queriedEmail, queriedToken);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (searchId.trim() && searchEmail.trim()) {
+    if (searchId.trim() && searchEmail.trim() && searchToken.trim()) {
       setQueriedId(searchId.trim());
       setQueriedEmail(searchEmail.trim());
+      setQueriedToken(searchToken.trim());
     }
   }
 
@@ -46,7 +53,7 @@ function TrackPage() {
             application.
           </>
         }
-        description="Enter your application number and application email to check the current status of your admission application."
+        description="Enter your application number, application email, and private tracking token to check your status."
         backgroundImage={heroBg}
       />
 
@@ -86,6 +93,19 @@ function TrackPage() {
                       required
                     />
                   </div>
+                  <div className="min-w-0 flex-1">
+                    <label htmlFor="tracking-token" className="sr-only">
+                      Private tracking token
+                    </label>
+                    <Input
+                      id="tracking-token"
+                      value={searchToken}
+                      onChange={(e) => setSearchToken(e.target.value)}
+                      placeholder="Private tracking token"
+                      className="h-12 text-base"
+                      required
+                    />
+                  </div>
                   <Button type="submit" size="lg" className="h-12 shrink-0">
                     <Search className="h-4 w-4" /> Track
                   </Button>
@@ -101,7 +121,8 @@ function TrackPage() {
                 </div>
               )}
 
-              {(isError || (queriedId && queriedEmail && !isLoading && !application)) && (
+              {(isError ||
+                (queriedId && queriedEmail && queriedToken && !isLoading && !application)) && (
                 <Card className="border-destructive/30">
                   <CardContent className="flex items-center gap-3 px-6 py-8">
                     <AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
@@ -136,10 +157,11 @@ function TrackPage() {
                 </Card>
               )}
 
-              {(!queriedId || !queriedEmail) && !isLoading && (
+              {(!queriedId || !queriedEmail || !queriedToken) && !isLoading && (
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
-                    Enter your application number and application email above to view the status.
+                    Enter your application number, email, and private tracking token above to view
+                    the status.
                   </p>
                 </div>
               )}

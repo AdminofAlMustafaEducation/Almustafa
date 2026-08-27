@@ -31,6 +31,21 @@ assertAbsent(
   /\bpassword\s*:\s*data\.password\b/,
   "public application mutation still sends a raw password",
 );
+assertAbsent(
+  "src/hooks/use-admissions.ts",
+  /from\(["']applications["']\)[\s\S]*?\.insert\(/,
+  "public application flow still inserts rows directly from the browser",
+);
+assertAbsent(
+  "src/hooks/use-admissions.ts",
+  /rpc\(["']approve_and_create_account["']/,
+  "browser-side code still calls the privileged account-provisioning RPC",
+);
+assertAbsent(
+  "src/routes/admin.admissions.tsx",
+  /reviewerId\s*:/,
+  "admin approval still supplies reviewer identity from the browser",
+);
 
 function findFiles(directory) {
   const absoluteDirectory = resolve(root, directory);

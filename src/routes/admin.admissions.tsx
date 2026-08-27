@@ -22,8 +22,11 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useApplications, useUpdateApplicationStatus, useApproveAndAdmit } from "@/hooks/use-admissions";
-import { useAuth } from "@/hooks/use-auth";
+import {
+  useApplications,
+  useUpdateApplicationStatus,
+  useApproveAndAdmit,
+} from "@/hooks/use-admissions";
 import { cn } from "@/lib/utils";
 import type { Application } from "@/types/database";
 
@@ -40,11 +43,12 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
 };
 
 function AdminAdmissions() {
-  const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState("all");
-  const { data: applications = [], isLoading, error } = useApplications(
-    statusFilter === "all" ? undefined : { status: statusFilter }
-  );
+  const {
+    data: applications = [],
+    isLoading,
+    error,
+  } = useApplications(statusFilter === "all" ? undefined : { status: statusFilter });
   const updateStatus = useUpdateApplicationStatus();
   const approveAndAdmit = useApproveAndAdmit();
 
@@ -72,7 +76,7 @@ function AdminAdmissions() {
         onError: (err) => {
           toast.error(`Failed to update: ${err.message}`);
         },
-      }
+      },
     );
   }
 
@@ -102,7 +106,11 @@ function AdminAdmissions() {
       label: "App #",
       render: (row) => <span className="font-mono text-xs">{row.application_number}</span>,
     },
-    { key: "student_name", label: "Student Name", render: (row) => <span className="font-medium">{row.student_name}</span> },
+    {
+      key: "student_name",
+      label: "Student Name",
+      render: (row) => <span className="font-medium">{row.student_name}</span>,
+    },
     {
       key: "program",
       label: "Program",
@@ -112,7 +120,9 @@ function AdminAdmissions() {
     {
       key: "campus",
       label: "Campus",
-      render: (row) => <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>,
+      render: (row) => (
+        <Badge variant="secondary">{row.campus === "main" ? "Main" : "Second"}</Badge>
+      ),
     },
     {
       key: "status",
@@ -131,7 +141,8 @@ function AdminAdmissions() {
     {
       key: "created_at",
       label: "Applied",
-      render: (row) => new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
+      render: (row) =>
+        new Date(row.created_at).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
     },
     {
       key: "id",
@@ -153,7 +164,9 @@ function AdminAdmissions() {
         </div>
         <div className="flex items-center gap-2">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36"><SelectValue placeholder="Filter" /></SelectTrigger>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
@@ -191,15 +204,36 @@ function AdminAdmissions() {
           {selectedApp && (
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">App #:</span> <span className="font-mono">{selectedApp.application_number}</span></div>
-                <div><span className="text-gray-500">Student:</span> <span className="font-medium">{selectedApp.student_name}</span></div>
-                <div><span className="text-gray-500">Email:</span> {selectedApp.email}</div>
-                <div><span className="text-gray-500">Phone:</span> {selectedApp.phone}</div>
-                <div><span className="text-gray-500">Class:</span> {selectedApp.class_level}</div>
-                <div><span className="text-gray-500">Program:</span> <span className="capitalize">{selectedApp.program.replace(/_/g, " ")}</span></div>
-                <div><span className="text-gray-500">Campus:</span> {selectedApp.campus}</div>
-                <div><span className="text-gray-500">Parent:</span> {selectedApp.parent_name}</div>
-                <div><span className="text-gray-500">Parent Phone:</span> {selectedApp.parent_phone}</div>
+                <div>
+                  <span className="text-gray-500">App #:</span>{" "}
+                  <span className="font-mono">{selectedApp.application_number}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Student:</span>{" "}
+                  <span className="font-medium">{selectedApp.student_name}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Email:</span> {selectedApp.email}
+                </div>
+                <div>
+                  <span className="text-gray-500">Phone:</span> {selectedApp.phone}
+                </div>
+                <div>
+                  <span className="text-gray-500">Class:</span> {selectedApp.class_level}
+                </div>
+                <div>
+                  <span className="text-gray-500">Program:</span>{" "}
+                  <span className="capitalize">{selectedApp.program.replace(/_/g, " ")}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Campus:</span> {selectedApp.campus}
+                </div>
+                <div>
+                  <span className="text-gray-500">Parent:</span> {selectedApp.parent_name}
+                </div>
+                <div>
+                  <span className="text-gray-500">Parent Phone:</span> {selectedApp.parent_phone}
+                </div>
                 <div>
                   <span className="text-gray-500">Status:</span>{" "}
                   <Badge className={cn("border-0", statusConfig[selectedApp.status]?.color)}>
@@ -221,14 +255,21 @@ function AdminAdmissions() {
             </div>
           )}
           <DialogFooter className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Close
+            </Button>
             {(updateStatus.isPending || approveAndAdmit.isPending) && (
-              <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</Button>
+              <Button disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
+              </Button>
             )}
             {selectedApp && !updateStatus.isPending && !approveAndAdmit.isPending && (
               <>
                 {selectedApp.status === "pending" && (
-                  <Button variant="secondary" onClick={() => handleStatusChange(selectedApp.id, "reviewing")}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleStatusChange(selectedApp.id, "reviewing")}
+                  >
                     <Eye className="mr-1 h-3 w-3" /> Start Review
                   </Button>
                 )}
@@ -237,7 +278,7 @@ function AdminAdmissions() {
                     className="bg-green-600 hover:bg-green-700"
                     onClick={() => {
                       approveAndAdmit.mutate(
-                        { applicationId: selectedApp.id, reviewerId: user?.id || "admin" },
+                        { applicationId: selectedApp.id },
                         {
                           onSuccess: () => {
                             setDialogOpen(false);
@@ -245,7 +286,7 @@ function AdminAdmissions() {
                             setReviewerNotes("");
                           },
                           onError: (err) => toast.error(`Failed to approve: ${err.message}`),
-                        }
+                        },
                       );
                     }}
                   >
@@ -253,7 +294,10 @@ function AdminAdmissions() {
                   </Button>
                 )}
                 {selectedApp.status !== "rejected" && selectedApp.status !== "enrolled" && (
-                  <Button variant="destructive" onClick={() => handleStatusChange(selectedApp.id, "rejected")}>
+                  <Button
+                    variant="destructive"
+                    onClick={() => handleStatusChange(selectedApp.id, "rejected")}
+                  >
                     <X className="mr-1 h-3 w-3" /> Reject
                   </Button>
                 )}

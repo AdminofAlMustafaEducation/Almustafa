@@ -1,6 +1,6 @@
 # Al-Mustafa Academy Remediation Roadmap
 
-**Status:** Phase 2 in progress
+**Status:** Phase 3 in progress
 **Owner:** Al-Mustafa engineering  
 **Scope:** Public website, Supabase data layer, authentication, admin portal, teacher portal, student portal, application tracking, Vercel delivery, and GitHub release controls.
 
@@ -60,6 +60,14 @@ The Phase 1 security scan passed, the production build passed, and `git diff --c
 The repository-side Phase 2 boundary is now prepared but not applied to any Supabase environment. The public tracking route requires both application number and application email, calls a minimal status RPC, and no longer displays applicant identity or reviewer notes. Migration `022_secure_public_access_and_privileged_rpcs.sql` removes legacy password columns, replaces the password-dependent account-provisioning function, restricts direct application-table access, revokes browser execution of privileged RPCs, and uses an empty `search_path` for security-definer functions. Twelve pgTAP assertions cover table privileges and privileged-function execution.
 
 The Phase 2 security scan, production build, and diff check pass. Full database regression tests could not run because the repository has no local Supabase configuration/database and the transient CLI reported that PostgreSQL was unavailable on `127.0.0.1:54322`. The migration must therefore be tested in a disposable Supabase project before it is applied to production. Project-wide typecheck remains blocked by existing defects and is not a Phase 2 database-validation substitute.
+
+## Phase 3 implementation record
+
+The repository now includes a server-only `/api/approve-and-admit` boundary that verifies the Supabase access token, requires an active admin profile, invites the student through Supabase Auth, and invokes an Auth-bound provisioning RPC. The client no longer sends a reviewer ID to the privileged operation. Authentication role resolution now requires an active `profiles` row and no longer trusts localStorage, signup metadata, or email-pattern inference as an authority.
+
+Application submission is moving behind `submit_application(jsonb)`, which generates a high-entropy tracking token and stores only its SHA-256 digest. Public tracking requires the application number, application email, and private token, and the response remains limited to status fields. Migrations `023`, `024`, and `025` implement the Auth linkage, least-privilege profile bootstrap, tokenized submission, and token-bound lookup contracts. The existing pgTAP suite has been extended to 16 assertions.
+
+The Phase 3 security scan, focused Prettier checks, production build, and diff checks pass. Project-wide typecheck remains blocked only by pre-existing route/table typing defects; no new errors were reported in the Phase 3 API, auth module, admissions hook, tracking route, or application wizard. Supabase database tests remain pending because no local Postgres/Supabase instance is available. The new server endpoint also requires Vercel-only `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` environment variables and must be tested in a disposable environment before deployment.
 
 ## Required follow-up approvals
 

@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronLeft, ChevronRight, Copy, GraduationCap, Loader2, User, Users } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  GraduationCap,
+  Loader2,
+  User,
+  Users,
+} from "lucide-react";
 import { applicationSchema, type ApplicationFormData } from "@/data/schema";
 import { useCreateApplication } from "@/hooks/use-admissions";
 import { GRADES } from "@/lib/academy";
@@ -31,6 +40,7 @@ export function ApplicationWizard() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [applicationNumber, setApplicationNumber] = useState("");
+  const [trackingToken, setTrackingToken] = useState("");
   const createApp = useCreateApplication();
 
   const form = useForm<ApplicationFormData>({
@@ -87,6 +97,7 @@ export function ApplicationWizard() {
     try {
       const result = await createApp.mutateAsync(data);
       setApplicationNumber(result.application_number);
+      setTrackingToken(result.tracking_token);
       setSubmitted(true);
       setStep(STEPS.length);
     } catch {
@@ -107,21 +118,33 @@ export function ApplicationWizard() {
           <p className="mt-3 max-w-md text-sm text-muted-foreground sm:text-base">
             Your application has been received. Please save your application number below.
           </p>
-          <div className="mt-6 rounded-2xl border border-gold/20 bg-gold/5 px-8 py-5">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">
-              Application Tracking Number
-            </p>
-            <p className="mt-1 font-display text-2xl font-black tracking-wider text-navy-deep sm:text-3xl">
-              {applicationNumber}
-            </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-gold/20 bg-gold/5 px-6 py-5">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                Application Number
+              </p>
+              <p className="mt-1 font-display text-xl font-black tracking-wider text-navy-deep sm:text-2xl">
+                {applicationNumber}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-blue-200 bg-blue-50 px-6 py-5 text-left">
+              <p className="text-xs uppercase tracking-wider text-blue-700">
+                Private Tracking Token
+              </p>
+              <p className="mt-1 break-all font-mono text-xs font-semibold text-blue-900">
+                {trackingToken}
+              </p>
+            </div>
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                navigator.clipboard.writeText(applicationNumber);
-                alert("Copied to clipboard!");
+                navigator.clipboard.writeText(
+                  `Application number: ${applicationNumber}\nTracking token: ${trackingToken}`,
+                );
+                alert("Tracking details copied to clipboard!");
               }}
             >
               <Copy className="mr-2 h-4 w-4" /> Copy to Clipboard
@@ -131,14 +154,17 @@ export function ApplicationWizard() {
             <p className="text-xs font-semibold text-blue-800">Important:</p>
             <ul className="mt-1 space-y-1 text-xs text-blue-700">
               <li>• Please screenshot or copy this number</li>
-              <li>• This is your application tracking code</li>
+              <li>• Keep both your application number and private token safe</li>
               <li>• Portal access details are provisioned after admission approval</li>
-              <li>• Use this number to track your application status</li>
+              <li>• You will need both values to track your application status</li>
             </ul>
           </div>
           <p className="mt-4 max-w-sm text-xs text-muted-foreground">
             Track your application status anytime on the{" "}
-            <a href="/track" className="font-semibold text-navy underline underline-offset-2">Track Application</a> page.
+            <a href="/track" className="font-semibold text-navy underline underline-offset-2">
+              Track Application
+            </a>{" "}
+            page.
           </p>
         </CardContent>
       </Card>
@@ -157,7 +183,12 @@ export function ApplicationWizard() {
               <div key={label} className="flex flex-1 flex-col items-center">
                 <div className="flex w-full items-center">
                   {i > 0 && (
-                    <div className={cn("h-0.5 flex-1 transition-colors", isComplete ? "bg-gold" : "bg-border")} />
+                    <div
+                      className={cn(
+                        "h-0.5 flex-1 transition-colors",
+                        isComplete ? "bg-gold" : "bg-border",
+                      )}
+                    />
                   )}
                   <button
                     type="button"
@@ -168,16 +199,26 @@ export function ApplicationWizard() {
                         ? "cursor-pointer border-gold bg-gold text-navy-deep"
                         : isActive
                           ? "border-navy-deep bg-navy-deep text-primary-foreground"
-                          : "border-border bg-card text-muted-foreground"
+                          : "border-border bg-card text-muted-foreground",
                     )}
                   >
                     {isComplete ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
                   </button>
                   {i < STEPS.length - 1 && (
-                    <div className={cn("h-0.5 flex-1 transition-colors", isComplete ? "bg-gold" : "bg-border")} />
+                    <div
+                      className={cn(
+                        "h-0.5 flex-1 transition-colors",
+                        isComplete ? "bg-gold" : "bg-border",
+                      )}
+                    />
                   )}
                 </div>
-                <span className={cn("mt-2 hidden text-[11px] font-semibold uppercase tracking-wider sm:block", isActive ? "text-navy-deep" : "text-muted-foreground")}>
+                <span
+                  className={cn(
+                    "mt-2 hidden text-[11px] font-semibold uppercase tracking-wider sm:block",
+                    isActive ? "text-navy-deep" : "text-muted-foreground",
+                  )}
+                >
                   {label}
                 </span>
               </div>
@@ -199,42 +240,80 @@ export function ApplicationWizard() {
             {step === 0 && (
               <div className="space-y-5">
                 <div>
-                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">Personal Information</h3>
+                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">
+                    Personal Information
+                  </h3>
                   <p className="mt-1 text-sm text-muted-foreground">Tell us about the student.</p>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="full_name">Full Name *</Label>
-                    <Input id="full_name" placeholder="e.g. Ahmed Khan" {...register("full_name")} />
-                    {formState.errors.full_name && <p className="text-xs text-destructive">{formState.errors.full_name.message}</p>}
+                    <Input
+                      id="full_name"
+                      placeholder="e.g. Ahmed Khan"
+                      {...register("full_name")}
+                    />
+                    {formState.errors.full_name && (
+                      <p className="text-xs text-destructive">
+                        {formState.errors.full_name.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="father_name">Father / Guardian Name</Label>
-                    <Input id="father_name" placeholder="e.g. Muhammad Khan" {...register("father_name")} />
+                    <Input
+                      id="father_name"
+                      placeholder="e.g. Muhammad Khan"
+                      {...register("father_name")}
+                    />
                   </div>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address *</Label>
-                    <Input id="email" type="email" placeholder="e.g. student@email.com" {...register("email")} />
-                    {formState.errors.email && <p className="text-xs text-destructive">{formState.errors.email.message}</p>}
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="e.g. student@email.com"
+                      {...register("email")}
+                    />
+                    {formState.errors.email && (
+                      <p className="text-xs text-destructive">{formState.errors.email.message}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone / WhatsApp *</Label>
-                    <Input id="phone" type="tel" inputMode="tel" placeholder="03XX XXXXXXX" {...register("phone")} />
-                    {formState.errors.phone && <p className="text-xs text-destructive">{formState.errors.phone.message}</p>}
+                    <Input
+                      id="phone"
+                      type="tel"
+                      inputMode="tel"
+                      placeholder="03XX XXXXXXX"
+                      {...register("phone")}
+                    />
+                    {formState.errors.phone && (
+                      <p className="text-xs text-destructive">{formState.errors.phone.message}</p>
+                    )}
                   </div>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 sm:col-span-2">
-                    Portal credentials are created only after your application is reviewed and approved. Do not send a password through this form.
+                    Portal credentials are created only after your application is reviewed and
+                    approved. Do not send a password through this form.
                   </div>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="id_number">B-Form / ID Number *</Label>
-                    <Input id="id_number" placeholder="Child registration / CNIC number" {...register("id_number")} />
-                    {formState.errors.id_number && <p className="text-xs text-destructive">{formState.errors.id_number.message}</p>}
+                    <Input
+                      id="id_number"
+                      placeholder="Child registration / CNIC number"
+                      {...register("id_number")}
+                    />
+                    {formState.errors.id_number && (
+                      <p className="text-xs text-destructive">
+                        {formState.errors.id_number.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="date_of_birth">Date of Birth</Label>
@@ -243,7 +322,12 @@ export function ApplicationWizard() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="address">Home Address</Label>
-                  <Textarea id="address" placeholder="House#, Street, Area, City" rows={2} {...register("address")} />
+                  <Textarea
+                    id="address"
+                    placeholder="House#, Street, Area, City"
+                    rows={2}
+                    {...register("address")}
+                  />
                 </div>
               </div>
             )}
@@ -252,25 +336,39 @@ export function ApplicationWizard() {
             {step === 1 && (
               <div className="space-y-5">
                 <div>
-                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">Academic Information</h3>
+                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">
+                    Academic Information
+                  </h3>
                   <p className="mt-1 text-sm text-muted-foreground">Select the class and gender.</p>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Class Applying For *</Label>
-                    <Select value={values.grade} onValueChange={(v) => setValue("grade", v as ApplicationFormData["grade"])}>
-                      <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
+                    <Select
+                      value={values.grade}
+                      onValueChange={(v) => setValue("grade", v as ApplicationFormData["grade"])}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select class" />
+                      </SelectTrigger>
                       <SelectContent>
                         {GRADES.map((grade) => (
-                          <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                          <SelectItem key={grade} value={grade}>
+                            {grade}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label>Gender *</Label>
-                    <Select value={values.gender} onValueChange={(v) => setValue("gender", v as ApplicationFormData["gender"])}>
-                      <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                    <Select
+                      value={values.gender}
+                      onValueChange={(v) => setValue("gender", v as ApplicationFormData["gender"])}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="male">Male</SelectItem>
                         <SelectItem value="female">Female</SelectItem>
@@ -281,16 +379,29 @@ export function ApplicationWizard() {
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="previous_school">Previous School (optional)</Label>
-                    <Input id="previous_school" placeholder="e.g. Roots Millennium" {...register("previous_school")} />
+                    <Input
+                      id="previous_school"
+                      placeholder="e.g. Roots Millennium"
+                      {...register("previous_school")}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="guardian_occupation">Guardian Occupation (optional)</Label>
-                    <Input id="guardian_occupation" placeholder="e.g. Business, Government Job" {...register("guardian_occupation")} />
+                    <Input
+                      id="guardian_occupation"
+                      placeholder="e.g. Business, Government Job"
+                      {...register("guardian_occupation")}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="message">Message / Notes (optional)</Label>
-                  <Textarea id="message" placeholder="Anything you'd like us to know..." rows={3} {...register("message")} />
+                  <Textarea
+                    id="message"
+                    placeholder="Anything you'd like us to know..."
+                    rows={3}
+                    {...register("message")}
+                  />
                 </div>
               </div>
             )}
@@ -299,24 +410,50 @@ export function ApplicationWizard() {
             {step === 2 && (
               <div className="space-y-5">
                 <div>
-                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">Parent / Guardian Information</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">Contact details of the student&apos;s parent or guardian.</p>
+                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">
+                    Parent / Guardian Information
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Contact details of the student&apos;s parent or guardian.
+                  </p>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="parent_name">Parent / Guardian Name *</Label>
-                    <Input id="parent_name" placeholder="e.g. Muhammad Khan" {...register("parent_name")} />
-                    {formState.errors.parent_name && <p className="text-xs text-destructive">{formState.errors.parent_name.message}</p>}
+                    <Input
+                      id="parent_name"
+                      placeholder="e.g. Muhammad Khan"
+                      {...register("parent_name")}
+                    />
+                    {formState.errors.parent_name && (
+                      <p className="text-xs text-destructive">
+                        {formState.errors.parent_name.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="parent_phone">Parent Phone *</Label>
-                    <Input id="parent_phone" type="tel" inputMode="tel" placeholder="03XX XXXXXXX" {...register("parent_phone")} />
-                    {formState.errors.parent_phone && <p className="text-xs text-destructive">{formState.errors.parent_phone.message}</p>}
+                    <Input
+                      id="parent_phone"
+                      type="tel"
+                      inputMode="tel"
+                      placeholder="03XX XXXXXXX"
+                      {...register("parent_phone")}
+                    />
+                    {formState.errors.parent_phone && (
+                      <p className="text-xs text-destructive">
+                        {formState.errors.parent_phone.message}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="parent_cnic">Parent CNIC (optional)</Label>
-                  <Input id="parent_cnic" placeholder="XXXXX-XXXXXXX-X" {...register("parent_cnic")} />
+                  <Input
+                    id="parent_cnic"
+                    placeholder="XXXXX-XXXXXXX-X"
+                    {...register("parent_cnic")}
+                  />
                 </div>
               </div>
             )}
@@ -325,8 +462,12 @@ export function ApplicationWizard() {
             {step === 3 && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">Review Your Application</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">Please verify all details before submitting.</p>
+                  <h3 className="font-display text-xl font-black text-navy-deep sm:text-2xl">
+                    Review Your Application
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Please verify all details before submitting.
+                  </p>
                 </div>
                 <ReviewSection
                   title="Personal Information"
@@ -347,15 +488,18 @@ export function ApplicationWizard() {
                     { label: "Class", value: values.grade },
                     { label: "Gender", value: values.gender === "male" ? "Male" : "Female" },
                     { label: "Previous School", value: values.previous_school || "Not provided" },
-                    { label: "Guardian Occupation", value: values.guardian_occupation || "Not provided" },
+                    {
+                      label: "Guardian Occupation",
+                      value: values.guardian_occupation || "Not provided",
+                    },
                   ]}
                 />
                 <ReviewSection
                   title="Parent / Guardian"
                   onEdit={() => handleEdit(2)}
                   rows={[
-                    { label: "Name", value: values.parent_name },
-                    { label: "Phone", value: values.parent_phone },
+                    { label: "Name", value: values.parent_name || "Not provided" },
+                    { label: "Phone", value: values.parent_phone || "Not provided" },
                     { label: "CNIC", value: values.parent_cnic || "Not provided" },
                   ]}
                 />
@@ -380,7 +524,9 @@ export function ApplicationWizard() {
           ) : (
             <Button type="submit" disabled={createApp.isPending} className="min-w-[140px]">
               {createApp.isPending ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</>
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Submitting…
+                </>
               ) : (
                 "Submit Application"
               )}
@@ -411,7 +557,11 @@ function ReviewSection({
     <div className="rounded-xl border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <h4 className="text-sm font-bold text-navy-deep">{title}</h4>
-        <button type="button" onClick={onEdit} className="text-xs font-semibold text-navy underline underline-offset-2 hover:text-navy-deep">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="text-xs font-semibold text-navy underline underline-offset-2 hover:text-navy-deep"
+        >
           Edit
         </button>
       </div>

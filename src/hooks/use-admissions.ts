@@ -98,7 +98,14 @@ const MOCK_APPLICATIONS: Application[] = [
   },
 ];
 
+const MOCK_TRACKING_TOKENS = new Map<string, string>();
 const USE_MOCK = import.meta.env.DEV && !supabase;
+
+function generateDevTrackingToken(): string {
+  return (
+    globalThis.crypto?.randomUUID?.() ?? `dev-${Date.now()}-${Math.random().toString(36).slice(2)}`
+  );
+}
 
 function generateApplicationNumber(): string {
   const year = new Date().getFullYear();
@@ -159,20 +166,26 @@ export function useApplications(filters?: { status?: string }) {
   });
 }
 
+export type ApplicationSubmissionResult = {
+  application_number: string;
+  tracking_token: string;
+};
+
 export type ApplicationTrackingResult = Pick<
   Application,
   "application_number" | "status" | "created_at" | "reviewed_at"
 >;
 
-export function useApplication(applicationNumber: string, email: string) {
+export function useApplication(applicationNumber: string, email: string, trackingToken: string) {
   return useQuery<ApplicationTrackingResult | null>({
-    queryKey: ["application-tracking", applicationNumber, email],
+    queryKey: ["application-tracking", applicationNumber, email, trackingToken],
     queryFn: async () => {
       if (USE_MOCK) {
         const application = MOCK_APPLICATIONS.find(
           (item) =>
             item.application_number === applicationNumber &&
-            item.email?.toLowerCase() === email.toLowerCase(),
+            item.email?.toLowerCase() === email.toLowerCase() &&
+            MOCK_TRACKING_TOKENS.get(item.application_number) === trackingToken,
         );
         if (!application) return null;
         return {
@@ -186,13 +199,14 @@ export function useApplication(applicationNumber: string, email: string) {
       const { data, error } = await supabase!.rpc("track_application", {
         p_application_number: applicationNumber.trim(),
         p_email: email.trim(),
+        p_tracking_token: trackingToken.trim(),
       });
       if (error) throw new Error("Unable to look up application status");
 
       const result = Array.isArray(data) ? data[0] : data;
       return result ? (result as ApplicationTrackingResult) : null;
     },
-    enabled: !!applicationNumber && !!email,
+    enabled: !!applicationNumber && !!email && !!trackingToken,
   });
 }
 
@@ -238,61 +252,25 @@ export function useCreateApplication() {
           updated_at: now,
         };
         MOCK_APPLICATIONS.push(newApp);
-        return newApp;
+        const trackingToken = generateDevTrackingToken();
+        MOCK_TRACKING_TOKENS.set(newApp.application_number, trackingToken);
+        return { application_number: newApp.application_number, tracking_token: trackingToken };
       }
 
-      try {
-        // Insert with .select() to get back the auto-generated application_number
-        // The migration adds a public SELECT policy for applications
-        const { data: result, error } = await supabase!
-          .from("applications")
-          .insert(applicationData)
-          .select()
-          .single();
-        if (error) {
-          if (
-            USE_MOCK &&
-            (error.message.includes("Could not find the table") ||
-              error.message.includes("infinite recursion"))
-          ) {
-            const now = new Date().toISOString();
-            const newApp: Application = {
-              ...applicationData,
-              id: String(Date.now()),
-              application_number: generateApplicationNumber(),
-              status: "pending",
-              documents: [],
-              created_at: now,
-              updated_at: now,
-            };
-            MOCK_APPLICATIONS.push(newApp);
-            return newApp;
-          }
-          throw new Error(error.message);
-        }
-        return result as Application;
-      } catch (err) {
-        if (
-          USE_MOCK &&
-          err instanceof Error &&
-          (err.message.includes("Could not find the table") ||
-            err.message.includes("infinite recursion"))
-        ) {
-          const now = new Date().toISOString();
-          const newApp: Application = {
-            ...applicationData,
-            id: String(Date.now()),
-            application_number: generateApplicationNumber(),
-            status: "pending",
-            documents: [],
-            created_at: now,
-            updated_at: now,
-          };
-          MOCK_APPLICATIONS.push(newApp);
-          return newApp;
-        }
-        throw err;
+      const { data: submissionData, error } = await supabase!.rpc("submit_application", {
+        p_application: applicationData,
+      });
+      if (error) throw new Error("Unable to submit application");
+
+      const result = Array.isArray(submissionData) ? submissionData[0] : submissionData;
+      if (
+        !result ||
+        typeof result.application_number !== "string" ||
+        typeof result.tracking_token !== "string"
+      ) {
+        throw new Error("Application service returned an invalid response");
       }
+      return result as ApplicationSubmissionResult;
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["applications"] });
@@ -380,37 +358,47 @@ export function useApproveAndAdmit() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      applicationId,
-      reviewerId,
-    }: {
-      applicationId: string;
-      reviewerId: string;
-    }) => {
+    mutationFn: async ({ applicationId }: { applicationId: string }) => {
       if (USE_MOCK) {
         const app = MOCK_APPLICATIONS.find((a) => a.id === applicationId);
         if (!app) throw new Error("Application not found");
 
         const studentId = String(Date.now());
         app.status = "approved";
-        app.reviewed_by = reviewerId;
+        app.reviewed_by = "dev-admin";
         app.reviewed_at = new Date().toISOString();
         app.updated_at = new Date().toISOString();
 
         return { studentId, application: app };
       }
 
-      // Call the approve_and_create_account RPC function
-      const { data, error } = await supabase!.rpc("approve_and_create_account", {
-        app_id: applicationId,
-        reviewer_id: reviewerId,
-      });
-
-      if (error) {
-        throw new Error(error.message);
+      if (!supabase) throw new Error("Authentication service is not configured");
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+      if (sessionError || !session?.access_token) {
+        throw new Error("Administrator session is required");
       }
 
-      return data;
+      const response = await fetch("/api/approve-and-admit", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ applicationId }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        error?: string;
+        result?: unknown;
+      };
+
+      if (!response.ok) {
+        throw new Error(body.error || "Unable to approve application");
+      }
+
+      return body.result;
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["applications"] });
