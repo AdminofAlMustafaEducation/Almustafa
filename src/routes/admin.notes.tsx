@@ -33,7 +33,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { useNotes, useCreateNote, useUpdateNote, useDeleteNote } from "@/hooks/use-notes";
+import {
+  useNotes,
+  useCreateNote,
+  useUpdateNote,
+  useDeleteNote,
+  uploadNoteFile,
+} from "@/hooks/use-notes";
+import { NoteFileLink } from "@/components/note-file-link";
 import { useFaculty } from "@/hooks/use-faculty";
 import { GRADES, SUBJECTS } from "@/lib/academy";
 import { cn } from "@/lib/utils";
@@ -52,6 +59,7 @@ function AdminNotes() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -75,6 +83,7 @@ function AdminNotes() {
       file_type: "",
       is_published: true,
     });
+    setSelectedFile(null);
     setDialogOpen(true);
   }
 
@@ -90,22 +99,39 @@ function AdminNotes() {
       file_type: note.file_type || "",
       is_published: note.is_published,
     });
+    setSelectedFile(null);
     setDialogOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!formData.title || !formData.subject_id || !formData.class_id || !formData.teacher_id)
       return;
 
-    const callbacks = {
-      onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => toast.error(`Failed to save: ${err.message}`),
-    };
-
-    if (editingNote) {
-      updateNote.mutate({ id: editingNote.id, ...formData }, callbacks);
-    } else {
-      createNote.mutate(formData, callbacks);
+    try {
+      if (editingNote) {
+        const uploadedPath = selectedFile
+          ? await uploadNoteFile(selectedFile, editingNote.id)
+          : formData.file_path;
+        await updateNote.mutateAsync({
+          id: editingNote.id,
+          ...formData,
+          file_path: uploadedPath,
+          file_type: selectedFile?.type || formData.file_type,
+        });
+      } else {
+        const createdNote = await createNote.mutateAsync(formData);
+        if (selectedFile) {
+          const uploadedPath = await uploadNoteFile(selectedFile, createdNote.id);
+          await updateNote.mutateAsync({
+            id: createdNote.id,
+            file_path: uploadedPath,
+            file_type: selectedFile.type,
+          });
+        }
+      }
+      setDialogOpen(false);
+    } catch (err) {
+      toast.error(`Failed to save: ${err instanceof Error ? err.message : "Unknown error"}`);
     }
   }
 
@@ -269,11 +295,9 @@ function AdminNotes() {
                         {note.is_published ? "Unpublish" : "Publish"}
                       </Button>
                       {note.file_path && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={note.file_path} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-1 h-3 w-3" /> View File
-                          </a>
-                        </Button>
+                        <NoteFileLink filePath={note.file_path}>
+                          <ExternalLink className="mr-1 h-3 w-3" /> View File
+                        </NoteFileLink>
                       )}
                       <Button variant="destructive" size="sm" onClick={() => handleDelete(note.id)}>
                         <Trash2 className="h-3 w-3" />
@@ -373,25 +397,18 @@ function AdminNotes() {
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="note-file-path">File URL</Label>
-                <Input
-                  id="note-file-path"
-                  value={formData.file_path}
-                  onChange={(e) => setFormData((p) => ({ ...p, file_path: e.target.value }))}
-                  placeholder="/notes/chapter-1.pdf"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="note-file-type">File Type</Label>
-                <Input
-                  id="note-file-type"
-                  value={formData.file_type}
-                  onChange={(e) => setFormData((p) => ({ ...p, file_type: e.target.value }))}
-                  placeholder="pdf, doc, image"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="note-file">Attachment</Label>
+              <Input
+                id="note-file"
+                type="file"
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"
+                onChange={(event) => setSelectedFile(event.target.files?.[0] || null)}
+              />
+              <p className="text-xs text-gray-500">
+                PDF, Office documents, or images up to 10 MB. Existing attachments are retained
+                unless replaced.
+              </p>
             </div>
 
             <div className="flex items-center justify-between">

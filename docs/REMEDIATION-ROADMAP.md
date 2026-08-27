@@ -1,6 +1,6 @@
 # Al-Mustafa Academy Remediation Roadmap
 
-**Status:** Phase 4 complete; Phase 5 pending
+**Status:** Repository phases complete; external environment validation pending
 **Owner:** Al-Mustafa engineering  
 **Scope:** Public website, Supabase data layer, authentication, admin portal, teacher portal, student portal, application tracking, Vercel delivery, and GitHub release controls.
 
@@ -10,14 +10,14 @@ The portal must not accept or expose real student, applicant, academic, guardian
 
 ## Scalable phases
 
-| Phase | Objective | Main deliverables | Exit criteria |
-|---|---|---|---|
-| 1. Contain and establish the security boundary | Stop unsafe data handling and prevent known fail-open behavior from reaching production. | Remove plaintext credential handling from the client/data model, disable production mock fallbacks, add release guardrails, document the canonical migration source, and gate real portal access until authorization tests exist. | No raw password is stored or returned by the application path; production cannot silently use mock data; release checks are explicit and reproducible. |
-| 2. Repair database authorization | Make Supabase the enforceable authorization boundary. | One canonical migration chain, RLS on every exposed table, explicit grants/revokes, admin-only RPCs bound to `auth.uid()`, restrictive application-tracking DTO/RPC, and private academic storage policies. | Anonymous, teacher, student, guardian, and admin pgTAP tests pass for allowed and forbidden operations. |
-| 3. Replace authentication and applicant tracking | Use Supabase Auth correctly and separate identity from application tracking. | Remove password columns, server-side account provisioning, password reset/email verification plan, random hashed tracking tokens, rate limiting, and minimal status responses. | No credential or full application row is exposed through public reads; approval is atomic and auditable. |
-| 4. Restore correctness and type safety | Eliminate known defects and duplicate implementations. | Fix all TypeScript diagnostics and lint errors, unify database types, repair attendance/result payloads, remove the no-op result saver, and standardize error handling. | Clean `npm ci`, typecheck, lint, build, and integration tests. |
-| 5. Harden delivery and storage | Align Vercel behavior with repository intent. | Enforce CSP/security headers on the actual custom-domain response, remove wildcard CORS, protect private buckets with signed URLs, validate uploads, and verify preview/production domains. | Header, storage, and deployment probes pass on custom and Vercel hosts. |
-| 6. Scale product operations | Make the system reliable at academy growth levels. | Pagination, narrow selects, indexes, debounced search, durable inquiry capture, rate limits/bot defense, audit logging, observability, accessibility, mobile QA, SEO, backups, and disaster-recovery procedures. | Acceptance matrix passes for all portals and operating procedures are documented.
+| Phase                                            | Objective                                                                                | Main deliverables                                                                                                                                                                                                                 | Exit criteria                                                                                                                                          |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Contain and establish the security boundary   | Stop unsafe data handling and prevent known fail-open behavior from reaching production. | Remove plaintext credential handling from the client/data model, disable production mock fallbacks, add release guardrails, document the canonical migration source, and gate real portal access until authorization tests exist. | No raw password is stored or returned by the application path; production cannot silently use mock data; release checks are explicit and reproducible. |
+| 2. Repair database authorization                 | Make Supabase the enforceable authorization boundary.                                    | One canonical migration chain, RLS on every exposed table, explicit grants/revokes, admin-only RPCs bound to `auth.uid()`, restrictive application-tracking DTO/RPC, and private academic storage policies.                       | Anonymous, teacher, student, guardian, and admin pgTAP tests pass for allowed and forbidden operations.                                                |
+| 3. Replace authentication and applicant tracking | Use Supabase Auth correctly and separate identity from application tracking.             | Remove password columns, server-side account provisioning, password reset/email verification plan, random hashed tracking tokens, rate limiting, and minimal status responses.                                                    | No credential or full application row is exposed through public reads; approval is atomic and auditable.                                               |
+| 4. Restore correctness and type safety           | Eliminate known defects and duplicate implementations.                                   | Fix all TypeScript diagnostics and lint errors, unify database types, repair attendance/result payloads, remove the no-op result saver, and standardize error handling.                                                           | Clean `npm ci`, typecheck, lint, build, and integration tests.                                                                                         |
+| 5. Harden delivery and storage                   | Align Vercel behavior with repository intent.                                            | Enforce CSP/security headers on the actual custom-domain response, remove wildcard CORS, protect private buckets with signed URLs, validate uploads, and verify preview/production domains.                                       | Header, storage, and deployment probes pass on custom and Vercel hosts.                                                                                |
+| 6. Scale product operations                      | Make the system reliable at academy growth levels.                                       | Pagination, narrow selects, indexes, debounced search, durable inquiry capture, rate limits/bot defense, audit logging, observability, accessibility, mobile QA, SEO, backups, and disaster-recovery procedures.                  | Acceptance matrix passes for all portals and operating procedures are documented.                                                                      |
 
 ## Phase 1 — Containment and release guardrails
 
@@ -40,14 +40,14 @@ Phase 1 will not invoke privileged RPCs, submit an application to production, al
 
 ### Phase 1 acceptance criteria
 
-| Check | Pass condition |
-|---|---|
-| Production mock guard | A production build cannot enable mock data through an absent Supabase configuration or a generic query error. |
-| Credential collection | The public application form does not accept or display a raw portal password. |
-| Credential response | Application creation does not return a password field to the browser. |
-| Release scripts | `typecheck`, `lint`, `build`, and security checks are named scripts and their status is visible to CI/deploy operators. |
+| Check                    | Pass condition                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Production mock guard    | A production build cannot enable mock data through an absent Supabase configuration or a generic query error.                          |
+| Credential collection    | The public application form does not accept or display a raw portal password.                                                          |
+| Credential response      | Application creation does not return a password field to the browser.                                                                  |
+| Release scripts          | `typecheck`, `lint`, `build`, and security checks are named scripts and their status is visible to CI/deploy operators.                |
 | Database source of truth | The repository explicitly identifies ordered migrations as canonical and warns against executing the stale monolith until regenerated. |
-| Change safety | No production data mutation is performed by the agent; all code changes are reviewable in Git. |
+| Change safety            | No production data mutation is performed by the agent; all code changes are reviewable in Git.                                         |
 
 ## Phase 1 implementation record
 
@@ -73,10 +73,22 @@ The Phase 3 security scan, focused Prettier checks, production build, and diff c
 
 Phase 4 correctness and type-safety remediation is complete in the working tree. The generated TanStack route tree was refreshed, shared Student/Faculty/Attendance models were aligned with the portal consumers, DataTable callbacks were restored to the `(value, row)` contract, optional program/campus/date values now have safe fallbacks, attendance status compatibility was repaired, student-creation unions were narrowed, and Supabase joined relations in the portal hooks are normalized without explicit `any` annotations. The admissions and student-portal mappings now use canonical form/model types and null-safe relation handling.
 
-The repository-wide formatting pass intentionally touched 77 files, primarily to remove existing formatting violations and make the lint gate actionable; this broad formatting-only impact should be reviewed separately from semantic changes. Final local checks passed: `npm run typecheck` (0 diagnostics), `npm run lint` (0 errors and 7 existing `react-refresh/only-export-components` warnings), `npm run security:scan`, `npm run build`, and `git diff --check`. The production build emitted the expected local warning that Supabase environment variables were absent; no production credentials or data were used. `npm ci` and Supabase pgTAP tests remain unverified: the lockfile/install mismatch noted earlier persists, and the test suite requires a disposable Supabase/Postgres environment because local Docker/Postgres is unavailable.
+The repository-wide formatting pass intentionally touched 77 files, primarily to remove existing formatting violations and make the lint gate actionable; this broad formatting-only impact should be reviewed separately from semantic changes. Phase 4’s local checks passed: `npm run typecheck` (0 diagnostics), `npm run lint` (0 errors and 7 existing `react-refresh/only-export-components` warnings), `npm run security:scan`, `npm run build`, and `git diff --check`. The production build emitted the expected local warning that Supabase environment variables were absent; no production credentials or data were used. At that point the lockfile/install mismatch and database test environment were still unresolved; the dependency blocker was subsequently repaired in Phase 6, while Supabase pgTAP execution remains environment-dependent.
 
-Phase 4 has not been pushed. The local checkpoint includes the already-local Phase 2 and Phase 3 commits plus the uncommitted Phase 4 changes; a commit will be created after the final diff review. No Supabase migrations, Vercel environment changes, deployment, or production data mutation has been performed.
+Phase 4 was checkpointed locally before the remaining phases were implemented. No Supabase migrations, Vercel environment changes, deployment, or production data mutation has been performed by the repository remediation work.
+
+## Phase 5 implementation record
+
+The delivery and storage hardening work is implemented in the repository. Migration `026_harden_storage_policies.sql` makes the `notes` bucket private, grants object access only through explicit administrator/teacher/student/guardian policies, keeps gallery reads public as intended for public-site content, and hardens the `is_admin()` security-definer helper with an empty search path and explicit grants. The client now validates note file size/type and generates one-hour authenticated signed URLs instead of public note URLs. Admin and teacher authoring flows use controlled file inputs rather than arbitrary file URL entry, and the release scanner prevents regressions to public note URLs or direct database-path anchors.
+
+`vercel.json` now declares the canonical academy origin instead of wildcard CORS and strengthens HSTS. The linked Vercel project remains the existing `al-mustafa-clone` project for `AdminofAlMustafaEducation/Almustafa`, with the custom domain preserved. Repository changes do not modify Vercel settings or environment variables.
+
+## Phase 6 implementation record
+
+The dependency and release surface is now reproducible: the missing `@fontsource-variable/dm-sans` lock entry was repaired, the remaining esbuild advisory was removed by pinning `tsx` to the patched `4.23.12` line, `npm ci` succeeds from a clean install, and `npm audit --audit-level=high` reports zero vulnerabilities. Node support is declared as `>=22 <25`, and `.github/workflows/quality.yml` runs locked installation, the full release gate, and whitespace validation on pull requests and `main` pushes.
+
+Migration `027_application_submission_controls.sql` adds an indexed, database-side fifteen-minute email cooldown for anonymous application submissions. Edge/IP-based rate limiting, durable audit-log review, production environment variables, and operational observability still require configuration in the chosen Supabase/Vercel environment; the repository cannot safely claim those external controls are active without applying and testing the migrations.
 
 ## Required follow-up approvals
 
-Before Phase 2, the owner must confirm the target Supabase project/environment for authorization tests and provide or create non-production identities for anonymous, admin, teacher, student, and guardian cases. Before Phase 3, the owner must decide whether existing applicant passwords are to be invalidated immediately and how applicants will receive new Supabase Auth credentials. Before Phase 5, the owner must configure server-only Vercel variables, provision a disposable Supabase environment, run migrations `022`–`025` in order, execute the pgTAP suite, and approve any deployment or production rollout separately.
+Before the external rollout, the owner must provision a disposable Supabase environment, run migrations `022`–`027` in order, execute the 26-assertion pgTAP suite, configure server-only Vercel variables, and approve production deployment separately. The Vercel project currently reports Node `24.x`, which satisfies the repository’s declared `>=22 <25` range. The local database test remains blocked until Docker/Postgres is available; the attempted `supabase test db` connection to `127.0.0.1:54322` failed because no local database was running.

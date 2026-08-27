@@ -22,7 +22,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { useNotes, useCreateNote, useUpdateNote, useDeleteNote } from "@/hooks/use-notes";
+import {
+  useNotes,
+  useCreateNote,
+  useUpdateNote,
+  useDeleteNote,
+  uploadNoteFile,
+} from "@/hooks/use-notes";
 import { SUBJECTS, GRADES } from "@/lib/academy";
 import { cn } from "@/lib/utils";
 import type { Note } from "@/types/database";
@@ -40,6 +46,7 @@ function TeacherNotes() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -61,6 +68,7 @@ function TeacherNotes() {
       file_type: "",
       is_published: true,
     });
+    setSelectedFile(null);
     setDialogOpen(true);
   }
 
@@ -75,24 +83,40 @@ function TeacherNotes() {
       file_type: note.file_type || "",
       is_published: note.is_published,
     });
+    setSelectedFile(null);
     setDialogOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!formData.title || !formData.subject_id || !formData.class_id) return;
 
-    const callbacks = {
-      onSuccess: () => setDialogOpen(false),
-      onError: (err: Error) => alert(`Failed to save: ${err.message}`),
-    };
-
-    // In real implementation, teacher_id would come from auth
-    const noteData = { ...formData, teacher_id: "teacher-1" };
-
-    if (editingNote) {
-      updateNote.mutate({ id: editingNote.id, ...noteData }, callbacks);
-    } else {
-      createNote.mutate(noteData, callbacks);
+    try {
+      // In real implementation, teacher_id would come from auth.
+      const noteData = { ...formData, teacher_id: "teacher-1" };
+      if (editingNote) {
+        const uploadedPath = selectedFile
+          ? await uploadNoteFile(selectedFile, editingNote.id)
+          : formData.file_path;
+        await updateNote.mutateAsync({
+          id: editingNote.id,
+          ...noteData,
+          file_path: uploadedPath,
+          file_type: selectedFile?.type || formData.file_type,
+        });
+      } else {
+        const createdNote = await createNote.mutateAsync(noteData);
+        if (selectedFile) {
+          const uploadedPath = await uploadNoteFile(selectedFile, createdNote.id);
+          await updateNote.mutateAsync({
+            id: createdNote.id,
+            file_path: uploadedPath,
+            file_type: selectedFile.type,
+          });
+        }
+      }
+      setDialogOpen(false);
+    } catch (err) {
+      alert(`Failed to save: ${err instanceof Error ? err.message : "Unknown error"}`);
     }
   }
 
@@ -257,12 +281,17 @@ function TeacherNotes() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>File URL</Label>
+              <Label htmlFor="teacher-note-file">Attachment</Label>
               <Input
-                value={formData.file_path}
-                onChange={(e) => setFormData((p) => ({ ...p, file_path: e.target.value }))}
-                placeholder="/notes/file.pdf"
+                id="teacher-note-file"
+                type="file"
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"
+                onChange={(event) => setSelectedFile(event.target.files?.[0] || null)}
               />
+              <p className="text-xs text-gray-500">
+                PDF, Office documents, or images up to 10 MB. Existing attachments are retained
+                unless replaced.
+              </p>
             </div>
             <div className="flex items-center justify-between">
               <Label>Published</Label>

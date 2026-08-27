@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { FileText, Download, ExternalLink, BookOpen } from "lucide-react";
+import { FileText, Download, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/hooks/use-notes";
+import { NoteFileLink } from "@/components/note-file-link";
 import { SUBJECTS } from "@/lib/academy";
 
 export const Route = createFileRoute("/portal/notes")({
@@ -79,11 +80,9 @@ function PortalNotes() {
 
                     {note.file_path && (
                       <div className="mt-3">
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={note.file_path} target="_blank" rel="noopener noreferrer">
-                            <Download className="mr-1 h-3 w-3" /> Download
-                          </a>
-                        </Button>
+                        <NoteFileLink filePath={note.file_path}>
+                          <Download className="mr-1 h-3 w-3" /> Download
+                        </NoteFileLink>
                       </div>
                     )}
                   </div>

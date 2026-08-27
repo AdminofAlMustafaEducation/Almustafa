@@ -323,28 +323,71 @@ export function useDeleteNote() {
   });
 }
 
-// Upload note file to Supabase Storage
+const MAX_NOTE_FILE_BYTES = 10 * 1024 * 1024;
+const ALLOWED_NOTE_FILE_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "image/jpeg",
+  "image/png",
+]);
+
+function noteStoragePath(filePath: string): string {
+  const normalized = filePath.trim().replace(/^\/+/, "");
+  const path = normalized.startsWith("notes/") ? normalized.slice("notes/".length) : normalized;
+  if (!path || path.includes("..") || path.includes("\\") || !/^[a-zA-Z0-9._/-]+$/.test(path)) {
+    throw new Error("Invalid note file path");
+  }
+  return path;
+}
+
+// Upload note files to the private Supabase Storage bucket.
 export async function uploadNoteFile(file: File, noteId: string): Promise<string> {
   if (!supabase) {
     throw new Error("Supabase not configured");
   }
+  if (!file.size || file.size > MAX_NOTE_FILE_BYTES) {
+    throw new Error("Note files must be smaller than 10 MB");
+  }
+  if (!ALLOWED_NOTE_FILE_TYPES.has(file.type)) {
+    throw new Error("Unsupported note file type");
+  }
+  if (!/^[0-9a-f-]{36}$/i.test(noteId)) {
+    throw new Error("Invalid note identifier");
+  }
 
-  const fileExt = file.name.split(".").pop();
-  const filePath = `notes/${noteId}.${fileExt}`;
+  const extension = file.name.split(".").pop()?.toLowerCase();
+  if (!extension || !/^[a-z0-9]{1,8}$/.test(extension)) {
+    throw new Error("Invalid note file extension");
+  }
 
-  const { error } = await supabase.storage.from("notes").upload(filePath, file, { upsert: true });
+  const filePath = `${noteId}.${extension}`;
+  const { error } = await supabase.storage.from("notes").upload(filePath, file, {
+    upsert: true,
+    contentType: file.type,
+    cacheControl: "3600",
+  });
 
   if (error) {
     throw new Error(`Upload failed: ${error.message}`);
   }
 
-  return filePath;
+  return `notes/${filePath}`;
 }
 
-// Get public URL for a note file
-export function getNoteFileUrl(filePath: string): string {
+// Create a short-lived authenticated URL for a private note file.
+export async function getNoteFileUrl(filePath: string): Promise<string> {
   if (!supabase) return "";
 
-  const { data } = supabase.storage.from("notes").getPublicUrl(filePath);
-  return data.publicUrl;
+  const { data, error } = await supabase.storage
+    .from("notes")
+    .createSignedUrl(noteStoragePath(filePath), 3600);
+  if (error) {
+    throw new Error(`Unable to access note file: ${error.message}`);
+  }
+  return data.signedUrl;
 }

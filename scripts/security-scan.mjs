@@ -46,6 +46,18 @@ assertAbsent(
   /reviewerId\s*:/,
   "admin approval still supplies reviewer identity from the browser",
 );
+assertAbsent(
+  "src/hooks/use-notes.ts",
+  /storage\.from\(["']notes["']\)[\s\S]*?getPublicUrl\(/,
+  "private academic note storage still generates public URLs",
+);
+for (const relativePath of ["src/routes/admin.notes.tsx", "src/routes/portal.notes.tsx"]) {
+  assertAbsent(
+    relativePath,
+    /href=\{note\.file_path\}/,
+    "note route still links directly to a database file path",
+  );
+}
 
 function findFiles(directory) {
   const absoluteDirectory = resolve(root, directory);

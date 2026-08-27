@@ -2,7 +2,7 @@
 -- Run with `supabase test db` after applying the full migration chain in a disposable project.
 
 begin;
-select plan(16);
+select plan(26);
 
 select ok(
   has_table_privilege('anon', 'public.applications', 'insert'),
@@ -68,6 +68,78 @@ select ok(
 select ok(
   has_table_privilege('authenticated', 'public.applications', 'select'),
   'authenticated admin reads remain available for policy evaluation'
+);
+select is(
+  (select public from storage.buckets where id = 'notes'),
+  false,
+  'academic notes bucket is private'
+);
+select is(
+  (select public from storage.buckets where id = 'gallery'),
+  true,
+  'gallery bucket remains public site content'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'storage'
+      and tablename = 'objects'
+      and policyname = 'Authenticated users can read permitted note files'
+  ),
+  'note object reads have an explicit authenticated policy'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'storage'
+      and tablename = 'objects'
+      and policyname = 'Teachers and admins can upload note files'
+  ),
+  'note object uploads have an explicit teacher/admin policy'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'storage'
+      and tablename = 'objects'
+      and policyname = 'Teachers and admins can update note files'
+  ),
+  'note object updates have an explicit teacher/admin policy'
+);
+select ok(
+  exists (
+    select 1 from pg_policies
+    where schemaname = 'storage'
+      and tablename = 'objects'
+      and policyname = 'Teachers and admins can delete note files'
+  ),
+  'note object deletes have an explicit teacher/admin policy'
+);
+select ok(
+  not has_function_privilege('anon', 'public.is_admin()', 'execute'),
+  'anonymous callers cannot execute the admin helper'
+);
+select ok(
+  has_function_privilege('authenticated', 'public.is_admin()', 'execute'),
+  'authenticated callers can use the policy-bound admin helper'
+);
+select ok(
+  exists (
+    select 1 from pg_trigger
+    where tgrelid = 'public.applications'::regclass
+      and tgname = 'applications_submission_cooldown'
+      and not tgisinternal
+  ),
+  'application submissions have a database-side cooldown trigger'
+);
+select ok(
+  exists (
+    select 1 from pg_indexes
+    where schemaname = 'public'
+      and tablename = 'applications'
+      and indexname = 'idx_applications_email_created_at'
+  ),
+  'application cooldown lookups have a supporting index'
 );
 
 select * from finish();
