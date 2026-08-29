@@ -1,42 +1,6 @@
--- 033_align_live_student_contract.sql
--- Align the live legacy students table with the application model used by the
--- admin and portal clients. The legacy table requires name/class/program/
--- campus/parent fields, while newer code uses full_name and auth_user_id.
-
-ALTER TABLE public.students
-  ADD COLUMN IF NOT EXISTS full_name TEXT;
-
-UPDATE public.students
-SET full_name = COALESCE(NULLIF(trim(full_name), ''), name)
-WHERE full_name IS NULL OR trim(full_name) = '';
-
-ALTER TABLE public.students
-  ALTER COLUMN full_name SET NOT NULL;
-
-CREATE OR REPLACE FUNCTION public.sync_student_name_fields()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
-BEGIN
-  NEW.full_name := COALESCE(NULLIF(trim(NEW.full_name), ''), NEW.name);
-  NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), NEW.full_name);
-  RETURN NEW;
-END;
-$$;
-
-REVOKE ALL ON FUNCTION public.sync_student_name_fields() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.sync_student_name_fields() TO postgres, service_role;
-
-DROP TRIGGER IF EXISTS sync_student_name_fields ON public.students;
-CREATE TRIGGER sync_student_name_fields
-  BEFORE INSERT OR UPDATE OF name, full_name
-  ON public.students
-  FOR EACH ROW
-  EXECUTE FUNCTION public.sync_student_name_fields();
-
-DROP FUNCTION IF EXISTS public.approve_and_create_account(UUID, UUID, UUID);
+-- Fix the approval transaction against the live legacy students schema.
+-- Applications legitimately retain father_name; public.students does not.
+-- The RPC must insert the normalized parent/guardian fields instead.
 
 CREATE OR REPLACE FUNCTION public.approve_and_create_account(
   app_id UUID,
@@ -55,6 +19,7 @@ DECLARE
   resolved_class_level INTEGER;
   resolved_program TEXT;
   resolved_campus TEXT;
+  resolved_parent_name TEXT;
 BEGIN
   IF reviewer_id IS NULL OR student_auth_user_id IS NULL THEN
     RAISE EXCEPTION 'Reviewer and Auth user are required';
@@ -110,6 +75,7 @@ BEGIN
   );
   resolved_program := COALESCE(NULLIF(trim(app.program), ''), 'matric');
   resolved_campus := COALESCE(NULLIF(trim(app.campus), ''), 'main');
+  resolved_parent_name := COALESCE(app.parent_name, app.father_name, '');
   new_student_number := 'STU-' || EXTRACT(YEAR FROM NOW()) || '-' ||
     LPAD(nextval('public.student_number_seq')::TEXT, 4, '0');
 
@@ -154,8 +120,8 @@ BEGIN
     0,
     'active',
     lower(trim(app.email)),
-    COALESCE(app.parent_name, app.father_name, ''),
-    COALESCE(app.parent_name, app.father_name, ''),
+    resolved_parent_name,
+    resolved_parent_name,
     COALESCE(app.parent_phone, app.phone, ''),
     app.parent_cnic
   )

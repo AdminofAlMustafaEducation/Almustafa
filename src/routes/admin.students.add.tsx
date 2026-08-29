@@ -15,6 +15,8 @@ function AddStudentPage() {
   const createStudent = useCreateStudent();
 
   const handleSubmit = (data: StudentFormValues) => {
+    const { father_name, ...formData } = data;
+    const parentName = formData.parent_name?.trim() || father_name?.trim() || "";
     const program: Student["program"] =
       data.program === "fsc_pre_medical"
         ? "fsc_pre_medical"
@@ -23,12 +25,14 @@ function AddStudentPage() {
           : "matric";
     const campus: Student["campus"] = data.campus === "second" ? "second" : "main";
     const studentData = {
-      ...data,
-      email: data.email || undefined,
-      phone: data.phone || undefined,
-      date_of_birth: data.date_of_birth || undefined,
-      address: data.address || undefined,
-      parent_cnic: data.parent_cnic || undefined,
+      ...formData,
+      parent_name: parentName || undefined,
+      guardian_name: parentName || undefined,
+      email: formData.email || undefined,
+      phone: formData.phone || undefined,
+      date_of_birth: formData.date_of_birth || undefined,
+      address: formData.address || undefined,
+      parent_cnic: formData.parent_cnic || undefined,
       admission_date: new Date().toISOString().split("T")[0],
       program,
       campus,

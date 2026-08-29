@@ -175,8 +175,8 @@ function toStudentRow(student: Partial<Student>): StudentRow {
   const row: StudentRow = {
     student_number: student.student_number,
     auth_user_id: student.auth_user_id,
-    father_name: student.father_name,
-    guardian_name: student.guardian_name,
+    parent_name: student.parent_name ?? student.guardian_name,
+    guardian_name: student.guardian_name ?? student.parent_name,
     date_of_birth: student.date_of_birth,
     gender: student.gender,
     identity_type: student.identity_type,
@@ -197,7 +197,6 @@ function toStudentRow(student: Partial<Student>): StudentRow {
     class_level: student.class_level,
     program: student.program,
     campus: student.campus,
-    parent_name: student.parent_name,
     parent_phone: student.parent_phone,
     parent_cnic: student.parent_cnic,
   };

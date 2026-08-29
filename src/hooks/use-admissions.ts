@@ -100,6 +100,8 @@ const MOCK_APPLICATIONS: Application[] = [
 ];
 
 const USE_MOCK = import.meta.env.DEV && !supabase;
+const APPLICATION_ADMIN_FIELDS =
+  "id, application_number, full_name, student_name, email, phone, class_level, program, campus, parent_name, parent_phone, status, reviewer_notes, reviewed_by, reviewed_at, created_at, updated_at, tracking_code";
 
 function generateApplicationNumber(): string {
   const year = new Date().getFullYear();
@@ -122,7 +124,7 @@ export function useApplications(filters?: { status?: string }) {
       try {
         let query = supabase!
           .from("applications")
-          .select("*")
+          .select(APPLICATION_ADMIN_FIELDS)
           .order("created_at", { ascending: false });
         if (filters?.status && filters.status !== "all") {
           query = query.eq("status", filters.status);
@@ -375,7 +377,18 @@ export function useApproveAndAdmit() {
       };
 
       if (error) {
-        throw new Error(body.error || error.message || "Unable to approve application");
+        const functionError = error as { message?: string; context?: Response };
+        let serverMessage = body.error;
+        if (!serverMessage && functionError.context) {
+          const errorBody = (await functionError.context
+            .clone()
+            .json()
+            .catch(() => null)) as {
+            error?: unknown;
+          } | null;
+          if (typeof errorBody?.error === "string") serverMessage = errorBody.error;
+        }
+        throw new Error(serverMessage || functionError.message || "Unable to approve application");
       }
       if (body.error) throw new Error(body.error);
 

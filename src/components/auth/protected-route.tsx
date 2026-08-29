@@ -18,8 +18,8 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     );
   }
 
-  if (!user) {
-    return <Navigate to="/login" />;
+  if (!user || !user.is_active) {
+    return <Navigate to="/login" replace />;
   }
 
   // Admin can access ALL portals - no restrictions
@@ -29,7 +29,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   // For non-admin users, check if their role is allowed
   if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

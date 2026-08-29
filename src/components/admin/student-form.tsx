@@ -60,7 +60,7 @@ export function StudentForm({ initialData, onSubmit, onCancel, isLoading }: Stud
     resolver: zodResolver(studentSchema),
     defaultValues: {
       full_name: initialData?.full_name || initialData?.name || "",
-      father_name: initialData?.father_name || "",
+      father_name: initialData?.parent_name || initialData?.guardian_name || "",
       email: initialData?.email || "",
       phone: initialData?.phone || "",
       id_number: initialData?.id_number || initialData?.identity_number || "",

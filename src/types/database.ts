@@ -34,7 +34,6 @@ export interface Student {
   full_name: string;
   /** Legacy list/detail alias; prefer full_name in new code. */
   name?: string;
-  father_name?: string;
   guardian_name?: string;
   date_of_birth?: string;
   gender?: "male" | "female";
@@ -154,6 +153,7 @@ export interface Application {
   class_level?: number;
   program?: string;
   campus?: string;
+  tracking_code?: string;
   status:
     | "pending"
     | "under_review"

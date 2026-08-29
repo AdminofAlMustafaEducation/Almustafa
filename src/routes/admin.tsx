@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useState } from "react";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
@@ -45,13 +46,15 @@ function AdminErrorComponent({ error }: { error: Error }) {
 }
 
 function AdminLayout() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
-      <div className="flex h-screen bg-gray-50">
-        <AdminSidebar />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <AdminHeader />
-          <main className="flex-1 overflow-y-auto p-6">
+      <div className="flex min-h-dvh bg-gray-50">
+        <AdminSidebar mobileOpen={mobileMenuOpen} onMobileClose={() => setMobileMenuOpen(false)} />
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <AdminHeader onMenuClick={() => setMobileMenuOpen(true)} />
+          <main className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
             <Outlet />
           </main>
         </div>

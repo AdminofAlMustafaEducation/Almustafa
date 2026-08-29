@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FileText, Eye, Check, X, Clock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -44,11 +44,14 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
 
 function AdminAdmissions() {
   const [statusFilter, setStatusFilter] = useState("all");
-  const {
-    data: applications = [],
-    isLoading,
-    error,
-  } = useApplications(statusFilter === "all" ? undefined : { status: statusFilter });
+  const { data: allApps = [], isLoading, error } = useApplications();
+  const applications = useMemo(
+    () =>
+      statusFilter === "all"
+        ? allApps
+        : allApps.filter((application) => application.status === statusFilter),
+    [allApps, statusFilter],
+  );
   const updateStatus = useUpdateApplicationStatus();
   const approveAndAdmit = useApproveAndAdmit();
 
@@ -56,7 +59,6 @@ function AdminAdmissions() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reviewerNotes, setReviewerNotes] = useState("");
 
-  const allApps = useApplications().data || [];
   const stats = {
     total: allApps.length,
     pending: allApps.filter((a) => a.status === "pending").length,
